@@ -1,11 +1,12 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Trieve",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/trieve-logo.png",
+    "light": "/logo/trieve-logo.png"
   },
-  "favicon": "/favicon.svg",
+  "openapi": "https://api.trieve.ai/api-docs/openapi.json",
+  "favicon": "/logo/android-chrome-192x192.png",
   "colors": {
     "primary": "#0D9373",
     "light": "#07C983",
@@ -51,11 +52,7 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": [
-        "introduction",
-        "quickstart",
-        "development"
-      ]
+      "pages": ["introduction", "quickstart", "development"]
     },
     {
       "group": "Essentials",
@@ -69,17 +66,130 @@
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "auth",
       "pages": [
-        "api-reference/introduction"
+        "auth/login",
+        "auth/logout",
+        "auth/openid-connect-callback",
+        "auth/get-me"
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "chunk",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "chunk/update-chunk",
+        "chunk/create-or-upsert-chunk-or-chunks",
+        "chunk/generate-suggested-queries",
+        "chunk/rag-on-specified-chunks",
+        "chunk/get-recommended-chunks",
+        "chunk/search",
+        "chunk/update-chunk-by-tracking-id",
+        "chunk/get-chunk-by-tracking-id",
+        "chunk/delete-chunk-by-tracking-id",
+        "chunk/get-chunk-by-id",
+        "chunk/delete-chunk",
+        "chunk/get-chunks-by-ids",
+        "chunk/get-chunks-by-trackingids"
+      ]
+    },
+    {
+      "group": "chunk_group",
+      "pages": [
+        "chunk_group/update-group",
+        "chunk_group/create-chunk-group",
+        "chunk_group/add-chunk-to-group",
+        "chunk_group/remove-chunk-from-group",
+        "chunk_group/get-groups-for-chunks",
+        "chunk_group/search-over-groups",
+        "chunk_group/get-recommended-groups",
+        "chunk_group/search-within-group",
+        "chunk_group/get-chunks-in-group-by-tracking-id",
+        "chunk_group/get-group-by-tracking-id",
+        "chunk_group/update-group-by-tracking-id",
+        "chunk_group/add-chunk-to-group-by-tracking-id",
+        "chunk_group/delete-group-by-tracking-id",
+        "chunk_group/get-group",
+        "chunk_group/delete-group",
+        "chunk_group/get-chunks-in-group",
+        "chunk_group/get-groups-for-dataset"
+      ]
+    },
+    {
+      "group": "dataset",
+      "pages": [
+        "dataset/update-dataset",
+        "dataset/create-dataset",
+        "dataset/get-client-configuration",
+        "dataset/get-datasets-from-organization",
+        "dataset/get-dataset",
+        "dataset/delete-dataset"
+      ]
+    },
+    {
+      "group": "file",
+      "pages": [
+        "file/get-files-for-dataset",
+        "file/upload-file",
+        "file/get-file",
+        "file/delete-file"
+      ]
+    },
+    {
+      "group": "events",
+      "pages": ["events/get-events-for-the-dataset"]
+    },
+    {
+      "group": "health",
+      "pages": ["health/health-check"]
+    },
+    {
+      "group": "invitation",
+      "pages": ["invitation/send-invitation"]
+    },
+    {
+      "group": "message",
+      "pages": [
+        "message/edit-a-message",
+        "message/create-a-message",
+        "message/regenerate-message",
+        "message/get-all-messages-for-a-given-topic"
+      ]
+    },
+    {
+      "group": "organization",
+      "pages": [
+        "organization/update-organization",
+        "organization/create-organization",
+        "organization/get-organization-usage",
+        "organization/get-organization-users",
+        "organization/get-organization",
+        "organization/delete-organization"
+      ]
+    },
+    {
+      "group": "stripe",
+      "pages": [
+        "stripe/checkout",
+        "stripe/get-all-plans",
+        "stripe/cancel-subscription",
+        "stripe/update-subscription-plan"
+      ]
+    },
+    {
+      "group": "topic",
+      "pages": [
+        "topic/update-topic",
+        "topic/create-topic",
+        "topic/get-all-topics-for-owner-id",
+        "topic/delete-topic"
+      ]
+    },
+    {
+      "group": "user",
+      "pages": [
+        "user/update-user",
+        "user/set-user-api-key",
+        "user/delete-user-api-key"
       ]
     }
   ],
