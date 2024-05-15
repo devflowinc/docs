@@ -8,23 +8,23 @@
   "openapi": "https://api.trieve.ai/api-docs/openapi.json",
   "favicon": "/logo/android-chrome-192x192.png",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#a33eb5",
+    "light": "#a33eb5",
+    "dark": "#a33eb5",
     "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
+      "from": "#a33eb5",
+      "to": "#a33eb5"
     }
   },
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "url": "mailto:humans@trieve.ai"
     }
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "url": "https://dashboard.trieve.ai"
   },
   "tabs": [
     {
@@ -34,19 +34,19 @@
   ],
   "anchors": [
     {
-      "name": "Documentation",
+      "name": "API Redoc",
       "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
+      "url": "https://api.trieve.com/redoc"
     },
     {
       "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
+      "icon": "satellite-dish",
+      "url": "https://matrix.to/#/#trieve-general:matrix.zerodao.gg"
     },
     {
       "name": "Blog",
       "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
+      "url": "https://trieve.ai/blog"
     }
   ],
   "navigation": [
@@ -194,8 +194,8 @@
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
+    "x": "https://x.com/trieveai",
+    "github": "https://github.com/devflowinc",
+    "linkedin": "https://www.linkedin.com/company/trieveai"
   }
 }
