@@ -52,11 +52,18 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "development"]
+      "pages": [
+        "introduction",
+        "quickstart",
+        "development"
+      ]
     },
     {
       "group": "Guides",
-      "pages": ["guides/job-board"]
+      "pages": [
+        "guides/job-board",
+        "guides/ecommerce"
+      ]
     },
     {
       "group": "Authentication",
@@ -175,15 +182,21 @@
     },
     {
       "group": "Events",
-      "pages": ["api-reference/events/get-events-for-the-dataset"]
+      "pages": [
+        "api-reference/events/get-events-for-the-dataset"
+      ]
     },
     {
       "group": "Health",
-      "pages": ["api-reference/health/health-check"]
+      "pages": [
+        "api-reference/health/health-check"
+      ]
     },
     {
       "group": "Invitation",
-      "pages": ["api-reference/invitation/send-invitation"]
+      "pages": [
+        "api-reference/invitation/send-invitation"
+      ]
     }
   ],
   "footerSocials": {
