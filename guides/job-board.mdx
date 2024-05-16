@@ -1,0 +1,207 @@
+---
+title: 'Build a Job Board With Trieve'
+description: 'Learn how to build a job board with Trieve'
+icon: 'user-doctor'
+---
+
+
+This guide will help you set up and run a demo using a sample job listing dataset on the Trieve platform. Follow the steps below to get everything working.
+
+## Steps to Set Up the Demo
+
+1. **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/devflowinc/job-search
+    ```
+
+2. **Install the required dependencies:**
+
+    <Note>
+    This demo uses Bun as a runtime. Install Bun by running:
+
+    ```bash
+    curl -fsSL https://bun.sh/install | bash
+    ```
+    </Note>
+    
+    Install the dependencies by running:
+
+    ```bash
+    bun install
+    ```
+
+3. **Create an account on Trieve:**
+
+    Go to [Trieve Dashboard](https://dashboard.trieve.ai) and create an account.
+
+4. **Create a new dataset and copy the dataset ID.**
+
+    You can either create a dataset on the Trieve Dashboard or use our [CLI](https://github.com/devflowinc/trieve-CLI)
+
+5. **Create a new API key and copy the API key.**
+
+6. **Create an `.env` file in the root of the project and add the following environment variables:**
+
+    ```bash
+    TRIEVE_API_KEY=your-api-key
+    TRIEVE_DATASET_ID=your-dataset-id
+    ```
+
+7. **Download the dataset**
+
+    ```bash
+    wget -O jobs.csv https://query.data.world/s/pgpakbonuiwfiltmu443p474knfork?dws=00000
+    ```
+
+8. **Run the demo:**
+
+    ```bash
+    bun upload-indeed-listings.ts
+    ```
+
+9. **View the results**
+
+    Head over to https://search.trieve.ai and select your dataset.
+
+    Try out a few sample queries like 
+
+    ```software engineer at google```
+
+    or 
+
+    ```show me some listings that would be good for me if I have experience as a mechanic```
+
+## Breakdown of the script
+
+### Creating a data model to represent the data
+
+When we recieve the CSV data, we need to turn it into a data model to be able to effectively pull the data out of it. The data model for this CSV looks like:
+
+```javascript
+interface JobData {
+  "Job Title": string;
+  "Job Description"?: string;
+  Location: string;
+  City: string;
+  State: string;
+  Country: string;
+  "Zip Code": string;
+  "Apply Url": string;
+  "Company Name": string;
+  "Employer Logo": string;
+  Companydescription: string;
+  "Employer Location": string;
+  "Employer City": string;
+  "Employer State": string;
+  "Employer Country": string;
+  "Employer Zip Code": string;
+  "Uniq Id": string;
+  "Crawl Timestamp": string;
+}
+```
+
+### Instantiating the Trieve Client
+
+We have to first instantiate the client with our credentials before we can use it:
+
+```javascript
+const trieveApiConfig = new Configuration({
+  apiKey: trieveApiKey,
+  basePath: "https://api.trieve.ai",
+});
+
+const chunkApi = new ChunkApi(trieveApiConfig);
+```
+
+### Creating the Searchable Chunk HTML
+
+<Note>The Chunk HTML should contain the data that we want to be searchable. In this case, we include the job title, description and other text fields that provide more context to the embedding model so that it can generate a better embedding to represent the job.</Note>
+
+<Tip>It is typically best practice to put a `\n\n` between each field to separate them so that the model can differentiate between them.</Tip>
+
+The following function transforms job data into the searchable chunk HTML:
+
+```javascript
+function jobToSearchableString(job) {
+  let searchableString = "";
+
+  const addField = (field, prefix = "", postfix = "\n\n") => {
+    if (field) {
+      searchableString += `${prefix}${field}${postfix}`;
+    }
+  };
+
+  addField(job["Job Title"], "Job Title: ");
+  addField(job["Job Description"], "Job Description: ");
+  addField(job["Location"], "Location: ");
+  addField(job["City"], "City: ");
+  addField(job["State"], "State: ");
+  addField(job["Country"], "Country: ");
+  addField(job["Company Name"], "Company Name: ");
+  addField(job["Companydescription"], "Company Description: ");
+  addField(job["Employer Location"], "Employer Location: ");
+  addField(job["Employer City"], "Employer City: ");
+  addField(job["Employer State"], "Employer State: ");
+  addField(job["Employer Country"], "Employer Country: ");
+
+  return searchableString.trim();
+}
+```
+
+
+
+### Creating a Chunk
+
+<Tip>When possible, use our bulk upload API to upload data in chunks of up to 120 to take advantage of the speed of the API.</Tip>
+
+To efficiently upload data, we divide it into chunks. Here’s the code snippet for creating a chunk with the data:
+
+```javascript
+const createChunkData = items.map((item) => ({
+    // Searchable Data
+    chunk_html: jobToSearchableString(item), 
+    // Link to job listing
+    link: item["Apply Url"] ?? "", 
+    // ID to be able to differentiate this chunk and track it outside of Trieve
+    // You can refer to the chunk using this ID so that you don't have to keep 
+    // track of the Trieve ID
+    tracking_id: item["Uniq Id"] ?? "", 
+    // Tags to associate with chunk
+    tag_set: [ 
+      item["Employer City"] ?? "",
+      item["Employer State"] ?? "",
+      item["Employer Country"] ?? "",
+    ],
+    // Other metadata of the chunk
+    metadata: extractMetadata(item), 
+    // Timestamp to associate with chunk
+    time_stamp: new Date(item["Crawl Timestamp"]).toISOString() ?? null, 
+     // With this param set to true, the API will not error if a chunk 
+     // with the same tracking ID is passed. 
+     // Instead it will just update the existing chunk.
+    upsert_by_tracking_id: true,
+}));
+
+const chunkSize = 50;
+const chunkedItems = [];
+
+// We combine chunks into groups of 50
+for (let i = 0; i < createChunkData.length; i += chunkSize) {
+    const chunk = createChunkData.slice(i, i + chunkSize);
+    chunkedItems.push(chunk);
+}
+
+for (const chunk of chunkedItems) {
+    try {
+        console.log(`Creating chunk`);
+        await chunkApi.createChunk(trieveDatasetId, chunk);
+    } catch (error) {
+        console.error(`Failed to create chunk`);
+        console.error(error);
+    }
+}
+```
+Checkout the api reference for the [upload API](/api-reference/chunk/create-or-upsert-chunk-or-chunks) to view all of the parameters that can be passed in with the chunk.
+
+By following this guide, you should be able to set up and run the demo successfully. If you encounter any issues, refer back to the steps and ensure all configurations are correctly set up.

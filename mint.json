@@ -34,9 +34,9 @@
   ],
   "anchors": [
     {
-      "name": "API Redoc",
-      "icon": "book-open-cover",
-      "url": "https://api.trieve.com/redoc"
+      "name": "Github",
+      "icon": "github",
+      "url": "https://github.com/devflowinc/trieve"
     },
     {
       "name": "Community",
@@ -55,18 +55,11 @@
       "pages": ["introduction", "quickstart", "development"]
     },
     {
-      "group": "Essentials",
-      "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
-      ]
+      "group": "Guides",
+      "pages": ["guides/job-board"]
     },
     {
-      "group": "auth",
+      "group": "Authentication",
       "pages": [
         "api-reference/auth/login",
         "api-reference/auth/logout",
@@ -75,7 +68,7 @@
       ]
     },
     {
-      "group": "chunk",
+      "group": "Chunk",
       "pages": [
         "api-reference/chunk/update-chunk",
         "api-reference/chunk/create-or-upsert-chunk-or-chunks",
@@ -93,7 +86,7 @@
       ]
     },
     {
-      "group": "chunk_group",
+      "group": "Chunk Group",
       "pages": [
         "api-reference/chunk_group/update-group",
         "api-reference/chunk_group/create-chunk-group",
@@ -115,7 +108,34 @@
       ]
     },
     {
-      "group": "dataset",
+      "group": "File",
+      "pages": [
+        "api-reference/file/get-files-for-dataset",
+        "api-reference/file/upload-file",
+        "api-reference/file/get-file",
+        "api-reference/file/delete-file"
+      ]
+    },
+    {
+      "group": "Message",
+      "pages": [
+        "api-reference/message/edit-a-message",
+        "api-reference/message/create-a-message",
+        "api-reference/message/regenerate-message",
+        "api-reference/message/get-all-messages-for-a-given-topic"
+      ]
+    },
+    {
+      "group": "Topic",
+      "pages": [
+        "api-reference/topic/update-topic",
+        "api-reference/topic/create-topic",
+        "api-reference/topic/get-all-topics-for-owner-id",
+        "api-reference/topic/delete-topic"
+      ]
+    },
+    {
+      "group": "Dataset",
       "pages": [
         "api-reference/dataset/update-dataset",
         "api-reference/dataset/create-dataset",
@@ -126,37 +146,7 @@
       ]
     },
     {
-      "group": "file",
-      "pages": [
-        "api-reference/file/get-files-for-dataset",
-        "api-reference/file/upload-file",
-        "api-reference/file/get-file",
-        "api-reference/file/delete-file"
-      ]
-    },
-    {
-      "group": "events",
-      "pages": ["api-reference/events/get-events-for-the-dataset"]
-    },
-    {
-      "group": "health",
-      "pages": ["api-reference/health/health-check"]
-    },
-    {
-      "group": "invitation",
-      "pages": ["api-reference/invitation/send-invitation"]
-    },
-    {
-      "group": "message",
-      "pages": [
-        "api-reference/message/edit-a-message",
-        "api-reference/message/create-a-message",
-        "api-reference/message/regenerate-message",
-        "api-reference/message/get-all-messages-for-a-given-topic"
-      ]
-    },
-    {
-      "group": "organization",
+      "group": "Organization",
       "pages": [
         "api-reference/organization/update-organization",
         "api-reference/organization/create-organization",
@@ -167,7 +157,7 @@
       ]
     },
     {
-      "group": "stripe",
+      "group": "Stripe",
       "pages": [
         "api-reference/stripe/checkout",
         "api-reference/stripe/get-all-plans",
@@ -176,21 +166,24 @@
       ]
     },
     {
-      "group": "topic",
-      "pages": [
-        "api-reference/topic/update-topic",
-        "api-reference/topic/create-topic",
-        "api-reference/topic/get-all-topics-for-owner-id",
-        "api-reference/topic/delete-topic"
-      ]
-    },
-    {
-      "group": "user",
+      "group": "User",
       "pages": [
         "api-reference/user/update-user",
         "api-reference/user/set-user-api-key",
         "api-reference/user/delete-user-api-key"
       ]
+    },
+    {
+      "group": "Events",
+      "pages": ["api-reference/events/get-events-for-the-dataset"]
+    },
+    {
+      "group": "Health",
+      "pages": ["api-reference/health/health-check"]
+    },
+    {
+      "group": "Invitation",
+      "pages": ["api-reference/invitation/send-invitation"]
     }
   ],
   "footerSocials": {
