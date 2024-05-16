@@ -2,11 +2,11 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "Trieve",
   "logo": {
-    "dark": "/logo/trieve-logo.png",
-    "light": "/logo/trieve-logo.png"
+    "dark": "https://cdn.trieve.ai/android-chrome-512x512.png",
+    "light": "https://cdn.trieve.ai/android-chrome-512x512.png"
   },
   "openapi": "https://api.trieve.ai/api-docs/openapi.json",
-  "favicon": "/logo/android-chrome-192x192.png",
+  "favicon": "https://cdn.trieve.ai/android-chrome-512x512.png",
   "colors": {
     "primary": "#a33eb5",
     "light": "#a33eb5",
