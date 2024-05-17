@@ -8,6 +8,13 @@ icon: 'cart-shopping'
 
 In this guide we are going to use the Amazon Berkeley objects dataset (https://amazon-berkeley-objects.s3.amazonaws.com/index.html) to build an inventory to search with Trieve
 
+## Cloning the example repository
+
+```sh
+git clone https://github.com/devflowinc/examples
+cd examples/amazon-berkeley-dataset
+```
+
 ## Getting the data
 
 ### CSV Metadata
@@ -37,7 +44,22 @@ image_id,height,width,path
 01sUPg0387L,111,111,d2/d2daaae9.jpg
 ```
 
-## Ingesting the data
+## Running the ingest script
+
+To run the ingest script you first need to add or modify a .env file with
+
+```sh
+TRIEVE_API_KEY="tr-********************************"
+TRIEVE_DATASET_ID="********-****-****-****-************"
+```
+
+Then run the ingest script
+
+```sh
+bun index.ts
+```
+
+A breakdown of the script is below
 
 ### Types 
 
@@ -190,6 +212,7 @@ function processLine(line: string) {
     tracking_id: item.item_id,
     tag_set: item.item_keywords?.map((kw) => kw.value),
     metadata,
+    image_urls: [ image_url ?? "" ],
     upsert_by_tracking_id: true,
   };
   return chunkData;
@@ -260,12 +283,4 @@ for (const file of files) {
   }
 }
 ```
-
-## Configuring the Images to display in the search UI
-
-Naviagte to https://dashboard.trieve.ai and open the dataset settings page
-
-Set `IMAGE_METADTA_KEY` to `image_url`
-![](https://trieve.b-cdn.net/docs/image_metadta_key.png)
-
 
