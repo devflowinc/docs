@@ -52,17 +52,11 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": [
-        "introduction",
-        "quickstart"
-      ]
+      "pages": ["introduction", "quickstart"]
     },
     {
       "group": "Guides",
-      "pages": [
-        "guides/job-board",
-        "guides/ecommerce"
-      ]
+      "pages": ["guides/job-board", "guides/ecommerce"]
     },
     {
       "group": "Authentication",
@@ -82,6 +76,7 @@
         "api-reference/chunk/rag-on-specified-chunks",
         "api-reference/chunk/get-recommended-chunks",
         "api-reference/chunk/search",
+        "api-reference/chunk/autocomplete",
         "api-reference/chunk/update-chunk-by-tracking-id",
         "api-reference/chunk/get-chunk-by-tracking-id",
         "api-reference/chunk/delete-chunk-by-tracking-id",
@@ -181,21 +176,15 @@
     },
     {
       "group": "Events",
-      "pages": [
-        "api-reference/events/get-events-for-the-dataset"
-      ]
+      "pages": ["api-reference/events/get-events-for-the-dataset"]
     },
     {
       "group": "Health",
-      "pages": [
-        "api-reference/health/health-check"
-      ]
+      "pages": ["api-reference/health/health-check"]
     },
     {
       "group": "Invitation",
-      "pages": [
-        "api-reference/invitation/send-invitation"
-      ]
+      "pages": ["api-reference/invitation/send-invitation"]
     }
   ],
   "footerSocials": {
