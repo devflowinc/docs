@@ -1,0 +1,57 @@
+---
+title: 'Uploading Chunks to Trieve'
+description: 'Learn how to upload your chunks to Trieve'
+icon: 'upload'
+---
+We believe that users should have control over how they chunk their data. Therefore, we provide an easy interface for users to upload their chunks individually.
+
+## Uploading Individual Chunks to Trieve
+
+The main route that we expose to handle this functionality is our [create chunk route](/api-reference/chunk/create-or-upsert-chunk-or-chunks).
+
+### Important Parameters
+
+- **`chunk_html`**: This is the content that will be embedded and made searchable. You can pass HTML here, and our service will automatically clean it for the embeddings.
+- **`chunk_vector`**: This allows you to provide your own pre-calculated embeddings. Use this if you have already calculated embeddings for your dataset and want to migrate them to Trieve.
+- **`group_ids` and `group_tracking_ids`**: These fields let you specify a group to associate the chunks with, useful for linking multiple chunks from one document.
+- **`link`, `location`, `tag_set`, and `time_stamp`**: These fields are indexed to enable fast filtering of chunks based on these attributes.
+- **`metadata`**: This field allows you to include any arbitrary metadata in the form of a JSON object with the chunk. 
+<Note>
+For the best filtering performance, we recommend using the `link`, `location`, `tag_set`, and `time_stamp` rather than the metadata field as there are dedicated indexes for these. The metadata has an index built on it, but it is only optimized for match queries
+</Note>
+- **`tracking_id`**: This field allows you to assign an arbitrary ID to the chunk, aiding in coordination with your database system. You can search for chunks using this ID.
+- **`weight`**: This field allows you to assign a weight to the chunks, which can influence the chunk's ranking within search results. This is similar to merchandising features on other platforms.
+
+
+## Example Create Chunk Request
+<Note>
+Whenever you make a request to the Trieve API, you need to include the `TR-Dataset` header with your dataset ID and the `Authorization` header with your API key.
+</Note>
+
+```json
+POST /api/chunk
+Headers:
+{
+    "TR-Dataset": "<Your Dataset ID>",
+    "Authorization": "<Your API Key>"
+}
+Body:
+{
+    "chunk_html": "EcoFusion Technologies provides innovative, eco-friendly technology solutions. We specialize in renewable ...",
+    "link": "https://example.com",
+    "tracking_id": "134",
+    "image_urls": ["https://example.com"],
+    "tag_set": ["324", "product", "sale"],
+    "metadata": {
+      "phone_number": "000-000-0000",
+      "price_range": "$21-$25",
+      "reviews_count": "15",
+      "address": {
+        "city": "Austin",
+        "country": "United States",
+        "state": "Texas",
+        "zip_code": "78781"
+      }
+    }
+}
+```

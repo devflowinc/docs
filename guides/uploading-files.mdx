@@ -1,0 +1,51 @@
+---
+title: 'Uploading Files to Trieve'
+description: 'Learn how to upload your files to Trieve'
+icon: 'files'
+---
+We provide the ability for users to upload their files to Trieve and use our automatic chunking. When uploading a file to Trieve, we automatically group the chunks together to link them. This is done through our [upload file route](/api-reference/file/upload-file).
+
+<Note>
+The default chunker that we provide is basic, simply splitting on word limits. For more advanced chunking, we recommend that you chunk your data yourself and then use our [create chunk route](/api-reference/chunk/create-or-upsert-chunk-or-chunks) to upload them.
+</Note>
+
+## Uploading a File to Trieve
+
+Our service supports various file types (e.g., HTML, DOCX, PDF). We use Apache Tika to convert these files to HTML to preserve formatting and then chunk them.
+
+### Important Parameters
+
+- **`base64_file`**: To allow users to pass metadata with their file uploads, we require files to be base64 URL encoded. Convert `+` to `-`, `/` to `_`, and remove the ending `=` if present.
+- **`file_name`**: The name of the file being uploaded, including the extension. This will become the name of the resulting group.
+- **`group_tracking_id`**: This field allows you to assign an arbitrary ID to the group, aiding in coordination with your database system. You can search for this group using this ID.
+- **`link`, `tag_set`, and `time_stamp`**: These fields are indexed to enable fast filtering of groups based on these attributes.
+- **`metadata`**: This field allows you to include any arbitrary metadata in the form of a JSON object with the group.
+
+<Note>
+ For the best filtering performance, we recommend using the `link`, `tag_set`, and `time_stamp` fields, as there are dedicated indexes for these. The metadata field has an index built for match queries but is not optimized for range queries.
+</Note>
+
+### Example Upload File Request
+
+<Note>
+Whenever you make a request to the Trieve API, you need to include the `TR-Dataset` header with your dataset ID and the `Authorization` header with your API key.
+</Note>
+
+```json
+POST /api/file
+Headers:
+{
+    "TR-Dataset": "<Your Dataset ID>",
+    "Authorization": "<Your API Key>"
+}
+Body:
+{
+    "file_name": "text.docx",
+    "base64_file": "SGVsbG8sIFdvcmxkIQ...",
+    "metadata": {
+        "todo": "add what seems useful"
+    },
+    "create_chunks": true,
+    "group_tracking_id": "test-group-tracking-id"
+}
+```

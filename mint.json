@@ -2,11 +2,11 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "Trieve",
   "logo": {
-    "dark": "https://cdn.trieve.ai/android-chrome-512x512.png",
-    "light": "https://cdn.trieve.ai/android-chrome-512x512.png"
+    "dark": "./icons/android-chrome-512x512.png",
+    "light": "./icons/android-chrome-512x512.png"
   },
   "openapi": "https://api.trieve.ai/api-docs/openapi.json",
-  "favicon": "https://cdn.trieve.ai/android-chrome-512x512.png",
+  "favicon": "./icons/android-chrome-512x512.png",
   "colors": {
     "primary": "#a33eb5",
     "light": "#a33eb5",
@@ -56,7 +56,15 @@
     },
     {
       "group": "Guides",
-      "pages": ["guides/job-board", "guides/ecommerce"]
+      "pages": [
+        "guides/create-chunk",
+        "guides/uploading-files",
+        "guides/searching-with-trieve"
+      ]
+    },
+    {
+      "group": "Examples",
+      "pages": ["examples/job-board", "examples/ecommerce"]
     },
     {
       "group": "Authentication",
