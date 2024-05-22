@@ -4,134 +4,120 @@ description: 'Learn how to search over your data with Trieve'
 icon: 'magnifying-glass'
 ---
 
-We provide the ability for you to be able to search over your data in a fast and performant manner. We have multiple paradigms for searching which are exposed through the [search over chunks route](/api-reference/chunk/search), the [search within groups route](/api-reference/chunk_group/search-within-group), and the [search over groups route](/api-reference/chunk_group/search-over-groups).
+## Overview
+
+We provide the ability for you to search your data in a fast and performant manner. We have multiple search paradigms, which are exposed through the [search over chunks route](/api-reference/chunk/search), the [search within groups route](/api-reference/chunk_group/search-within-group), and the [search over groups route](/api-reference/chunk_group/search-over-groups).
 
 ## Different Search Paradigms
 
-We provide users with the ability to be able to choose between 3 different search strategies:
-    1. `Search over chunks` - This strategy allows users to search over all of their chunks independently. This is useful when your chunks are independent of each other and don't need to be grouped together.
-    2. `Search within groups` - This strategy allows you to constrain your results to just within a group that you select. This is useful when you have distinct groups within your dataset that you want to be able to seach over independently.
-    3. `Search over groups` - This strategy allows you to search over the groups of chunks within your dataset. This route returns the groups and the top chunks within your group that matched your query. This offers better search quality when you have many groups with highly related chunks within them.
-    
+We offer three different search strategies for you to choose from:
+
+1. **Search over chunks**: This strategy allows you to search all of your chunks independently. It is useful when your chunks are independent and do not need to be grouped together.
+2. **Search within groups**: This strategy lets you constrain your results to within a selected group. It is useful for searching distinct groups within your dataset independently.
+3. **Search over groups**: This strategy allows you to search over the groups of chunks within your dataset. It returns the groups and the top chunks within each group that matched your query, providing better search quality for datasets with highly related chunks within groups.
+
+
 <Tip>
-You can use the search UI at [search.trieve.ai](https://search.trieve.ai) to A/B test which search method works the best for you
+You can use the search UI at [search.trieve.ai](https://search.trieve.ai) to A/B test which search method works best for you.
 </Tip>
 
 ### Important Parameters
-- `query` - This is the user query that is embedding and search against the dataset
-- `search_type` - This can be either semantic, fulltext, or hybrid. 
-    - `Semantic` uses Cosine distance to determine the most relevant results. 
-    - `Fulltext` uses a SPLADE model to find the most relevant results. 
-    - `Hybrid` uses a reranker model that pulls in one page of results from `Fulltext` and `Semantic` search to find the most relevant results.
-- `page` - Page of chunks to fetch. Page is 1-indexed
-- `page_size` - This lets you tune the amount of results that are returned
-- `highlight_results` - This lets you enable subsentence highlighting of relevant portions of the text
-- `slim_chunks` - Excludes `chunk_html` from the returned results to reduce network bandwidth. This is useful if you have large chunks
-- `recency_bias` - This is a value from 0-1 that lets you tune how much the recency of chunks based on the `timestamp` field affect the ranking of the chunks
-- `filters` - These lets you apply filters to the result set to get exactly the results you want
+
+- **`query`**: The user query that is embedded and searched against the dataset.
+- **`search_type`**: Can be `semantic`, `fulltext`, or `hybrid`.
+  - **Semantic**: Uses cosine distance to determine the most relevant results.
+  - **Fulltext**: Uses a SPLADE model to find the most relevant results.
+  - **Hybrid**: Uses a reranker model that pulls one page of results from both `fulltext` and `semantic` searches to find the most relevant results.
+- **`page`**: The page of chunks to fetch. Pages are 1-indexed.
+- **`page_size`**: This lets you tune the number of results that are returned.
+- **`highlight_results`**: Enables subsentence highlighting of relevant portions of the text.
+- **`slim_chunks`**: Excludes `chunk_html` from the returned results to reduce network bandwidth. Useful for large chunks.
+- **`recency_bias`**: A value from 0-1 that tunes how much the recency of chunks (based on the `timestamp` field) affects the ranking.
+- **`filters`**: Apply filters to get exactly the results you want.
 
 <Tip>
-To optimize for the lowest latency, set `highlight_results` and `get_total_pages` to `false` and set `slim_chunks` to true. If you are willing to sacrifice search quality for speed, we recommend using the `fulltext` search mode.  
+To optimize for the lowest latency, set `highlight_results` and `get_total_pages` to `false` and set `slim_chunks` to `true`. If you are willing to sacrifice some search quality for speed, use the `fulltext` search mode.
 </Tip>
-
 ### Filtering
 
-We provide a system to allow user to filter the chunks that are given to them. 
+We provide a system to allow users to filter the chunks that are returned.
 
 The filters are structured around three clauses:
-- `must` - All of the filters within this clause must be matched in order to return the chunks
 
-> Get chunks with both "CO" and "321" in their tag_set
-```json
-{
-  "must": [
-    {
-      "field": "tag_set",
-      "match": [
-        "CO"
-      ]
-    },
-    {
-      "field": "tag_set",
-      "match": [
-        "321"
-      ]
-    }
-  ],
-}
-```
-> Get chunks with either "CO" OR "321" in their tag_set
-```json
-{
-  "must": [
-    {
-      "field": "tag_set",
-      "match": [
-        "CO",
-        "321"
-      ]
-    }
-  ]
-}
-```
-- `must_not` - All of these filters must not be matched in order to return these chunks
-> Get chunks with neither "CO" or "321" in their tag_set
+- **`must`**: All filters within this clause must be matched to return the chunks.
 
-```json
-{
-  "must_not": [
-    {
-      "field": "tag_set",
-      "match": [
-        "CO",
-        "321"
-      ]
-    }
-  ]
-}
-```
+  > Get chunks with both "CO" and "321" in their `tag_set`:
+  ```json
+  {
+    "must": [
+      {
+        "field": "tag_set",
+        "match": ["CO"]
+      },
+      {
+        "field": "tag_set",
+        "match": ["321"]
+      }
+    ]
+  }
+  ```
 
-> Get chunks which either don't have "CO" in their tag_set or don't have "321" in their tag_set
+  > Get chunks with either "CO" OR "321" in their `tag_set`:
+  ```json
+  {
+    "must": [
+      {
+        "field": "tag_set",
+        "match": ["CO", "321"]
+      }
+    ]
+  }
+  ```
 
-```json
-{
-  "must_not": [
-    {
-      "field": "tag_set",
-      "match": [
-        "CO"
-      ]
-    },
-    {
-      "field": "tag_set",
-      "match": [
-        "321"
-      ]
-    }
-  ]
-}
-```
+- **`must_not`**: All filters in this clause must not be matched to return the chunks.
 
-- `should` - any of these conditions can be matched to return a chunk
+  > Get chunks with neither "CO" nor "321" in their `tag_set`:
+  ```json
+  {
+    "must_not": [
+      {
+        "field": "tag_set",
+        "match": ["CO", "321"]
+      }
+    ]
+  }
+  ```
 
-> Get chunks that either have "CO" in their tag_set and "http://example.com" in their link
+  > Get chunks that either don't have "CO" in their `tag_set` or don't have "321" in their `tag_set`:
+  ```json
+  {
+    "must_not": [
+      {
+        "field": "tag_set",
+        "match": ["CO"]
+      },
+      {
+        "field": "tag_set",
+        "match": ["321"]
+      }
+    ]
+  }
+  ```
 
-```json
-{
-  "should": [
-    {
-      "field": "tag_set",
-      "match": [
-        "CO"
-      ]
-    },
-    {
-      "field": "link",
-      "match": [
-        "http://example.com"
-      ]
-    }
-  ]
-}
-```
+- **`should`**: Any of these conditions can be matched to return a chunk.
 
+  > Get chunks that either have "CO" in their `tag_set` or "http://example.com" in their `link`:
+  ```json
+  {
+    "should": [
+      {
+        "field": "tag_set",
+        "match": ["CO"]
+      },
+      {
+        "field": "link",
+        "match": ["http://example.com"]
+      }
+    ]
+  }
+  ```
