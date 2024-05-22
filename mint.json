@@ -59,7 +59,9 @@
       "pages": [
         "guides/create-chunk",
         "guides/uploading-files",
-        "guides/searching-with-trieve"
+        "guides/searching-with-trieve",
+        "guides/recommending-with-trieve",
+        "guides/RAG-with-trieve"
       ]
     },
     {

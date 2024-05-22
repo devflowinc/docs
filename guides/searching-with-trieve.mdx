@@ -12,16 +12,16 @@ We provide the ability for you to search your data in a fast and performant mann
 
 We offer three different search strategies for you to choose from:
 
-1. **Search over chunks**: This strategy allows you to search all of your chunks independently. It is useful when your chunks are independent and do not need to be grouped together.
-2. **Search within groups**: This strategy lets you constrain your results to within a selected group. It is useful for searching distinct groups within your dataset independently.
-3. **Search over groups**: This strategy allows you to search over the groups of chunks within your dataset. It returns the groups and the top chunks within each group that matched your query, providing better search quality for datasets with highly related chunks within groups.
+1. **Search over chunks**: This strategy allows you to search all of your chunks independently. This is useful when your chunks are independent and do not need to be grouped together.
+2. **Search within groups**: This strategy lets you constrain your results to within a selected group. This is useful for searching distinct groups within your dataset independently.
+3. **Search over groups**: This strategy allows you to search over the groups of chunks within your dataset. This returns the groups and the top chunks within each group that matched your query, providing better search quality for datasets with highly related chunks within groups.
 
 
 <Tip>
 You can use the search UI at [search.trieve.ai](https://search.trieve.ai) to A/B test which search method works best for you.
 </Tip>
 
-### Important Parameters
+## Important Parameters
 
 - **`query`**: The user query that is embedded and searched against the dataset.
 - **`search_type`**: Can be `semantic`, `fulltext`, or `hybrid`.
@@ -38,7 +38,7 @@ You can use the search UI at [search.trieve.ai](https://search.trieve.ai) to A/B
 <Tip>
 To optimize for the lowest latency, set `highlight_results` and `get_total_pages` to `false` and set `slim_chunks` to `true`. If you are willing to sacrifice some search quality for speed, use the `fulltext` search mode.
 </Tip>
-### Filtering
+## Filtering
 
 We provide a system to allow users to filter the chunks that are returned.
 

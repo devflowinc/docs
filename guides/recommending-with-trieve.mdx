@@ -1,0 +1,39 @@
+---
+title: 'Recommending with Trieve'
+description: 'Learn how to recommend content with Trieve'
+icon: 'circle-user'
+---
+
+## Overview
+
+We provide the ability to get recommended chunks similar to your data through the [get recommended chunks route](/api-reference/chunk/get-recommended-chunks) or through the [get recommended groups route](/api-reference/chunk_group/get-recommended-groups).
+
+## Different Recommendation Types
+We have two different recommendation types:
+1. **Recommend Chunks**: Recommends chunks that are similar to the provided examples. This is useful when your chunks are independent and do not need to be grouped together.
+2. **Recommend Groups**: Recommends groups that are similar to the provided examples. It returns the groups and the top chunks within each group that are most similar to your input, providing better search quality for datasets with highly related chunks within groups.
+
+## Different Recommendation Strategies
+
+We offer different recommendation strategies for users to choose from:
+
+1. **`average_vector`**: Averages the vectors of the positive examples and finds the most similar chunks.
+    - This strategy averages all the positive and negative examples separately, then combines them into a single vector. It then searches for chunks that are most similar to this combined vector.
+
+2. **`best_score`**: Finds chunks that are most similar to any of the positive examples provided.
+    - This strategy measures each example against every other example, then selects the best positive and best negative scores.
+
+## Important Parameters
+
+- **`positive_examples` and `positive_tracking_ids`**: Provide the IDs of chunks of which similar ones will be recommended.
+- **`negative_examples` and `negative_tracking_ids`**: Provide the IDs of chunks of which dissimilar ones will be avoided.
+- **`recommendation_type`**: Can be either `semantic` or `fulltext`.
+  - **Semantic**: Uses cosine distance.
+  - **Fulltext**: Uses a SPLADE model.
+- **`strategy`**: Can be either `average_vector` or `best_score`.
+- **`slim_chunks`**: Reduces the size of the returned chunks by excluding unnecessary fields.
+- **`filters`**: Apply filters to get exactly the results you want.
+
+<Note>
+View the explanation how to filter in the [searching with Trieve guide](/guides/searching-with-trieve#filtering).
+</Note>
