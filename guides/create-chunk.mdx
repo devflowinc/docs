@@ -22,6 +22,28 @@ For the best filtering performance, we recommend using the `link`, `location`, `
 - **`tracking_id`**: This field allows you to assign an arbitrary ID to the chunk, aiding in coordination with your database system. You can search for chunks using this ID.
 - **`weight`**: This field allows you to assign a weight to the chunks, which can influence the chunk's ranking within search results. This is similar to merchandising features on other platforms.
 
+### Formatting chunk_html
+
+Creating a good `chunk_html` is crucial for the quality of your search results. Here are some tips to help you create a good `chunk_html`:
+
+- **Include all relevant information**: Make sure to include all the information that you want to be searchable in the `chunk_html`.
+- **Use newlines**: Put semantically distinct information on separate lines to help the model understand the structure of the text and search quality for each field better
+- **Label each field**: If you have multiple fields in your `chunk_html`, label each field with a header to help the model better embed the text and improve search quality.
+
+Example of a good `chunk_html`:
+```json
+    Price: $50\n
+    Brand: AmazonBasics\n
+    Product Name: AmazonBasics Gaming Office Chair, Racing Design, PU leather, White + Philips Hue Play White double pack Bundle\n
+    Description: High-back gaming chair provides ultimate comfort and control, whether at work or play; black with red accents;Made of premium PU leather upholstery on top, PVC material along the sides and bottom, and a nylon base to provide sporty racer look;Custom fit with height-adjustable armrest and tilt control for easily reclining; headset pillow and lumbar cushion offer added support;Compact and versatile, perfect TV backlight;\n
+    Color: White / Black\n
+    Product Type: CHAIR\n
+    Style: Office Chair + Hue Play\n
+    Furniture;chair;desk accessories;desk chair;game chair;gaming;gaming chair;gaming office chair;home furniture;office and computer chair;office chair;chair;chairs ergonomic;computer chair;desk chair; ergonomic office chair;essential gaming chair;gaming chair office;gaming desk;modern desk chair;office chair;
+    Country: GB\n
+    Marketplace: Amazon\n
+    Domain: amazon.co.uk
+```
 
 ## Example Create Chunk Request
 <Note>
