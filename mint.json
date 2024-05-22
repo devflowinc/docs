@@ -20,11 +20,15 @@
     {
       "name": "Support",
       "url": "mailto:humans@trieve.ai"
+    },
+    {
+      "name": "Dashboard",
+      "url": "https://dashboard.trieve.ai"
     }
   ],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.trieve.ai"
+    "type": "github",
+    "url": "https://github.com/devflowinc/trieve"
   },
   "tabs": [
     {
