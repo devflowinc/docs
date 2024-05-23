@@ -51,6 +51,9 @@ Example of a good `chunk_html`:
 <Note>
 Whenever you make a request to the Trieve API, you need to include the `TR-Dataset` header with your dataset ID and the `Authorization` header with your API key.
 </Note>
+<Tip>
+For more performant uploads, we recommend you batch your chunk uploads. You can upload multiple chunks in a single request by passing an array of chunks in the body of the request up to 120 at a time.
+</Tip>
 
 ```json
 POST /api/chunk
