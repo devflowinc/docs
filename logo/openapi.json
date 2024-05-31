@@ -12,7 +12,7 @@
       "name": "BSL",
       "url": "https://github.com/devflowinc/trieve/blob/main/LICENSE.txt"
     },
-    "version": "0.8.4"
+    "version": "9.0.0"
   },
   "servers": [
     {
@@ -174,7 +174,7 @@
           "chunk"
         ],
         "summary": "Create or Upsert Chunk or Chunks",
-        "description": "Create or Upsert Chunk or Chunks\n\nCreate a new chunk. If the chunk has the same tracking_id as an existing chunk, the request will fail. Once a chunk is created, it can be searched for using the search endpoint.\nIf uploading in bulk, the maximum amount of chunks that can be uploaded at once is 120 chunks.",
+        "description": "Create or Upsert Chunk or Chunks\n\nCreate a new chunk. If the chunk has the same tracking_id as an existing chunk, the request will fail. Once a chunk is created, it can be searched for using the search endpoint.\nIf uploading in bulk, the maximum amount of chunks that can be uploaded at once is 120 chunks. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "create_chunk",
         "parameters": [
           {
@@ -243,7 +243,7 @@
           "chunk"
         ],
         "summary": "Update Chunk",
-        "description": "Update Chunk\n\nUpdate a chunk. If you try to change the tracking_id of the chunk to have the same tracking_id as an existing chunk, the request will fail.",
+        "description": "Update Chunk\n\nUpdate a chunk. If you try to change the tracking_id of the chunk to have the same tracking_id as an existing chunk, the request will fail. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "update_chunk",
         "parameters": [
           {
@@ -291,14 +291,75 @@
         ]
       }
     },
+    "/api/chunk/autocomplete": {
+      "post": {
+        "tags": [
+          "chunk"
+        ],
+        "summary": "Autocomplete",
+        "description": "Autocomplete\n\nThis route provides the primary autocomplete functionality for the API. This prioritize prefix matching with semantic or full-text search.",
+        "operationId": "autocomplete",
+        "parameters": [
+          {
+            "name": "TR-Dataset",
+            "in": "header",
+            "description": "The dataset id to use for the request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "JSON request payload to semantically search for chunks (chunks)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AutocompleteData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Chunks with embedding vectors which are similar to those in the request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchChunkQueryResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Service error relating to searching",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": [
+              "readonly"
+            ]
+          }
+        ]
+      }
+    },
     "/api/chunk/gen_suggestions": {
       "post": {
         "tags": [
           "chunk"
         ],
         "summary": "Generate suggested queries",
-        "description": "Generate suggested queries\n\nThis endpoint will generate 3 suggested queries based off the query provided in the request body and return them as a JSON object.",
-        "operationId": "create_suggested_queries_handler",
+        "description": "Generate suggested queries\n\nThis endpoint will generate 3 suggested queries based off a hybrid search using RAG with the query provided in the request body and return them as a JSON object.",
+        "operationId": "get_suggested_queries",
         "parameters": [
           {
             "name": "TR-Dataset",
@@ -315,7 +376,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SuggestedQueriesRequest"
+                "$ref": "#/components/schemas/SuggestedQueriesReqPayload"
               }
             }
           },
@@ -544,7 +605,7 @@
           "chunk"
         ],
         "summary": "Update Chunk By Tracking Id",
-        "description": "Update Chunk By Tracking Id\n\nUpdate a chunk by tracking_id. This is useful for when you are coordinating with an external system and want to use the tracking_id to identify the chunk.",
+        "description": "Update Chunk By Tracking Id\n\nUpdate a chunk by tracking_id. This is useful for when you are coordinating with an external system and want to use the tracking_id to identify the chunk. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "update_chunk_by_tracking_id",
         "parameters": [
           {
@@ -666,7 +727,7 @@
           "chunk"
         ],
         "summary": "Delete Chunk By Tracking Id",
-        "description": "Delete Chunk By Tracking Id\n\nDelete a chunk by tracking_id. This is useful for when you are coordinating with an external system and want to use the tracking_id to identify the chunk. If deleting a root chunk which has a collision, the most recently created collision will become a new root chunk.",
+        "description": "Delete Chunk By Tracking Id\n\nDelete a chunk by tracking_id. This is useful for when you are coordinating with an external system and want to use the tracking_id to identify the chunk. If deleting a root chunk which has a collision, the most recently created collision will become a new root chunk. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "delete_chunk_by_tracking_id",
         "parameters": [
           {
@@ -786,7 +847,7 @@
           "chunk"
         ],
         "summary": "Delete Chunk",
-        "description": "Delete Chunk\n\nDelete a chunk by its id. If deleting a root chunk which has a collision, the most recently created collision will become a new root chunk.",
+        "description": "Delete Chunk\n\nDelete a chunk by its id. If deleting a root chunk which has a collision, the most recently created collision will become a new root chunk. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "delete_chunk",
         "parameters": [
           {
@@ -839,7 +900,7 @@
           "chunk_group"
         ],
         "summary": "Create Chunk Group",
-        "description": "Create Chunk Group\n\nCreate a new chunk_group. This is a way to group chunks together. If you try to create a chunk_group with the same tracking_id as an existing chunk_group, this operation will fail.",
+        "description": "Create Chunk Group\n\nCreate a new chunk_group. This is a way to group chunks together. If you try to create a chunk_group with the same tracking_id as an existing chunk_group, this operation will fail. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "create_chunk_group",
         "parameters": [
           {
@@ -898,7 +959,7 @@
           "chunk_group"
         ],
         "summary": "Update Group",
-        "description": "Update Group\n\nUpdate a chunk_group. If you try to change the tracking_id to one that already exists, this operation will fail.",
+        "description": "Update Group\n\nUpdate a chunk_group. If you try to change the tracking_id to one that already exists, this operation will fail. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "update_chunk_group",
         "parameters": [
           {
@@ -952,7 +1013,7 @@
           "chunk_group"
         ],
         "summary": "Add Chunk to Group",
-        "description": "Add Chunk to Group\n\nRoute to add a chunk to a group.",
+        "description": "Add Chunk to Group\n\nRoute to add a chunk to a group. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "add_chunk_to_group",
         "parameters": [
           {
@@ -1014,7 +1075,7 @@
           "chunk_group"
         ],
         "summary": "Remove Chunk from Group",
-        "description": "Remove Chunk from Group\n\nRoute to remove a chunk from a group.",
+        "description": "Remove Chunk from Group\n\nRoute to remove a chunk from a group. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "remove_chunk_from_group",
         "parameters": [
           {
@@ -1475,7 +1536,7 @@
           "chunk_group"
         ],
         "summary": "Add Chunk to Group by Tracking ID",
-        "description": "Add Chunk to Group by Tracking ID\n\nRoute to add a chunk to a group by tracking id.",
+        "description": "Add Chunk to Group by Tracking ID\n\nRoute to add a chunk to a group by tracking id. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "add_chunk_to_group_by_tracking_id",
         "parameters": [
           {
@@ -1537,7 +1598,7 @@
           "chunk_group"
         ],
         "summary": "Update Group by Tracking ID",
-        "description": "Update Group by Tracking ID\n\nUpdate a chunk_group with the given tracking id.",
+        "description": "Update Group by Tracking ID\n\nUpdate a chunk_group with the given tracking id. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "update_group_by_tracking_id",
         "parameters": [
           {
@@ -1600,7 +1661,7 @@
           "chunk_group"
         ],
         "summary": "Delete Group by Tracking ID",
-        "description": "Delete Group by Tracking ID\n\nDelete a chunk_group with the given tracking id.",
+        "description": "Delete Group by Tracking ID\n\nDelete a chunk_group with the given tracking id. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "delete_group_by_tracking_id",
         "parameters": [
           {
@@ -1619,6 +1680,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "delete_chunks",
+            "in": "query",
+            "description": "Delete the chunks within the group",
+            "required": true,
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -1720,7 +1790,7 @@
           "chunk_group"
         ],
         "summary": "Delete Group",
-        "description": "Delete Group\n\nThis will delete a chunk_group. If you set delete_chunks to true, it will also delete the chunks within the group.",
+        "description": "Delete Group\n\nThis will delete a chunk_group. If you set delete_chunks to true, it will also delete the chunks within the group. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "delete_chunk_group",
         "parameters": [
           {
@@ -2323,7 +2393,7 @@
           "dataset"
         ],
         "summary": "Get Datasets from Organization",
-        "description": "Get Datasets from Organization\n\nGet all datasets for an organization. The auth'ed user must be an admin or owner of the organization to get its datasets.",
+        "description": "Get Datasets from Organization\n\nGet all datasets for an organization. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "get_datasets_from_organization",
         "parameters": [
           {
@@ -2386,7 +2456,7 @@
           "dataset"
         ],
         "summary": "Get Dataset",
-        "description": "Get Dataset\n\nGet a dataset by id. The auth'ed user must be an admin or owner of the organization to get a dataset.",
+        "description": "Get Dataset\n\nGet a dataset by id. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "get_dataset",
         "parameters": [
           {
@@ -2585,7 +2655,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UploadFileData"
+                "$ref": "#/components/schemas/UploadFileReqPayload"
               }
             }
           },
@@ -2696,7 +2766,7 @@
           "file"
         ],
         "summary": "Delete File",
-        "description": "Delete File\n\nDelete a file from S3 attached to the server based on its id. This will disassociate chunks from the file, but only delete them all together if you specify delete_chunks to be true. Auth'ed user must be an admin or owner of the dataset's organization to delete a file.",
+        "description": "Delete File\n\nDelete a file from S3 attached to the server based on its id. This will disassociate chunks from the file, but only delete them all together if you specify delete_chunks to be true. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "delete_file_handler",
         "parameters": [
           {
@@ -2774,7 +2844,7 @@
           "invitation"
         ],
         "summary": "Send Invitation",
-        "description": "Send Invitation\n\nInvitations act as a way to invite users to join an organization. After a user is invited, they will automatically be added to the organization with the role specified in the invitation once they set their.",
+        "description": "Send Invitation\n\nInvitations act as a way to invite users to join an organization. After a user is invited, they will automatically be added to the organization with the role specified in the invitation once they set their. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "post_invitation",
         "parameters": [
           {
@@ -2828,8 +2898,8 @@
           "message"
         ],
         "summary": "Create a message",
-        "description": "Create a message\n\nCreate a message. Messages are attached to topics in order to coordinate memory of gen-AI chat sessions. We are considering refactoring this resource of the API soon. Currently, you can only send user messages. If the topic is a RAG topic then the response will include Chunks first on the stream. The structure will look like `[chunks]||mesage`. See docs.trieve.ai for more information.",
-        "operationId": "create_message_completion_handler",
+        "description": "Create a message\n\nCreate a message. Messages are attached to topics in order to coordinate memory of gen-AI chat sessions. We are considering refactoring this resource of the API soon. Currently, you can only send user messages. If the topic is a RAG topic then the response will include Chunks first on the stream. The structure will look like `[chunks]||mesage`. See docs.trieve.ai for more information. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
+        "operationId": "create_message_completion",
         "parameters": [
           {
             "name": "TR-Dataset",
@@ -2846,7 +2916,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateMessageData"
+                "$ref": "#/components/schemas/CreateMessageReqPayload"
               }
             }
           },
@@ -2887,8 +2957,8 @@
           "message"
         ],
         "summary": "Edit a message",
-        "description": "Edit a message\n\nEdit a message which exists within the topic's chat history. This will delete the message and replace it with a new message. The new message will be generated by the AI based on the new content provided in the request body. The response will include Chunks first on the stream if the topic is using RAG. The structure will look like `[chunks]||mesage`. See docs.trieve.ai for more information.",
-        "operationId": "edit_message_handler",
+        "description": "Edit a message\n\nEdit a message which exists within the topic's chat history. This will delete the message and replace it with a new message. The new message will be generated by the AI based on the new content provided in the request body. The response will include Chunks first on the stream if the topic is using RAG. The structure will look like `[chunks]||mesage`. See docs.trieve.ai for more information. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
+        "operationId": "edit_message",
         "parameters": [
           {
             "name": "TR-Dataset",
@@ -2905,7 +2975,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EditMessageData"
+                "$ref": "#/components/schemas/EditMessageReqPayload"
               }
             }
           },
@@ -2939,8 +3009,8 @@
           "message"
         ],
         "summary": "Regenerate message",
-        "description": "Regenerate message\n\nRegenerate the assistant response to the last user message of a topic. This will delete the last message and replace it with a new message. The response will include Chunks first on the stream if the topic is using RAG. The structure will look like `[chunks]||mesage`. See docs.trieve.ai for more information.",
-        "operationId": "regenerate_message_handler",
+        "description": "Regenerate message\n\nRegenerate the assistant response to the last user message of a topic. This will delete the last message and replace it with a new message. The response will include Chunks first on the stream if the topic is using RAG. The structure will look like `[chunks]||mesage`. See docs.trieve.ai for more information. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
+        "operationId": "regenerate_message",
         "parameters": [
           {
             "name": "TR-Dataset",
@@ -2957,7 +3027,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegenerateMessageData"
+                "$ref": "#/components/schemas/RegenerateMessageReqPayload"
               }
             }
           },
@@ -3172,7 +3242,7 @@
           "organization"
         ],
         "summary": "Get Organization Usage",
-        "description": "Get Organization Usage\n\nFetch the current usage specification of an organization by its id. The auth'ed user must be an admin or owner of the organization to fetch it.",
+        "description": "Get Organization Usage\n\nFetch the current usage specification of an organization by its id. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "get_organization_usage",
         "parameters": [
           {
@@ -3232,7 +3302,7 @@
           "organization"
         ],
         "summary": "Get Organization Users",
-        "description": "Get Organization Users\n\nFetch the users of an organization by its id. The auth'ed user must be an admin or owner of the organization to fetch it.",
+        "description": "Get Organization Users\n\nFetch the users of an organization by its id. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
         "operationId": "get_organization_users",
         "parameters": [
           {
@@ -3295,8 +3365,8 @@
           "organization"
         ],
         "summary": "Get Organization",
-        "description": "Get Organization\n\nFetch the details of an organization by its id. The auth'ed user must be an admin or owner of the organization to fetch it.",
-        "operationId": "get_organization_by_id",
+        "description": "Get Organization\n\nFetch the details of an organization by its id. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
+        "operationId": "get_organization",
         "parameters": [
           {
             "name": "TR-Organization",
@@ -3364,7 +3434,7 @@
         ],
         "summary": "Delete Organization",
         "description": "Delete Organization\n\nDelete an organization by its id. The auth'ed user must be an owner of the organization to delete it.",
-        "operationId": "delete_organization_by_id",
+        "operationId": "delete_organization",
         "parameters": [
           {
             "name": "TR-Organization",
@@ -3639,7 +3709,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateTopicData"
+                "$ref": "#/components/schemas/CreateTopicReqPayload"
               }
             }
           },
@@ -3698,7 +3768,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateTopicData"
+                "$ref": "#/components/schemas/UpdateTopicReqPayload"
               }
             }
           },
@@ -3849,7 +3919,7 @@
           "user"
         ],
         "summary": "Update User",
-        "description": "Update User\n\nUpdate a user's information. If the user_id is not provided, the auth'ed user will be updated. If the user_id is provided, the auth'ed user must be an admin (1) or owner (2) of the organization.",
+        "description": "Update User\n\nUpdate a user's information. If the user_id is not provided, the auth'ed user will be updated. If the user_id is provided, the role of the auth'ed user or api key must be an admin (1) or owner (2) of the organization.",
         "operationId": "update_user",
         "requestBody": {
           "description": "JSON request payload to update user information for the auth'ed user",
@@ -4080,6 +4150,157 @@
           "redirect_uri": "https://api.trieve.ai"
         }
       },
+      "AutocompleteData": {
+        "type": "object",
+        "required": [
+          "search_type",
+          "query"
+        ],
+        "properties": {
+          "content_only": {
+            "type": "boolean",
+            "description": "Set content_only to true to only returning the chunk_html of the chunks. This is useful for when you want to reduce amount of data over the wire for latency improvement (typically 10-50ms). Default is false.",
+            "nullable": true
+          },
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChunkFilter"
+              }
+            ],
+            "nullable": true
+          },
+          "highlight_delimiters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Set highlight_delimiters to a list of strings to use as delimiters for highlighting. If not specified, this defaults to [\"?\", \",\", \".\", \"!\"].",
+            "nullable": true
+          },
+          "highlight_results": {
+            "type": "boolean",
+            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching sub-sentences.",
+            "nullable": true
+          },
+          "highlight_threshold": {
+            "type": "number",
+            "format": "double",
+            "description": "Set highlight_threshold to a lower or higher value to adjust the sensitivity of the highlights applied to the chunk html. If not specified, this defaults to 0.8. The range is 0.0 to 1.0.",
+            "nullable": true
+          },
+          "page_size": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Page size is the number of chunks to fetch. This can be used to fetch more than 10 chunks at a time.",
+            "nullable": true,
+            "minimum": 0
+          },
+          "query": {
+            "type": "string",
+            "description": "Query is the search query. This can be any string. The query will be used to create an embedding vector and/or SPLADE vector which will be used to find the result set."
+          },
+          "recency_bias": {
+            "type": "number",
+            "format": "float",
+            "description": "Recency Bias lets you determine how much of an effect the recency of chunks will have on the search results. If not specified, this defaults to 0.0. We recommend setting this to 1.0 for a gentle reranking of the results, >3.0 for a strong reranking of the results.",
+            "nullable": true
+          },
+          "score_threshold": {
+            "type": "number",
+            "format": "float",
+            "description": "Set score_threshold to a float to filter out chunks with a score below the threshold.",
+            "nullable": true
+          },
+          "search_type": {
+            "type": "string",
+            "description": "Can be either \"semantic\", or \"fulltext\". \"semantic\" will pull in one page (10 chunks) of the nearest cosine distant vectors. \"fulltext\" will pull in one page (10 chunks) of full-text results based on SPLADE."
+          },
+          "slim_chunks": {
+            "type": "boolean",
+            "description": "Set slim_chunks to true to avoid returning the content and chunk_html of the chunks. This is useful for when you want to reduce amount of data over the wire for latency improvement (typically 10-50ms). Default is false.",
+            "nullable": true
+          },
+          "tag_weights": {
+            "type": "object",
+            "description": "Tag weights is a JSON object which can be used to boost the ranking of chunks with certain tags. This is useful for when you want to be able to bias towards chunks with a certain tag on the fly. The keys are the tag names and the values are the weights.",
+            "additionalProperties": {
+              "type": "number",
+              "format": "float"
+            },
+            "nullable": true
+          },
+          "use_weights": {
+            "type": "boolean",
+            "description": "Set use_weights to true to use the weights of the chunks in the result set in order to sort them. If not specified, this defaults to true.",
+            "nullable": true
+          }
+        },
+        "example": {
+          "date_bias": true,
+          "filters": {
+            "must": [
+              {
+                "field": "metadata.key2",
+                "match": [
+                  "value3",
+                  "value4"
+                ],
+                "range": {
+                  "gt": 0,
+                  "gte": 0,
+                  "lt": 1,
+                  "lte": 1
+                }
+              }
+            ],
+            "must_not": [
+              {
+                "field": "metadata.key3",
+                "match": [
+                  "value5",
+                  "value6"
+                ],
+                "range": {
+                  "gt": 0,
+                  "gte": 0,
+                  "lt": 1,
+                  "lte": 1
+                }
+              }
+            ],
+            "should": [
+              {
+                "field": "metadata.key1",
+                "match": [
+                  "value1",
+                  "value2"
+                ],
+                "range": {
+                  "gt": 0,
+                  "gte": 0,
+                  "lt": 1,
+                  "lte": 1
+                }
+              }
+            ]
+          },
+          "get_collisions": true,
+          "highlight_delimiters": [
+            "?",
+            ",",
+            ".",
+            "!"
+          ],
+          "highlight_results": true,
+          "page": 1,
+          "page_size": 10,
+          "query": "Some search query",
+          "score_threshold": 0.5,
+          "search_type": "semantic",
+          "use_weights": true
+        }
+      },
       "BatchQueuedChunkResponse": {
         "type": "object",
         "required": [
@@ -4247,6 +4468,14 @@
             "description": "Group tracking_ids are the tracking_ids of the groups that the chunk should be placed into. This is useful for when you want to create a chunk and add it to a group or multiple groups in one request. Necessary because this route queues the chunk for ingestion and the chunk may not exist yet immediately after response.",
             "nullable": true
           },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Image urls are a list of urls to images that are associated with the chunk. This is useful for when you want to associate images with a chunk.",
+            "nullable": true
+          },
           "link": {
             "type": "string",
             "description": "Link to the chunk. This can also be any string. Frequently, this is a link to the source of the chunk. The link value will not affect the embedding creation.",
@@ -4262,6 +4491,12 @@
           },
           "metadata": {
             "description": "Metadata is a JSON object which can be used to filter chunks. This is useful for when you want to filter chunks by arbitrary metadata. Unlike with tag filtering, there is a performance hit for filtering on metadata.",
+            "nullable": true
+          },
+          "num_value": {
+            "type": "number",
+            "format": "double",
+            "description": "Num value is an arbitrary numerical value that can be used to filter chunks. This is useful for when you want to filter chunks by numerical value. There is no performance hit for filtering on num_value.",
             "nullable": true
           },
           "split_avg": {
@@ -4306,14 +4541,22 @@
             0.2,
             0.3
           ],
-          "file_id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+          "convert_html_to_text": false,
           "group_ids": [
             "d290f1ee-6c54-4b01-90e6-d701748f0851"
           ],
           "group_tracking_ids": [
             "group_tracking_id"
           ],
+          "image_urls": [
+            "https://example.com/red",
+            "https://example.com/blue"
+          ],
           "link": "https://example.com",
+          "location": {
+            "lat": -34,
+            "lon": 151
+          },
           "metadata": {
             "key1": "value1",
             "key2": "value2"
@@ -4335,7 +4578,7 @@
           "must": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/FieldCondition"
+              "$ref": "#/components/schemas/ConditionType"
             },
             "description": "All of these field conditions have to match for the chunk to be included in the result set.",
             "nullable": true
@@ -4343,7 +4586,7 @@
           "must_not": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/FieldCondition"
+              "$ref": "#/components/schemas/ConditionType"
             },
             "description": "None of these field conditions can match for the chunk to be included in the result set.",
             "nullable": true
@@ -4351,7 +4594,7 @@
           "should": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/FieldCondition"
+              "$ref": "#/components/schemas/ConditionType"
             },
             "description": "Only one of these field conditions has to match for the chunk to be included in the result set.",
             "nullable": true
@@ -4439,6 +4682,14 @@
           },
           "tag_set": {
             "type": "string",
+            "nullable": true
+          },
+          "tag_set_array": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            },
             "nullable": true
           },
           "tracking_id": {
@@ -4539,6 +4790,14 @@
             "type": "string",
             "format": "uuid"
           },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            },
+            "nullable": true
+          },
           "link": {
             "type": "string",
             "nullable": true
@@ -4554,6 +4813,11 @@
           "metadata": {
             "nullable": true
           },
+          "num_value": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
           "qdrant_point_id": {
             "type": "string",
             "format": "uuid",
@@ -4561,6 +4825,14 @@
           },
           "tag_set": {
             "type": "string",
+            "nullable": true
+          },
+          "tag_set_array": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            },
             "nullable": true
           },
           "time_stamp": {
@@ -4698,8 +4970,7 @@
       "ClientDatasetConfiguration": {
         "type": "object",
         "required": [
-          "FILE_NAME_KEY",
-          "IMAGE_METADATA_KEY"
+          "FILE_NAME_KEY"
         ],
         "properties": {
           "CREATE_CHUNK_FEATURE": {
@@ -4723,9 +4994,6 @@
           "FRONTMATTER_VALS": {
             "type": "string",
             "nullable": true
-          },
-          "IMAGE_METADATA_KEY": {
-            "type": "string"
           },
           "IMAGE_RANGE_END_KEY": {
             "type": "string",
@@ -4756,13 +5024,22 @@
           "FILE_NAME_KEY": "file_name_key",
           "FILTER_ITEMS": [],
           "FRONTMATTER_VALS": "frontmatter vals",
-          "IMAGE_METADATA_KEY": ".image_url",
           "IMAGE_RANGE_END_KEY": "image range end key",
           "IMAGE_RANGE_START_KEY": "image range start key",
           "LINES_BEFORE_SHOW_MORE": 10,
           "SEARCH_QUERIES": "search queries",
           "SUGGESTED_QUERIES": "suggested queries"
         }
+      },
+      "ConditionType": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/FieldCondition"
+          },
+          {
+            "$ref": "#/components/schemas/HasIDCondition"
+          }
+        ]
       },
       "ContentChunkMetadata": {
         "type": "object",
@@ -4778,6 +5055,19 @@
           "id": {
             "type": "string",
             "format": "uuid"
+          },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "num_value": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           },
           "qdrant_point_id": {
             "type": "string",
@@ -4827,14 +5117,22 @@
               0.2,
               0.3
             ],
-            "file_id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+            "convert_html_to_text": false,
             "group_ids": [
               "d290f1ee-6c54-4b01-90e6-d701748f0851"
             ],
             "group_tracking_ids": [
               "group_tracking_id"
             ],
+            "image_urls": [
+              "https://example.com/red",
+              "https://example.com/blue"
+            ],
             "link": "https://example.com",
+            "location": {
+              "lat": -34,
+              "lon": 151
+            },
             "metadata": {
               "key1": "value1",
               "key2": "value2"
@@ -4856,14 +5154,19 @@
               0.2,
               0.3
             ],
-            "file_id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+            "convert_html_to_text": false,
             "group_ids": [
               "d290f1ee-6c54-4b01-90e6-d701748f0851"
             ],
             "group_tracking_ids": [
               "group_tracking_id"
             ],
+            "image_urls": [],
             "link": "https://explain.com",
+            "location": {
+              "lat": -34,
+              "lon": 151
+            },
             "metadata": {
               "key1": "value1",
               "key2": "value2"
@@ -4966,13 +5269,21 @@
           "server_configuration": {}
         }
       },
-      "CreateMessageData": {
+      "CreateMessageReqPayload": {
         "type": "object",
         "required": [
           "new_message_content",
           "topic_id"
         ],
         "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChunkFilter"
+              }
+            ],
+            "nullable": true
+          },
           "highlight_delimiters": {
             "type": "array",
             "items": {
@@ -5017,7 +5328,7 @@
       "CreateSingleChunkData": {
         "$ref": "#/components/schemas/ChunkData"
       },
-      "CreateTopicData": {
+      "CreateTopicReqPayload": {
         "type": "object",
         "required": [
           "owner_id"
@@ -5252,7 +5563,7 @@
           }
         }
       },
-      "EditMessageData": {
+      "EditMessageReqPayload": {
         "type": "object",
         "required": [
           "topic_id",
@@ -5260,6 +5571,14 @@
           "new_message_content"
         ],
         "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChunkFilter"
+              }
+            ],
+            "nullable": true
+          },
           "highlight_citations": {
             "type": "boolean",
             "description": "Whether or not to highlight the citations in the response. If this is set to true or not included, the citations will be highlighted. If this is set to false, the citations will not be highlighted. Default is true.",
@@ -5483,6 +5802,14 @@
           },
           "tag_set": {
             "type": "string",
+            "nullable": true
+          },
+          "tag_set_array": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            },
             "nullable": true
           },
           "time_stamp": {
@@ -5788,6 +6115,26 @@
           ]
         }
       },
+      "HasIDCondition": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          },
+          "tracking_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        }
+      },
       "InvitationData": {
         "type": "object",
         "required": [
@@ -5885,6 +6232,10 @@
           {
             "type": "integer",
             "format": "int64"
+          },
+          {
+            "type": "number",
+            "format": "double"
           }
         ]
       },
@@ -6248,12 +6599,20 @@
           }
         }
       },
-      "RegenerateMessageData": {
+      "RegenerateMessageReqPayload": {
         "type": "object",
         "required": [
           "topic_id"
         ],
         "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChunkFilter"
+              }
+            ],
+            "nullable": true
+          },
           "highlight_citations": {
             "type": "boolean",
             "description": "Whether or not to highlight the citations in the response. If this is set to true or not included, the citations will be highlighted. If this is set to false, the citations will not be highlighted. Default is true.",
@@ -6368,6 +6727,12 @@
             "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching sub-sentences.",
             "nullable": true
           },
+          "highlight_threshold": {
+            "type": "number",
+            "format": "double",
+            "description": "Set highlight_threshold to a lower or higher value to adjust the sensitivity of the highlights applied to the chunk html. If not specified, this defaults to 0.8. The range is 0.0 to 1.0.",
+            "nullable": true
+          },
           "page": {
             "type": "integer",
             "format": "int64",
@@ -6400,11 +6765,20 @@
           },
           "search_type": {
             "type": "string",
-            "description": "Can be either \"semantic\", \"fulltext\", \"hybrid\", or \"autocomplete\". If specified as \"hybrid\", it will pull in one page (10 chunks) of both semantic and full-text results then re-rank them using BAAI/bge-reranker-large. \"semantic\" will pull in one page (10 chunks) of the nearest cosine distant vectors. \"fulltext\" will pull in one page (10 chunks) of full-text results based on SPLADE. \"autocomplete\" will prioritize prefix matching but uses semantic search for similarity score."
+            "description": "Can be either \"semantic\", \"fulltext\", or \"hybrid\". If specified as \"hybrid\", it will pull in one page (10 chunks) of both semantic and full-text results then re-rank them using BAAI/bge-reranker-large. \"semantic\" will pull in one page (10 chunks) of the nearest cosine distant vectors. \"fulltext\" will pull in one page (10 chunks) of full-text results based on SPLADE."
           },
           "slim_chunks": {
             "type": "boolean",
             "description": "Set slim_chunks to true to avoid returning the content and chunk_html of the chunks. This is useful for when you want to reduce amount of data over the wire for latency improvement (typically 10-50ms). Default is false.",
+            "nullable": true
+          },
+          "tag_weights": {
+            "type": "object",
+            "description": "Tag weights is a JSON object which can be used to boost the ranking of chunks with certain tags. This is useful for when you want to be able to bias towards chunks with a certain tag on the fly. The keys are the tag names and the values are the weights.",
+            "additionalProperties": {
+              "type": "number",
+              "format": "float"
+            },
             "nullable": true
           },
           "use_weights": {
@@ -6542,6 +6916,12 @@
             "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching sub-sentences.",
             "nullable": true
           },
+          "highlight_threshold": {
+            "type": "number",
+            "format": "double",
+            "description": "Set highlight_threshold to a lower or higher value to adjust the sensitivity of the highlights applied to the chunk html. If not specified, this defaults to 0.8. The range is 0.0 to 1.0.",
+            "nullable": true
+          },
           "page": {
             "type": "integer",
             "format": "int64",
@@ -6640,6 +7020,12 @@
             "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching sub-sentences.",
             "nullable": true
           },
+          "highlight_threshold": {
+            "type": "number",
+            "format": "double",
+            "description": "Set highlight_threshold to a lower or higher value to adjust the sensitivity of the highlights applied to the chunk html. If not specified, this defaults to 0.8. The range is 0.0 to 1.0.",
+            "nullable": true
+          },
           "page": {
             "type": "integer",
             "format": "int64",
@@ -6677,6 +7063,15 @@
           "slim_chunks": {
             "type": "boolean",
             "description": "Set slim_chunks to true to avoid returning the content and chunk_html of the chunks. This is useful for when you want to reduce amount of data over the wire for latency improvement (typicall 10-50ms). Default is false.",
+            "nullable": true
+          },
+          "tag_weights": {
+            "type": "object",
+            "description": "Tag weights is a JSON object which can be used to boost the ranking of chunks with certain tags. This is useful for when you want to be able to bias towards chunks with a certain tag on the fly. The keys are the tag names and the values are the weights.",
+            "additionalProperties": {
+              "type": "number",
+              "format": "float"
+            },
             "nullable": true
           },
           "use_weights": {
@@ -6764,7 +7159,6 @@
                 0.3
               ],
               "content": "Some content",
-              "file_id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
               "link": "https://example.com",
               "metadata": {
                 "key1": "value1",
@@ -6804,6 +7198,14 @@
             "type": "string",
             "format": "uuid"
           },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            },
+            "nullable": true
+          },
           "link": {
             "type": "string",
             "nullable": true
@@ -6817,6 +7219,11 @@
             "nullable": true
           },
           "metadata": {
+            "nullable": true
+          },
+          "num_value": {
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "qdrant_point_id": {
@@ -7097,7 +7504,7 @@
           "user_count": 5
         }
       },
-      "SuggestedQueriesRequest": {
+      "SuggestedQueriesReqPayload": {
         "type": "object",
         "required": [
           "query"
@@ -7105,7 +7512,7 @@
         "properties": {
           "query": {
             "type": "string",
-            "description": "The query to base the generated suggested queries off of."
+            "description": "The query to base the generated suggested queries off of using RAG. A hybrid search for 10 chunks from your dataset using this query will be performed and the context of the chunks will be used to generate the suggested queries."
           }
         }
       },
@@ -7266,6 +7673,14 @@
             "description": "Group tracking_ids are the tracking_ids of the groups that the chunk should be placed into. This is useful for when you want to update a chunk and add it to a group or multiple groups in one request.",
             "nullable": true
           },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Image urls are a list of urls to images that are associated with the chunk. This is useful for when you want to associate images with a chunk. If no image_urls are provided, the existing image_urls will be used.",
+            "nullable": true
+          },
           "link": {
             "type": "string",
             "description": "Link of the chunk you want to update. This can also be any string. Frequently, this is a link to the source of the chunk. The link value will not affect the embedding creation. If no link is provided, the existing link will be used.",
@@ -7281,6 +7696,12 @@
           },
           "metadata": {
             "description": "The metadata is a JSON object which can be used to filter chunks. This is useful for when you want to filter chunks by arbitrary metadata. Unlike with tag filtering, there is a performance hit for filtering on metadata. If no metadata is provided, the existing metadata will be used.",
+            "nullable": true
+          },
+          "num_value": {
+            "type": "number",
+            "format": "double",
+            "description": "Num value is an arbitrary numerical value that can be used to filter chunks. This is useful for when you want to filter chunks by numerical value. If no num_value is provided, the existing num_value will be used.",
             "nullable": true
           },
           "tag_set": {
@@ -7448,7 +7869,7 @@
           }
         }
       },
-      "UpdateTopicData": {
+      "UpdateTopicReqPayload": {
         "type": "object",
         "required": [
           "topic_id",
@@ -7486,12 +7907,12 @@
           "user_id": {
             "type": "string",
             "format": "uuid",
-            "description": "The id of the user to update, if not provided, the auth'ed user will be updated. If provided, the auth'ed user must be an admin (1) or owner (2) of the organization.",
+            "description": "The id of the user to update, if not provided, the auth'ed user will be updated. If provided, the role of the auth'ed user or api key must be an admin (1) or owner (2) of the organization.",
             "nullable": true
           }
         }
       },
-      "UploadFileData": {
+      "UploadFileReqPayload": {
         "type": "object",
         "required": [
           "base64_file",
@@ -7500,7 +7921,7 @@
         "properties": {
           "base64_file": {
             "type": "string",
-            "description": "Base64 encoded file. Convert + to -, / to _, and remove the ending = if present. This is the standard base64url encoding."
+            "description": "Base64 encoded file. This is the standard base64url encoding."
           },
           "create_chunks": {
             "type": "boolean",
@@ -7530,6 +7951,19 @@
             "description": "Metadata is a JSON object which can be used to filter chunks. This is useful for when you want to filter chunks by arbitrary metadata. Unlike with tag filtering, there is a performance hit for filtering on metadata. Will be passed down to the file's chunks.",
             "nullable": true
           },
+          "rebalance_chunks": {
+            "type": "boolean",
+            "description": "Rebalance chunks is an optional field which allows you to specify whether or not to rebalance the chunks created from the file. If not specified, the default false is used. If true, chunks will be reblanced to target 20 chunks per file on average.",
+            "nullable": true
+          },
+          "split_delimiters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Split delimiters is an optional field which allows you to specify the delimiters to use when splitting the file before chunking the text. If not specified, the default [.!?\\n] are used to split into sentences. However, you may want to use spaces or other delimiters.",
+            "nullable": true
+          },
           "tag_set": {
             "type": "array",
             "items": {
@@ -7537,6 +7971,12 @@
             },
             "description": "Tag set is a comma separated list of tags which will be passed down to the chunks made from the file. Tags are used to filter chunks when searching. HNSW indices are created for each tag such that there is no performance loss when filtering on them.",
             "nullable": true
+          },
+          "target_splits_per_chunk": {
+            "type": "integer",
+            "description": "Target splits per chunk. This is an optional field which allows you to specify the number of splits you want per chunk. If not specified, the default 20 is used. However, you may want to use a different number. Trieve will evenly distribute remainder splits across chunks such that 66 splits with a `target_splits_per_chunk` of 20 will result in 3 chunks with 22 splits each.",
+            "nullable": true,
+            "minimum": 0
           },
           "time_stamp": {
             "type": "string",
@@ -7555,10 +7995,16 @@
             "key1": "value1",
             "key2": "value2"
           },
+          "split_delimiters": [
+            ",",
+            ".",
+            "\n"
+          ],
           "tag_set": [
             "tag1",
             "tag2"
           ],
+          "target_splits_per_chunk": 20,
           "time_stamp": "2021-01-01T00:00:00Z"
         }
       },
