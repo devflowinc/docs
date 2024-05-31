@@ -315,7 +315,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AutocompleteData"
+                "$ref": "#/components/schemas/AutocompleteReqPayload"
               }
             }
           },
@@ -562,7 +562,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SearchChunkData"
+                "$ref": "#/components/schemas/SearchChunksReqPayload"
               }
             }
           },
@@ -4150,7 +4150,7 @@
           "redirect_uri": "https://api.trieve.ai"
         }
       },
-      "AutocompleteData": {
+      "AutocompleteReqPayload": {
         "type": "object",
         "required": [
           "search_type",
@@ -4160,6 +4160,11 @@
           "content_only": {
             "type": "boolean",
             "description": "Set content_only to true to only returning the chunk_html of the chunks. This is useful for when you want to reduce amount of data over the wire for latency improvement (typically 10-50ms). Default is false.",
+            "nullable": true
+          },
+          "extend_results": {
+            "type": "boolean",
+            "description": "If specified to true, this will extend the search results to include non-exact prefix matches of the same search_type such that a full page_size of results are returned. Default is false.",
             "nullable": true
           },
           "filters": {
@@ -4214,7 +4219,7 @@
           },
           "search_type": {
             "type": "string",
-            "description": "Can be either \"semantic\", or \"fulltext\". \"semantic\" will pull in one page (10 chunks) of the nearest cosine distant vectors. \"fulltext\" will pull in one page (10 chunks) of full-text results based on SPLADE."
+            "description": "Can be either \"semantic\", or \"fulltext\". \"semantic\" will pull in one page_size of the nearest cosine distant vectors. \"fulltext\" will pull in one page_size of full-text results based on SPLADE."
           },
           "slim_chunks": {
             "type": "boolean",
@@ -6684,7 +6689,26 @@
           "score": 0.5
         }
       },
-      "SearchChunkData": {
+      "SearchChunkQueryResponseBody": {
+        "type": "object",
+        "required": [
+          "score_chunks",
+          "total_chunk_pages"
+        ],
+        "properties": {
+          "score_chunks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScoreChunkDTO"
+            }
+          },
+          "total_chunk_pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SearchChunksReqPayload": {
         "type": "object",
         "required": [
           "search_type",
@@ -6850,25 +6874,6 @@
           "score_threshold": 0.5,
           "search_type": "semantic",
           "use_weights": true
-        }
-      },
-      "SearchChunkQueryResponseBody": {
-        "type": "object",
-        "required": [
-          "score_chunks",
-          "total_chunk_pages"
-        ],
-        "properties": {
-          "score_chunks": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ScoreChunkDTO"
-            }
-          },
-          "total_chunk_pages": {
-            "type": "integer",
-            "format": "int64"
-          }
         }
       },
       "SearchOverGroupsData": {
