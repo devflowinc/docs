@@ -12,7 +12,7 @@
       "name": "BSL",
       "url": "https://github.com/devflowinc/trieve/blob/main/LICENSE.txt"
     },
-    "version": "9.0.0"
+    "version": "0.10.2"
   },
   "servers": [
     {
@@ -192,7 +192,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateChunkData"
+                "$ref": "#/components/schemas/CreateChunkReqPayloadEnum"
               }
             }
           },
@@ -261,7 +261,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateChunkData"
+                "$ref": "#/components/schemas/UpdateChunkReqPayload"
               }
             }
           },
@@ -918,7 +918,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateChunkGroupData"
+                "$ref": "#/components/schemas/CreateChunkGroupReqPayload"
               }
             }
           },
@@ -1075,7 +1075,7 @@
           "chunk_group"
         ],
         "summary": "Remove Chunk from Group",
-        "description": "Remove Chunk from Group\n\nRoute to remove a chunk from a group. Auth'ed user or api key must be an admin or owner of the dataset's organization to delete a file.",
+        "description": "Remove Chunk from Group\n\nRoute to remove a chunk from a group. Auth'ed user or api key must be an admin or owner of the dataset's organization to remove a chunk from a group.",
         "operationId": "remove_chunk_from_group",
         "parameters": [
           {
@@ -1090,7 +1090,7 @@
           {
             "name": "group_id",
             "in": "path",
-            "description": "Id of the group to remove the bookmark'ed chunk from",
+            "description": "Id of the group you want to remove the chunk from.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1099,11 +1099,11 @@
           }
         ],
         "requestBody": {
-          "description": "JSON request payload to cretea a chunkGroup",
+          "description": "JSON request payload to remove a chunk from a group",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateChunkGroupData"
+                "$ref": "#/components/schemas/RemoveChunkFromGroupReqPayload"
               }
             }
           },
@@ -1626,7 +1626,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateGroupByTrackingIDData"
+                "$ref": "#/components/schemas/UpdateGroupByTrackingIDReqPayload"
               }
             }
           },
@@ -4180,12 +4180,26 @@
             "items": {
               "type": "string"
             },
-            "description": "Set highlight_delimiters to a list of strings to use as delimiters for highlighting. If not specified, this defaults to [\"?\", \",\", \".\", \"!\"].",
+            "description": "Set highlight_delimiters to a list of strings to use as delimiters for highlighting. If not specified, this defaults to [\"?\", \",\", \".\", \"!\"]. These are the characters that will be used to split the chunk_html into splits for highlighting.",
             "nullable": true
+          },
+          "highlight_max_length": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Set highlight_max_length to control the maximum number of tokens (typically whitespace separated strings, but sometimes also word stems) which can be present within a single highlight. If not specified, this defaults to 8. This is useful to shorten large splits which may have low scores due to length compared to the query. Set to something very large like 100 to highlight entire splits.",
+            "nullable": true,
+            "minimum": 0
+          },
+          "highlight_max_num": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Set highlight_max_num to control the maximum number of highlights per chunk. If not specified, this defaults to 3. It may be less than 3 if no snippets score above the highlight_threshold.",
+            "nullable": true,
+            "minimum": 0
           },
           "highlight_results": {
             "type": "boolean",
-            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching sub-sentences.",
+            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching splits and return the highlights on each scored chunk in the response.",
             "nullable": true
           },
           "highlight_threshold": {
@@ -4434,7 +4448,491 @@
           "role": "user"
         }
       },
-      "ChunkData": {
+      "ChunkFilter": {
+        "type": "object",
+        "properties": {
+          "must": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConditionType"
+            },
+            "description": "All of these field conditions have to match for the chunk to be included in the result set.",
+            "nullable": true
+          },
+          "must_not": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConditionType"
+            },
+            "description": "None of these field conditions can match for the chunk to be included in the result set.",
+            "nullable": true
+          },
+          "should": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConditionType"
+            },
+            "description": "Only one of these field conditions has to match for the chunk to be included in the result set.",
+            "nullable": true
+          }
+        },
+        "example": {
+          "must": [
+            {
+              "field": "metadata.key2",
+              "match": [
+                "value3",
+                "value4"
+              ],
+              "range": {
+                "gt": 0,
+                "gte": 0,
+                "lt": 1,
+                "lte": 1
+              }
+            }
+          ],
+          "must_not": [
+            {
+              "field": "metadata.key3",
+              "match": [
+                "value5",
+                "value6"
+              ],
+              "range": {
+                "gt": 0,
+                "gte": 0,
+                "lt": 1,
+                "lte": 1
+              }
+            }
+          ],
+          "should": [
+            {
+              "field": "metadata.key1",
+              "match": [
+                "value1",
+                "value2"
+              ],
+              "range": {
+                "gt": 0,
+                "gte": 0,
+                "lt": 1,
+                "lte": 1
+              }
+            }
+          ]
+        }
+      },
+      "ChunkGroup": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "created_at",
+          "updated_at",
+          "dataset_id"
+        ],
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataset_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "metadata": {
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "tag_set": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "tracking_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "example": {
+          "created_at": "2021-01-01T00:00:00",
+          "dataset_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "name": "Trieve",
+          "tracking_id": "3",
+          "updated_at": "2021-01-01T00:00:00"
+        }
+      },
+      "ChunkGroupAndFile": {
+        "type": "object",
+        "required": [
+          "id",
+          "dataset_id",
+          "name",
+          "description",
+          "created_at",
+          "updated_at"
+        ],
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataset_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": {
+            "type": "string"
+          },
+          "file_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tracking_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "example": {
+          "created_at": "2021-01-01T00:00:00",
+          "dataset_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "description": "A group of chunks",
+          "file_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "name": "Trieve",
+          "tracking_id": "3",
+          "updated_at": "2021-01-01T00:00:00"
+        }
+      },
+      "ChunkMetadata": {
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "updated_at",
+          "dataset_id",
+          "weight"
+        ],
+        "properties": {
+          "chunk_html": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataset_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GeoInfo"
+              }
+            ],
+            "nullable": true
+          },
+          "metadata": {
+            "nullable": true
+          },
+          "num_value": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "qdrant_point_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "tag_set": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "time_stamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "tracking_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "example": {
+          "chunk_html": "<p>Hello, world!</p>",
+          "created_at": "2021-01-01T00:00:00",
+          "dataset_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "link": "https://trieve.ai",
+          "metadata": {
+            "key": "value"
+          },
+          "qdrant_point_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "tag_set": "[tag1,tag2]",
+          "time_stamp": "2021-01-01T00:00:00",
+          "tracking_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "updated_at": "2021-01-01T00:00:00",
+          "weight": 0.5
+        }
+      },
+      "ChunkMetadataStringTagSet": {
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "updated_at",
+          "dataset_id",
+          "weight"
+        ],
+        "properties": {
+          "chunk_html": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataset_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GeoInfo"
+              }
+            ],
+            "nullable": true
+          },
+          "metadata": {
+            "nullable": true
+          },
+          "num_value": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "qdrant_point_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "tag_set": {
+            "type": "string",
+            "nullable": true
+          },
+          "time_stamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "tracking_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "example": {
+          "created_at": "2021-01-01T00:00:00",
+          "dataset_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "link": "https://trieve.ai",
+          "metadata": {
+            "key": "value"
+          },
+          "qdrant_point_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "tag_set": "tag1,tag2",
+          "time_stamp": "2021-01-01T00:00:00",
+          "tracking_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "updated_at": "2021-01-01T00:00:00",
+          "weight": 0.5
+        }
+      },
+      "ChunkMetadataTypes": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SlimChunkMetadata"
+          },
+          {
+            "$ref": "#/components/schemas/ChunkMetadataStringTagSet"
+          },
+          {
+            "$ref": "#/components/schemas/ContentChunkMetadata"
+          }
+        ]
+      },
+      "ChunkMetadataWithScore": {
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "updated_at",
+          "dataset_id",
+          "weight",
+          "score"
+        ],
+        "properties": {
+          "chunk_html": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataset_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          },
+          "metadata": {
+            "nullable": true
+          },
+          "qdrant_point_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "score": {
+            "type": "number",
+            "format": "float"
+          },
+          "tag_set": {
+            "type": "string",
+            "nullable": true
+          },
+          "time_stamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "tracking_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "example": {
+          "chunk_html": "<p>Hello, world!</p>",
+          "content": "Hello, world!",
+          "created_at": "2021-01-01T00:00:00",
+          "dataset_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "link": "https://trieve.ai",
+          "metadata": {
+            "key": "value"
+          },
+          "qdrant_point_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "score": 0.9,
+          "tag_set": "tag1,tag2",
+          "time_stamp": "2021-01-01T00:00:00",
+          "tracking_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+          "updated_at": "2021-01-01T00:00:00",
+          "weight": 0.5
+        }
+      },
+      "ChunkReqPayload": {
         "type": "object",
         "properties": {
           "chunk_html": {
@@ -4577,401 +5075,6 @@
           "weight": 0.5
         }
       },
-      "ChunkFilter": {
-        "type": "object",
-        "properties": {
-          "must": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ConditionType"
-            },
-            "description": "All of these field conditions have to match for the chunk to be included in the result set.",
-            "nullable": true
-          },
-          "must_not": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ConditionType"
-            },
-            "description": "None of these field conditions can match for the chunk to be included in the result set.",
-            "nullable": true
-          },
-          "should": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ConditionType"
-            },
-            "description": "Only one of these field conditions has to match for the chunk to be included in the result set.",
-            "nullable": true
-          }
-        },
-        "example": {
-          "must": [
-            {
-              "field": "metadata.key2",
-              "match": [
-                "value3",
-                "value4"
-              ],
-              "range": {
-                "gt": 0,
-                "gte": 0,
-                "lt": 1,
-                "lte": 1
-              }
-            }
-          ],
-          "must_not": [
-            {
-              "field": "metadata.key3",
-              "match": [
-                "value5",
-                "value6"
-              ],
-              "range": {
-                "gt": 0,
-                "gte": 0,
-                "lt": 1,
-                "lte": 1
-              }
-            }
-          ],
-          "should": [
-            {
-              "field": "metadata.key1",
-              "match": [
-                "value1",
-                "value2"
-              ],
-              "range": {
-                "gt": 0,
-                "gte": 0,
-                "lt": 1,
-                "lte": 1
-              }
-            }
-          ]
-        }
-      },
-      "ChunkGroup": {
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "description",
-          "created_at",
-          "updated_at",
-          "dataset_id"
-        ],
-        "properties": {
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dataset_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "description": {
-            "type": "string"
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "metadata": {
-            "nullable": true
-          },
-          "name": {
-            "type": "string"
-          },
-          "tag_set": {
-            "type": "string",
-            "nullable": true
-          },
-          "tag_set_array": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "nullable": true
-            },
-            "nullable": true
-          },
-          "tracking_id": {
-            "type": "string",
-            "nullable": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "example": {
-          "created_at": "2021-01-01T00:00:00",
-          "dataset_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "name": "Trieve",
-          "tracking_id": "3",
-          "updated_at": "2021-01-01T00:00:00"
-        }
-      },
-      "ChunkGroupAndFile": {
-        "type": "object",
-        "required": [
-          "id",
-          "dataset_id",
-          "name",
-          "description",
-          "created_at",
-          "updated_at"
-        ],
-        "properties": {
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dataset_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "description": {
-            "type": "string"
-          },
-          "file_id": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string"
-          },
-          "tracking_id": {
-            "type": "string",
-            "nullable": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "example": {
-          "created_at": "2021-01-01T00:00:00",
-          "dataset_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "description": "A group of chunks",
-          "file_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "name": "Trieve",
-          "tracking_id": "3",
-          "updated_at": "2021-01-01T00:00:00"
-        }
-      },
-      "ChunkMetadata": {
-        "type": "object",
-        "required": [
-          "id",
-          "created_at",
-          "updated_at",
-          "dataset_id",
-          "weight"
-        ],
-        "properties": {
-          "chunk_html": {
-            "type": "string",
-            "nullable": true
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dataset_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "image_urls": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "nullable": true
-            },
-            "nullable": true
-          },
-          "link": {
-            "type": "string",
-            "nullable": true
-          },
-          "location": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/GeoInfo"
-              }
-            ],
-            "nullable": true
-          },
-          "metadata": {
-            "nullable": true
-          },
-          "num_value": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "qdrant_point_id": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "tag_set": {
-            "type": "string",
-            "nullable": true
-          },
-          "tag_set_array": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "nullable": true
-            },
-            "nullable": true
-          },
-          "time_stamp": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "tracking_id": {
-            "type": "string",
-            "nullable": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "weight": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "example": {
-          "chunk_html": "<p>Hello, world!</p>",
-          "created_at": "2021-01-01T00:00:00",
-          "dataset_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "link": "https://trieve.ai",
-          "metadata": {
-            "key": "value"
-          },
-          "qdrant_point_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "tag_set": "tag1,tag2",
-          "time_stamp": "2021-01-01T00:00:00",
-          "tracking_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "updated_at": "2021-01-01T00:00:00",
-          "weight": 0.5
-        }
-      },
-      "ChunkMetadataTypes": {
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/SlimChunkMetadata"
-          },
-          {
-            "$ref": "#/components/schemas/ChunkMetadata"
-          },
-          {
-            "$ref": "#/components/schemas/ContentChunkMetadata"
-          }
-        ]
-      },
-      "ChunkMetadataWithScore": {
-        "type": "object",
-        "required": [
-          "id",
-          "created_at",
-          "updated_at",
-          "dataset_id",
-          "weight",
-          "score"
-        ],
-        "properties": {
-          "chunk_html": {
-            "type": "string",
-            "nullable": true
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dataset_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "link": {
-            "type": "string",
-            "nullable": true
-          },
-          "metadata": {
-            "nullable": true
-          },
-          "qdrant_point_id": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "score": {
-            "type": "number",
-            "format": "float"
-          },
-          "tag_set": {
-            "type": "string",
-            "nullable": true
-          },
-          "time_stamp": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "tracking_id": {
-            "type": "string",
-            "nullable": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "weight": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "example": {
-          "chunk_html": "<p>Hello, world!</p>",
-          "content": "Hello, world!",
-          "created_at": "2021-01-01T00:00:00",
-          "dataset_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "link": "https://trieve.ai",
-          "metadata": {
-            "key": "value"
-          },
-          "qdrant_point_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "score": 0.9,
-          "tag_set": "tag1,tag2",
-          "time_stamp": "2021-01-01T00:00:00",
-          "tracking_id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
-          "updated_at": "2021-01-01T00:00:00",
-          "weight": 0.5
-        }
-      },
       "ClientDatasetConfiguration": {
         "type": "object",
         "required": [
@@ -5109,10 +5212,10 @@
           "weight": 0.5
         }
       },
-      "CreateBatchChunkData": {
+      "CreateBatchChunkReqPayload": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/ChunkData"
+          "$ref": "#/components/schemas/ChunkReqPayload"
         },
         "example": [
           {
@@ -5188,21 +5291,8 @@
           }
         ]
       },
-      "CreateChunkData": {
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateSingleChunkData"
-          },
-          {
-            "$ref": "#/components/schemas/CreateBatchChunkData"
-          }
-        ]
-      },
-      "CreateChunkGroupData": {
+      "CreateChunkGroupReqPayload": {
         "type": "object",
-        "required": [
-          "name"
-        ],
         "properties": {
           "description": {
             "type": "string",
@@ -5215,7 +5305,8 @@
           },
           "name": {
             "type": "string",
-            "description": "Name to assign to the chunk_group. Does not need to be unique."
+            "description": "Name to assign to the chunk_group. Does not need to be unique.",
+            "nullable": true
           },
           "tag_set": {
             "type": "array",
@@ -5236,6 +5327,16 @@
             "nullable": true
           }
         }
+      },
+      "CreateChunkReqPayloadEnum": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateSingleChunkReqPayload"
+          },
+          {
+            "$ref": "#/components/schemas/CreateBatchChunkReqPayload"
+          }
+        ]
       },
       "CreateDatasetRequest": {
         "type": "object",
@@ -5299,12 +5400,17 @@
           },
           "highlight_results": {
             "type": "boolean",
-            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching sub-sentences.",
+            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching splits and return the highlights on each scored chunk in the response.",
             "nullable": true
           },
           "new_message_content": {
             "type": "string",
             "description": "The content of the user message to attach to the topic and then generate an assistant message in response to."
+          },
+          "search_type": {
+            "type": "string",
+            "description": "Search_type can be either \"semantic\", \"fulltext\", or \"hybrid\". \"hybrid\" will pull in one page (10 chunks) of both semantic and full-text results then re-rank them using BAAI/bge-reranker-large. \"semantic\" will pull in one page (10 chunks) of the nearest cosine distant vectors. \"fulltext\" will pull in one page (10 chunks) of full-text results based on SPLADE. Default is \"hybrid\".",
+            "nullable": true
           },
           "stream_response": {
             "type": "boolean",
@@ -5330,8 +5436,8 @@
           }
         }
       },
-      "CreateSingleChunkData": {
-        "$ref": "#/components/schemas/ChunkData"
+      "CreateSingleChunkReqPayload": {
+        "$ref": "#/components/schemas/ChunkReqPayload"
       },
       "CreateTopicReqPayload": {
         "type": "object",
@@ -5606,6 +5712,11 @@
             "type": "string",
             "description": "The new content of the message to replace the old content with."
           },
+          "search_type": {
+            "type": "string",
+            "description": "Search_type can be either \"semantic\", \"fulltext\", or \"hybrid\". \"hybrid\" will pull in one page (10 chunks) of both semantic and full-text results then re-rank them using BAAI/bge-reranker-large. \"semantic\" will pull in one page (10 chunks) of the nearest cosine distant vectors. \"fulltext\" will pull in one page (10 chunks) of full-text results based on SPLADE.",
+            "nullable": true
+          },
           "stream_response": {
             "type": "boolean",
             "description": "Whether or not to stream the response. If this is set to true or not included, the response will be a stream. If this is set to false, the response will be a normal JSON response. Default is true.",
@@ -5806,10 +5917,6 @@
             "format": "int64"
           },
           "tag_set": {
-            "type": "string",
-            "nullable": true
-          },
-          "tag_set_array": {
             "type": "array",
             "items": {
               "type": "string",
@@ -5913,7 +6020,7 @@
           },
           "highlight_results": {
             "type": "boolean",
-            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>`` tags to the chunk_html of the chunks to highlight matching sub-sentences.",
+            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>`` tags to the chunk_html of the chunks to highlight matching splits.",
             "nullable": true
           },
           "prev_messages": {
@@ -6101,6 +6208,10 @@
           "group_id": "e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
           "metadata": [
             {
+              "highlights": [
+                "highlight is two tokens: high, light",
+                "whereas hello is only one token: hello"
+              ],
               "metadata": [
                 {
                   "content": "This is a test content",
@@ -6631,6 +6742,11 @@
             "description": "The delimiters to use for highlighting the citations. If this is not included, the default delimiters will be used. Default is `[\".\", \"!\", \"?\", \"\\n\", \"\\t\", \",\"]`.",
             "nullable": true
           },
+          "search_type": {
+            "type": "string",
+            "description": "Search_type can be either \"semantic\", \"fulltext\", or \"hybrid\". \"hybrid\" will pull in one page (10 chunks) of both semantic and full-text results then re-rank them using BAAI/bge-reranker-large. \"semantic\" will pull in one page (10 chunks) of the nearest cosine distant vectors. \"fulltext\" will pull in one page (10 chunks) of full-text results based on SPLADE.",
+            "nullable": true
+          },
           "stream_response": {
             "type": "boolean",
             "description": "Whether or not to stream the response. If this is set to true or not included, the response will be a stream. If this is set to false, the response will be a normal JSON response. Default is true.",
@@ -6640,6 +6756,19 @@
             "type": "string",
             "format": "uuid",
             "description": "The id of the topic to regenerate the last message for."
+          }
+        }
+      },
+      "RemoveChunkFromGroupReqPayload": {
+        "type": "object",
+        "required": [
+          "chunk_id"
+        ],
+        "properties": {
+          "chunk_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id of the chunk to remove from the group."
           }
         }
       },
@@ -6660,6 +6789,13 @@
           "score"
         ],
         "properties": {
+          "highlights": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
           "metadata": {
             "type": "array",
             "items": {
@@ -6672,6 +6808,10 @@
           }
         },
         "example": {
+          "highlights": [
+            "highlight is two tokens: high, light",
+            "whereas hello is only one token: hello"
+          ],
           "metadata": [
             {
               "chunk_html": "<p>Some HTML content</p>",
@@ -6743,12 +6883,26 @@
             "items": {
               "type": "string"
             },
-            "description": "Set highlight_delimiters to a list of strings to use as delimiters for highlighting. If not specified, this defaults to [\"?\", \",\", \".\", \"!\"].",
+            "description": "Set highlight_delimiters to a list of strings to use as delimiters for highlighting. If not specified, this defaults to [\"?\", \",\", \".\", \"!\"]. These are the characters that will be used to split the chunk_html into splits for highlighting. These are the characters that will be used to split the chunk_html into splits for highlighting.",
             "nullable": true
+          },
+          "highlight_max_length": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Set highlight_max_length to control the maximum number of tokens (typically whitespace separated strings, but sometimes also word stems) which can be present within a single highlight. If not specified, this defaults to 8. This is useful to shorten large splits which may have low scores due to length compared to the query. Set to something very large like 100 to highlight entire splits.",
+            "nullable": true,
+            "minimum": 0
+          },
+          "highlight_max_num": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Set highlight_max_num to control the maximum number of highlights per chunk. If not specified, this defaults to 3. It may be less than 3 if no snippets score above the highlight_threshold.",
+            "nullable": true,
+            "minimum": 0
           },
           "highlight_results": {
             "type": "boolean",
-            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching sub-sentences.",
+            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching splits and return the highlights on each scored chunk in the response.",
             "nullable": true
           },
           "highlight_threshold": {
@@ -6913,12 +7067,26 @@
             "items": {
               "type": "string"
             },
-            "description": "Set highlight_delimiters to a list of strings to use as delimiters for highlighting. If not specified, this defaults to [\"?\", \",\", \".\", \"!\"].",
+            "description": "Set highlight_delimiters to a list of strings to use as delimiters for highlighting. If not specified, this defaults to [\"?\", \",\", \".\", \"!\"]. These are the characters that will be used to split the chunk_html into splits for highlighting.",
             "nullable": true
+          },
+          "highlight_max_length": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Set highlight_max_length to control the maximum number of tokens (typically whitespace separated strings, but sometimes also word stems) which can be present within a single highlight. If not specified, this defaults to 8. This is useful to shorten large splits which may have low scores due to length compared to the query. Set to something very large like 100 to highlight entire splits.",
+            "nullable": true,
+            "minimum": 0
+          },
+          "highlight_max_num": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Set highlight_max_num to control the maximum number of highlights per chunk. If not specified, this defaults to 3. It may be less than 3 if no snippets score above the highlight_threshold.",
+            "nullable": true,
+            "minimum": 0
           },
           "highlight_results": {
             "type": "boolean",
-            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching sub-sentences.",
+            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching splits and return the highlights on each scored chunk in the response.",
             "nullable": true
           },
           "highlight_threshold": {
@@ -7017,12 +7185,26 @@
             "items": {
               "type": "string"
             },
-            "description": "Set highlight_delimiters to a list of strings to use as delimiters for highlighting. If not specified, this defaults to [\"?\", \",\", \".\", \"!\"].",
+            "description": "Set highlight_delimiters to a list of strings to use as delimiters for highlighting. If not specified, this defaults to [\"?\", \",\", \".\", \"!\"]. These are the characters that will be used to split the chunk_html into splits for highlighting.",
             "nullable": true
+          },
+          "highlight_max_length": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Set highlight_max_length to control the maximum number of tokens (typically whitespace separated strings, but sometimes also word stems) which can be present within a single highlight. If not specified, this defaults to 8. This is useful to shorten large splits which may have low scores due to length compared to the query. Set to something very large like 100 to highlight entire splits.",
+            "nullable": true,
+            "minimum": 0
+          },
+          "highlight_max_num": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Set highlight_max_num to control the maximum number of highlights per chunk. If not specified, this defaults to 3. It may be less than 3 if no snippets score above the highlight_threshold.",
+            "nullable": true,
+            "minimum": 0
           },
           "highlight_results": {
             "type": "boolean",
-            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching sub-sentences.",
+            "description": "Set highlight_results to false for a slight latency improvement (1-10ms). If not specified, this defaults to true. This will add `<b><mark>` tags to the chunk_html of the chunks to highlight matching splits and return the highlights on each scored chunk in the response.",
             "nullable": true
           },
           "highlight_threshold": {
@@ -7642,7 +7824,45 @@
           }
         }
       },
-      "UpdateChunkData": {
+      "UpdateChunkGroupData": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Description to assign to the chunk_group. Convenience field for you to avoid having to remember what the group is for. If not provided, the description will not be updated.",
+            "nullable": true
+          },
+          "group_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id of the chunk_group to update.",
+            "nullable": true
+          },
+          "metadata": {
+            "description": "Optional metadata to assign to the chunk_group. This is a JSON object that can store any additional information you want to associate with the chunks inside of the chunk_group.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name to assign to the chunk_group. Does not need to be unique. If not provided, the name will not be updated.",
+            "nullable": true
+          },
+          "tag_set": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional tags to assign to the chunk_group. This is a list of strings that can be used to categorize the chunks inside the chunk_group.",
+            "nullable": true
+          },
+          "tracking_id": {
+            "type": "string",
+            "description": "Tracking Id of the chunk_group to update.",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateChunkReqPayload": {
         "type": "object",
         "properties": {
           "chunk_html": {
@@ -7749,44 +7969,6 @@
           "weight": 0.5
         }
       },
-      "UpdateChunkGroupData": {
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string",
-            "description": "Description to assign to the chunk_group. Convenience field for you to avoid having to remember what the group is for. If not provided, the description will not be updated.",
-            "nullable": true
-          },
-          "group_id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Id of the chunk_group to update.",
-            "nullable": true
-          },
-          "metadata": {
-            "description": "Optional metadata to assign to the chunk_group. This is a JSON object that can store any additional information you want to associate with the chunks inside of the chunk_group.",
-            "nullable": true
-          },
-          "name": {
-            "type": "string",
-            "description": "Name to assign to the chunk_group. Does not need to be unique. If not provided, the name will not be updated.",
-            "nullable": true
-          },
-          "tag_set": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Optional tags to assign to the chunk_group. This is a list of strings that can be used to categorize the chunks inside the chunk_group.",
-            "nullable": true
-          },
-          "tracking_id": {
-            "type": "string",
-            "description": "Tracking Id of the chunk_group to update.",
-            "nullable": true
-          }
-        }
-      },
       "UpdateDatasetRequest": {
         "type": "object",
         "properties": {
@@ -7822,7 +8004,7 @@
           "server_configuration": {}
         }
       },
-      "UpdateGroupByTrackingIDData": {
+      "UpdateGroupByTrackingIDReqPayload": {
         "type": "object",
         "required": [
           "tracking_id"
