@@ -156,6 +156,7 @@
         "api-reference/dataset/create-dataset",
         "api-reference/dataset/get-client-configuration",
         "api-reference/dataset/get-datasets-from-organization",
+        "api-reference/dataset/delete-dataset-by-tracking-id",
         "api-reference/dataset/get-dataset",
         "api-reference/dataset/delete-dataset"
       ]
