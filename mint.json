@@ -73,7 +73,7 @@
       "pages": ["examples/job-board", "examples/ecommerce"]
     },
     {
-      "group": "Authentication",
+      "group": "Auth",
       "pages": [
         "api-reference/auth/login",
         "api-reference/auth/logout",
@@ -86,11 +86,11 @@
       "pages": [
         "api-reference/chunk/update-chunk",
         "api-reference/chunk/create-or-upsert-chunk-or-chunks",
+        "api-reference/chunk/autocomplete",
         "api-reference/chunk/generate-suggested-queries",
         "api-reference/chunk/rag-on-specified-chunks",
         "api-reference/chunk/get-recommended-chunks",
         "api-reference/chunk/search",
-        "api-reference/chunk/autocomplete",
         "api-reference/chunk/update-chunk-by-tracking-id",
         "api-reference/chunk/get-chunk-by-tracking-id",
         "api-reference/chunk/delete-chunk-by-tracking-id",
@@ -103,23 +103,36 @@
     {
       "group": "Chunk Group",
       "pages": [
-        "api-reference/chunk_group/update-group",
-        "api-reference/chunk_group/create-chunk-group",
-        "api-reference/chunk_group/add-chunk-to-group",
-        "api-reference/chunk_group/remove-chunk-from-group",
-        "api-reference/chunk_group/get-groups-for-chunks",
-        "api-reference/chunk_group/search-over-groups",
-        "api-reference/chunk_group/get-recommended-groups",
-        "api-reference/chunk_group/search-within-group",
-        "api-reference/chunk_group/get-chunks-in-group-by-tracking-id",
-        "api-reference/chunk_group/get-group-by-tracking-id",
-        "api-reference/chunk_group/update-group-by-tracking-id",
-        "api-reference/chunk_group/add-chunk-to-group-by-tracking-id",
-        "api-reference/chunk_group/delete-group-by-tracking-id",
-        "api-reference/chunk_group/get-group",
-        "api-reference/chunk_group/delete-group",
-        "api-reference/chunk_group/get-chunks-in-group",
-        "api-reference/chunk_group/get-groups-for-dataset"
+        "api-reference/chunk-group/update-group",
+        "api-reference/chunk-group/create-chunk-group",
+        "api-reference/chunk-group/add-chunk-to-group",
+        "api-reference/chunk-group/remove-chunk-from-group",
+        "api-reference/chunk-group/get-groups-for-chunks",
+        "api-reference/chunk-group/search-over-groups",
+        "api-reference/chunk-group/get-recommended-groups",
+        "api-reference/chunk-group/search-within-group",
+        "api-reference/chunk-group/get-chunks-in-group-by-tracking-id",
+        "api-reference/chunk-group/get-group-by-tracking-id",
+        "api-reference/chunk-group/update-group-by-tracking-id",
+        "api-reference/chunk-group/add-chunk-to-group-by-tracking-id",
+        "api-reference/chunk-group/delete-group-by-tracking-id",
+        "api-reference/chunk-group/get-group",
+        "api-reference/chunk-group/delete-group",
+        "api-reference/chunk-group/get-chunks-in-group",
+        "api-reference/chunk-group/get-groups-for-dataset"
+      ]
+    },
+    {
+      "group": "Dataset",
+      "pages": [
+        "api-reference/dataset/update-dataset",
+        "api-reference/dataset/create-dataset",
+        "api-reference/dataset/clear-dataset",
+        "api-reference/dataset/get-datasets-from-organization",
+        "api-reference/dataset/delete-dataset-by-tracking-id",
+        "api-reference/dataset/get-usage-by-dataset-id",
+        "api-reference/dataset/get-dataset",
+        "api-reference/dataset/delete-dataset"
       ]
     },
     {
@@ -132,33 +145,24 @@
       ]
     },
     {
+      "group": "Events",
+      "pages": ["api-reference/events/get-events-for-the-dataset"]
+    },
+    {
+      "group": "Health",
+      "pages": ["api-reference/health/health-check"]
+    },
+    {
+      "group": "Invitation",
+      "pages": ["api-reference/invitation/send-invitation"]
+    },
+    {
       "group": "Message",
       "pages": [
-        "api-reference/message/edit-a-message",
-        "api-reference/message/create-a-message",
+        "api-reference/message/edit-message",
+        "api-reference/message/create-message",
         "api-reference/message/regenerate-message",
         "api-reference/message/get-all-messages-for-a-given-topic"
-      ]
-    },
-    {
-      "group": "Topic",
-      "pages": [
-        "api-reference/topic/update-topic",
-        "api-reference/topic/create-topic",
-        "api-reference/topic/get-all-topics-for-owner-id",
-        "api-reference/topic/delete-topic"
-      ]
-    },
-    {
-      "group": "Dataset",
-      "pages": [
-        "api-reference/dataset/update-dataset",
-        "api-reference/dataset/create-dataset",
-        "api-reference/dataset/get-client-configuration",
-        "api-reference/dataset/get-datasets-from-organization",
-        "api-reference/dataset/delete-dataset-by-tracking-id",
-        "api-reference/dataset/get-dataset",
-        "api-reference/dataset/delete-dataset"
       ]
     },
     {
@@ -182,6 +186,15 @@
       ]
     },
     {
+      "group": "Topic",
+      "pages": [
+        "api-reference/topic/update-topic",
+        "api-reference/topic/create-topic",
+        "api-reference/topic/get-all-topics-for-owner-id",
+        "api-reference/topic/delete-topic"
+      ]
+    },
+    {
       "group": "User",
       "pages": [
         "api-reference/user/update-user",
@@ -190,16 +203,24 @@
       ]
     },
     {
-      "group": "Events",
-      "pages": ["api-reference/events/get-events-for-the-dataset"]
+      "group": "Analytics",
+      "pages": [
+        "api-reference/analytics/get-latency-graph",
+        "api-reference/analytics/get-search-metrics",
+        "api-reference/analytics/get-all-search-queries",
+        "api-reference/analytics/get-head-queries",
+        "api-reference/analytics/get-low-confidence-queries",
+        "api-reference/analytics/get-a-query",
+        "api-reference/analytics/post-apianalytics-rag",
+        "api-reference/analytics/get-apianalytics-ragusage",
+        "api-reference/analytics/get-rps-graph",
+        "api-reference/analytics/get-cluster-topics-for-a-dataset",
+        "api-reference/analytics/get-queries-for-a-topic"
+      ]
     },
     {
-      "group": "Health",
-      "pages": ["api-reference/health/health-check"]
-    },
-    {
-      "group": "Invitation",
-      "pages": ["api-reference/invitation/send-invitation"]
+      "group": "Metrics",
+      "pages": ["api-reference/metrics/get-prometheus-metrics"]
     }
   ],
   "footerSocials": {
