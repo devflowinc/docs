@@ -147,6 +147,7 @@
         "api-reference/analytics/get-latency-graph",
         "api-reference/analytics/get-search-metrics",
         "api-reference/analytics/get-all-search-queries",
+        "api-reference/analytics/get-no-result-queries",
         "api-reference/analytics/get-head-queries",
         "api-reference/analytics/get-low-confidence-queries",
         "api-reference/analytics/get-a-query",
