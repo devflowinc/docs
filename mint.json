@@ -75,28 +75,28 @@
     {
       "group": "Chunk",
       "pages": [
+        "api-reference/chunk/update-chunk",
         "api-reference/chunk/create-or-upsert-chunk-or-chunks",
-        "api-reference/chunk/search",
         "api-reference/chunk/autocomplete",
         "api-reference/chunk/count-chunks-above-threshold",
-        "api-reference/chunk/get-recommended-chunks",
+        "api-reference/chunk/generate-suggested-queries",
         "api-reference/chunk/rag-on-specified-chunks",
-        "api-reference/chunk/update-chunk",
+        "api-reference/chunk/get-recommended-chunks",
+        "api-reference/chunk/search",
         "api-reference/chunk/update-chunk-by-tracking-id",
-        "api-reference/chunk/delete-chunk",
+        "api-reference/chunk/get-chunk-by-tracking-id",
         "api-reference/chunk/delete-chunk-by-tracking-id",
         "api-reference/chunk/get-chunk-by-id",
-        "api-reference/chunk/get-chunk-by-tracking-id",
+        "api-reference/chunk/delete-chunk",
         "api-reference/chunk/get-chunks-by-ids",
-        "api-reference/chunk/get-chunks-by-trackingids",
-        "api-reference/chunk/generate-suggested-queries"
+        "api-reference/chunk/get-chunks-by-trackingids"
       ]
     },
     {
       "group": "Chunk Group",
       "pages": [
-        "api-reference/chunk-group/create-chunk-group",
         "api-reference/chunk-group/update-group",
+        "api-reference/chunk-group/create-chunk-group",
         "api-reference/chunk-group/add-chunk-to-group",
         "api-reference/chunk-group/remove-chunk-from-group",
         "api-reference/chunk-group/get-groups-for-chunks",
@@ -144,18 +144,10 @@
     {
       "group": "Analytics",
       "pages": [
-        "api-reference/analytics/get-latency-graph",
-        "api-reference/analytics/get-search-metrics",
-        "api-reference/analytics/get-all-search-queries",
-        "api-reference/analytics/get-no-result-queries",
-        "api-reference/analytics/get-head-queries",
-        "api-reference/analytics/get-low-confidence-queries",
-        "api-reference/analytics/get-a-query",
-        "api-reference/analytics/get-rag-queries",
-        "api-reference/analytics/get-rag-usage",
-        "api-reference/analytics/get-rps-graph",
-        "api-reference/analytics/get-cluster-topics",
-        "api-reference/analytics/get-queries-for-a-topic"
+        "api-reference/analytics/get-rag-analytics",
+        "api-reference/analytics/get-recommendation-analytics",
+        "api-reference/analytics/get-search-analytics",
+        "api-reference/analytics/get-cluster-analytics"
       ]
     },
     {
@@ -204,25 +196,26 @@
       ]
     },
     {
-      "group": "Invitation",
-      "pages": ["api-reference/invitation/send-invitation"]
-    },
-    {
-      "group": "Metrics",
-      "pages": ["api-reference/metrics/get-prometheus-metrics"]
-    },
-    {
       "group": "Health",
       "pages": ["api-reference/health/health-check"]
     },
     {
+      "group": "Invitation",
+      "pages": ["api-reference/invitation/send-invitation"]
+    },
+    {
       "group": "Stripe",
       "pages": [
+        "api-reference/stripe/get-all-invoices",
         "api-reference/stripe/checkout",
         "api-reference/stripe/get-all-plans",
         "api-reference/stripe/cancel-subscription",
         "api-reference/stripe/update-subscription-plan"
       ]
+    },
+    {
+      "group": "Metrics",
+      "pages": ["api-reference/metrics/get-prometheus-metrics"]
     }
   ],
   "footerSocials": {
