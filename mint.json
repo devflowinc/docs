@@ -75,14 +75,14 @@
     {
       "group": "Chunk",
       "pages": [
-        "api-reference/chunk/update-chunk",
         "api-reference/chunk/create-or-upsert-chunk-or-chunks",
-        "api-reference/chunk/autocomplete",
-        "api-reference/chunk/count-chunks-above-threshold",
-        "api-reference/chunk/generate-suggested-queries",
-        "api-reference/chunk/rag-on-specified-chunks",
-        "api-reference/chunk/get-recommended-chunks",
+        "api-reference/chunk/update-chunk",
         "api-reference/chunk/search",
+        "api-reference/chunk/autocomplete",
+        "api-reference/chunk/get-recommended-chunks",
+        "api-reference/chunk/rag-on-specified-chunks",
+        "api-reference/chunk/generate-suggested-queries",
+        "api-reference/chunk/count-chunks-above-threshold",
         "api-reference/chunk/update-chunk-by-tracking-id",
         "api-reference/chunk/get-chunk-by-tracking-id",
         "api-reference/chunk/delete-chunk-by-tracking-id",
@@ -95,14 +95,14 @@
     {
       "group": "Chunk Group",
       "pages": [
-        "api-reference/chunk-group/update-group",
         "api-reference/chunk-group/create-chunk-group",
+        "api-reference/chunk-group/update-group",
+        "api-reference/chunk-group/search-over-groups",
+        "api-reference/chunk-group/search-within-group",
+        "api-reference/chunk-group/get-recommended-groups",
         "api-reference/chunk-group/add-chunk-to-group",
         "api-reference/chunk-group/remove-chunk-from-group",
         "api-reference/chunk-group/get-groups-for-chunks",
-        "api-reference/chunk-group/search-over-groups",
-        "api-reference/chunk-group/get-recommended-groups",
-        "api-reference/chunk-group/search-within-group",
         "api-reference/chunk-group/get-chunks-in-group-by-tracking-id",
         "api-reference/chunk-group/get-group-by-tracking-id",
         "api-reference/chunk-group/update-group-by-tracking-id",
@@ -175,7 +175,8 @@
         "api-reference/organization/get-organization-usage",
         "api-reference/organization/get-organization-users",
         "api-reference/organization/get-organization",
-        "api-reference/organization/delete-organization"
+        "api-reference/organization/delete-organization",
+        "api-reference/organization/update-all-dataset-configurations"
       ]
     },
     {
