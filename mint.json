@@ -76,13 +76,13 @@
       "group": "Chunk",
       "pages": [
         "api-reference/chunk/create-or-upsert-chunk-or-chunks",
-        "api-reference/chunk/update-chunk",
         "api-reference/chunk/search",
         "api-reference/chunk/autocomplete",
         "api-reference/chunk/get-recommended-chunks",
         "api-reference/chunk/rag-on-specified-chunks",
         "api-reference/chunk/generate-suggested-queries",
         "api-reference/chunk/count-chunks-above-threshold",
+        "api-reference/chunk/update-chunk",
         "api-reference/chunk/update-chunk-by-tracking-id",
         "api-reference/chunk/get-chunk-by-tracking-id",
         "api-reference/chunk/delete-chunk-by-tracking-id",
@@ -96,16 +96,16 @@
       "group": "Chunk Group",
       "pages": [
         "api-reference/chunk-group/create-chunk-group",
-        "api-reference/chunk-group/update-group",
         "api-reference/chunk-group/search-over-groups",
         "api-reference/chunk-group/search-within-group",
         "api-reference/chunk-group/get-recommended-groups",
+        "api-reference/chunk-group/update-group",
+        "api-reference/chunk-group/update-group-by-tracking-id",
         "api-reference/chunk-group/add-chunk-to-group",
         "api-reference/chunk-group/remove-chunk-from-group",
         "api-reference/chunk-group/get-groups-for-chunks",
         "api-reference/chunk-group/get-chunks-in-group-by-tracking-id",
         "api-reference/chunk-group/get-group-by-tracking-id",
-        "api-reference/chunk-group/update-group-by-tracking-id",
         "api-reference/chunk-group/add-chunk-to-group-by-tracking-id",
         "api-reference/chunk-group/delete-group-by-tracking-id",
         "api-reference/chunk-group/get-group",
@@ -117,8 +117,8 @@
     {
       "group": "Topic",
       "pages": [
-        "api-reference/topic/update-topic",
         "api-reference/topic/create-topic",
+        "api-reference/topic/update-topic",
         "api-reference/topic/get-all-topics-for-owner-id",
         "api-reference/topic/delete-topic"
       ]
@@ -126,8 +126,8 @@
     {
       "group": "Message",
       "pages": [
-        "api-reference/message/edit-message",
         "api-reference/message/create-message",
+        "api-reference/message/edit-message",
         "api-reference/message/regenerate-message",
         "api-reference/message/get-all-messages-for-a-given-topic"
       ]
@@ -135,8 +135,8 @@
     {
       "group": "File",
       "pages": [
-        "api-reference/file/get-files-for-dataset",
         "api-reference/file/upload-file",
+        "api-reference/file/get-files-for-dataset",
         "api-reference/file/get-file",
         "api-reference/file/delete-file"
       ]
@@ -157,8 +157,8 @@
     {
       "group": "Dataset",
       "pages": [
-        "api-reference/dataset/update-dataset",
         "api-reference/dataset/create-dataset",
+        "api-reference/dataset/update-dataset",
         "api-reference/dataset/clear-dataset",
         "api-reference/dataset/get-datasets-from-organization",
         "api-reference/dataset/delete-dataset-by-tracking-id",
