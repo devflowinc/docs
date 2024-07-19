@@ -82,6 +82,7 @@
         "api-reference/chunk/rag-on-specified-chunks",
         "api-reference/chunk/generate-suggested-queries",
         "api-reference/chunk/count-chunks-above-threshold",
+        "api-reference/chunk/scroll-chunks",
         "api-reference/chunk/update-chunk",
         "api-reference/chunk/update-chunk-by-tracking-id",
         "api-reference/chunk/get-chunk-by-tracking-id",
