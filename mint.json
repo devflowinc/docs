@@ -96,7 +96,7 @@
     {
       "group": "Chunk Group",
       "pages": [
-        "api-reference/chunk-group/create-chunk-group",
+        "api-reference/chunk-group/create-or-upsert-group-or-groups",
         "api-reference/chunk-group/search-over-groups",
         "api-reference/chunk-group/search-within-group",
         "api-reference/chunk-group/get-recommended-groups",
@@ -130,6 +130,7 @@
         "api-reference/message/create-message",
         "api-reference/message/edit-message",
         "api-reference/message/regenerate-message",
+        "api-reference/message/regenerate-message-1",
         "api-reference/message/get-all-messages-for-a-given-topic"
       ]
     },
@@ -145,6 +146,8 @@
     {
       "group": "Analytics",
       "pages": [
+        "api-reference/analytics/send-ctr-data",
+        "api-reference/analytics/get-ctr-analytics",
         "api-reference/analytics/get-rag-analytics",
         "api-reference/analytics/get-recommendation-analytics",
         "api-reference/analytics/get-search-analytics",
@@ -171,13 +174,13 @@
     {
       "group": "Organization",
       "pages": [
-        "api-reference/organization/update-organization",
+        "api-reference/organization/update-all-dataset-configurations",
         "api-reference/organization/create-organization",
-        "api-reference/organization/get-organization-usage",
-        "api-reference/organization/get-organization-users",
-        "api-reference/organization/get-organization",
+        "api-reference/organization/update-organization",
         "api-reference/organization/delete-organization",
-        "api-reference/organization/update-all-dataset-configurations"
+        "api-reference/organization/get-organization-usage",
+        "api-reference/organization/get-organization",
+        "api-reference/organization/get-organization-users"
       ]
     },
     {
