@@ -66,6 +66,18 @@ A breakdown of the script is below
 The first step is to define all the types 
 
 ```ts
+interface Chunk {
+  chunk_html: string;
+  link: string;
+  tracking_id: string;
+  tag_set: string[];
+  metadata: {
+    [key: string]: string;
+  };
+  time_stamp: string;
+  upsert_by_tracking_id: boolean;
+}
+
 interface LanguageTaggedValue {
   language_tag: string;
   value: string;
@@ -150,7 +162,7 @@ if (imageHashMap == null) {
 
 ### Processing a Singular Chunk
 
-For each row of json we construct a `CreateChunkData` object, each of which can be pushed into Trieve separately or in bulk. We use the `imageHashMap` object constructed from before to get the `image_url` for each.
+For each row of json we construct a `Chunk` object, each of which can be pushed into Trieve separately or in bulk. We use the `imageHashMap` object constructed from before to get the `image_url` for each.
 
 ```ts
 function processLine(line: string) {
@@ -206,7 +218,7 @@ function processLine(line: string) {
   metadata.image_url = image_url;
   metadata.price = price;
 
-  const chunkData: CreateChunkData = {
+  const chunkData: Chunk = {
     chunk_html: searchableString.trim(),
     link: `https://${item.domain_name}/dp/${item.item_id}`,
     tracking_id: item.item_id,
@@ -219,25 +231,9 @@ function processLine(line: string) {
 }
 ```
 
-
-### Instantiating the Trieve Client
-
-We have to first instantiate the client with our credentials before we can use it:
-
-```ts
-const trieveApiKey = Bun.env.TRIEVE_API_KEY ?? "";
-const trieveDatasetId = Bun.env.TRIEVE_DATASET_ID ?? "";
-
-const trieveApiConfig = new Configuration({
-  apiKey: trieveApiKey,
-  basePath: "https://api.trieve.ai",
-});
-
-```
-
 ### Iterating and sending chunks to Trieve
 
-The last step is we iterate through all the json files, process each line into a CreateChunkData object. We use `chukApi.createChunk` to create chunks, in this case we are sending chunks in a batch size of 120 which is the max for this route.
+The last step is we iterate through all the json files, process each line into a Chunk object. We use the `/chunk` endpoint to create chunks, in this case we are sending chunks in a batch size of 120 which is the max for this route.
 
 
 ```ts
@@ -254,19 +250,29 @@ for (const file of files) {
     crlfDelay: Infinity,
   });
 
-  const items: CreateChunkData = [];
+  const items: Chunk[] = [];
 
   for await (const line of rl) {
     try {
-      const chunkData: CreateChunkData = processLine(line);
-      items.push(chunkData);
+      const chunkData: Chunk = processLine(line);
+        const options = {
+            method: "POST",
+            headers: {
+            "TR-Dataset": trieveDatasetId,
+            Authorization: trieveApiKey,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(chunk),
+      };
+
+      await fetch("https://api.trieve.ai/api/chunk", options);
     } catch (error) {
       console.error("Error parsing JSON from line:", error);
     }
   }
 
   const batchSize = 120;
-  const chunkedItems: CreateChunkData[] = [];
+  const chunkedItems: Chunk[][] = [];
   for (let i = 0; i < items.length; i += batchSize) {
     const chunk = items.slice(i, i + batchSize);
     chunkedItems.push(chunk);
@@ -283,4 +289,6 @@ for (const file of files) {
   }
 }
 ```
+
+Checkout the api reference for the [upload API](/api-reference/chunk/create-or-upsert-chunk-or-chunks) to view all of the parameters that can be passed in with the chunk.
 

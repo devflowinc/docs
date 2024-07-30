@@ -82,7 +82,7 @@ This guide will help you set up and run a demo using a sample job listing datase
 
 ### Creating a data model to represent the data
 
-When we recieve the CSV data, we need to turn it into a data model to be able to effectively pull the data out of it. The data model for this CSV looks like:
+When we receive the CSV data, we need to turn it into a data model to be able to effectively pull the data out of it. The data model for this CSV looks like:
 
 ```javascript
 interface JobData {
@@ -105,19 +105,6 @@ interface JobData {
   "Uniq Id": string;
   "Crawl Timestamp": string;
 }
-```
-
-### Instantiating the Trieve Client
-
-We have to first instantiate the client with our credentials before we can use it:
-
-```javascript
-const trieveApiConfig = new Configuration({
-  apiKey: trieveApiKey,
-  basePath: "https://api.trieve.ai",
-});
-
-const chunkApi = new ChunkApi(trieveApiConfig);
 ```
 
 ### Creating the Searchable Chunk HTML
@@ -189,8 +176,21 @@ const createChunkData = items.map((item) => ({
     upsert_by_tracking_id: true,
 }));
 
+// Define the chunk structure
+interface Chunk {
+  chunk_html: string;
+  link: string;
+  tracking_id: string;
+  tag_set: string[];
+  metadata: {
+    [key: string]: string;
+  };
+  time_stamp: string;
+  upsert_by_tracking_id: boolean;
+}
+
 const chunkSize = 50;
-const chunkedItems = [];
+const chunkedItems: Chunk[][] = [];
 
 // We combine chunks into groups of 50
 for (let i = 0; i < createChunkData.length; i += chunkSize) {
@@ -201,7 +201,17 @@ for (let i = 0; i < createChunkData.length; i += chunkSize) {
 for (const chunk of chunkedItems) {
     try {
         console.log(`Creating chunk`);
-        await chunkApi.createChunk(trieveDatasetId, chunk);
+        const options = {
+            method: "POST",
+            headers: {
+            "TR-Dataset": trieveDatasetId,
+            Authorization: trieveApiKey,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(chunk),
+      };
+
+      await fetch("https://api.trieve.ai/api/chunk", options);
     } catch (error) {
         console.error(`Failed to create chunk`);
         console.error(error);
