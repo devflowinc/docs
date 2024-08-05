@@ -3,7 +3,8 @@
   "name": "Trieve",
   "logo": {
     "dark": "./icons/android-chrome-512x512.png",
-    "light": "./icons/android-chrome-512x512.png"
+    "light": "./icons/android-chrome-512x512.png",
+    "href": "https://trieve.ai"
   },
   "openapi": "https://api.trieve.ai/api-docs/openapi.json",
   "favicon": "./icons/android-chrome-512x512.png",
