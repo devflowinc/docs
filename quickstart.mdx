@@ -3,167 +3,63 @@ title: "Quickstart"
 description: "Quickly start building search, recommendations, and RAG for your application with Trieve"
 ---
 
-## Create an account
 
-To get started, sign up for a free account at [dashboard.trieve.ai](https://dashboard.trieve.ai). With a free account, you can upload up to 1000 chunks and 512 mb of files.
+<Steps>
+  <Step title="Create an account and dataset">
+    Head over to the [Trieve Dashboard](https://dashboard.trieve.ai) to create an account and dataset. With a free account, you can upload up to 1000 chunks and 512 MB of files.
+  
+    ![title](https://trieve.b-cdn.net/2024-08-07_14-19.png)
+  </Step>
+  <Step title="Upload your data">
+    You can interact with Trieve in two ways, either by using the UIs or by using the [API](/api-reference/).
 
-## Download the Trieve CLI
+    ### Using the UIs
+    After creating your dataset on the dashboard, you will be brought to the dataset page. From there, you can upload your data by clicking on the "Upload File" button.
 
-The Trieve CLI is a command line interface that helps you manage your Trieve account and projects. Install it globally with cargo. 
+    ![title](https://trieve.b-cdn.net/2024-08-07_14-25.png)
 
-<Note>
-  If you don't have cargo installed, you can download it [here](https://doc.rust-lang.org/cargo/getting-started/installation.html).
-</Note>
+    Our API will automatically chunk your data for you in the background, and upload the resulting chunks into your Trieve dataset. 
 
-```bash
-cargo install trieve
-```
+    ### Using the API
 
-## Authenticate the CLI
+    In order to interact with the API, you will need to grab your dataset ID and API key from the dashboard.
 
-To authenticate the CLI, you simply need to run the following command and follow the instructions:
+    You can find your dataset ID on the dataset page:
+    ![title](https://trieve.b-cdn.net/2024-08-07_14-29.png)
 
-```bash
-trieve login
-```
+    You can generate an API key on the API keys page:
+    ![title](https://trieve.b-cdn.net/2024-08-07_14-30.png)
 
-## Create a new dataset
+    You can then use the API to upload your data, by providing the dataset ID and API key in the headers of your request.
 
-### Using Trieve CLI
+    ```
+    {
+      "Authorization": "<api-key>",
+      "TR-Dataset": "<dataset-id>"
+    }
+    ```
 
-To create a new dataset, run the following command:
+    You can then use our [upload file route](/api-reference/upload-file) to upload your files and start interacting with your data.
 
-```bash
-trieve dataset create
-```
+    <Note>If you would like to manually pass chunks to Trieve, you can use the [create chunks route](/api-reference/chunk/create-or-upsert-chunk-or-chunks) </Note>
+  
+  </Step>
+  <Step title="Interact with your data">
+    You can now interact with your data in a variety of ways. You can search your data, get recommendations, or use RAG to generate responses to user queries using our UIs or API.
 
-### Using [dashboard.trieve.ai](https://dashboard.trieve.ai)
+    ### Searching
+    You can try searching on the sample data you added by visiting [search.trieve.ai](https://search.trieve.ai) and entering a query in the search bar.
 
-Alternatively, you can also create a dataset at [dashboard.trieve.ai](https://dashboard.trieve.ai) by clicking on the "Create Dataset" button:
+    <Note>
+      Make sure to select the dataset you uploaded the sample data to using the selector dropdown on the top left.
+    </Note>
 
-![create-dataset-on-dashboard](https://cdn.trieve.ai/docs/create-dataset-dashboard-button.png)
+    ![example-search-ui-query](https://cdn.trieve.ai/docs/example-search-ui-query.png)
 
-## Upload sample data
+    ### RAG (Retrieval Augmented Generation)
+    You can try RAG on the sample data you added by visiting [chat.trieve.ai](https://chat.trieve.ai) and entering a query in the chat box.
 
-On the free tier you are able to create up to 1000 chunks and upload 512 mb worth of files.
+    ![trieve-rag-example](https://cdn.trieve.ai/docs/trieve-rag-example.png)
 
-### Using Trieve CLI
-
-To upload a sample dataset, run the following command:
-
-```bash
-trieve dataset example
-```
-
-### Using Trieve API
-
-Alternatively, you can also upload your own chunks using the Trieve API through a `POST` to the [/api/chunk route](/api-reference/chunk/create-or-upsert-chunk-or-chunks). 
-See the [API reference for the create chunk(s) endpoint](/api-reference/chunk/create-or-upsert-chunk-or-chunks) to see all of the available options for adding things like `location`, `metadata`, or `timestamp` to your chunks.
-
-#### 1. Copy a `dataset_id`
-
-Get an `id` from the output of the `trieve dataset list` command or create a new dataset with the `trieve dataset create` command and copy the `id` from the output.
-
-#### 2. Copy an `api-key`
-
-Get an `api-key` from the result of the `trieve api-key generate` command making sure that it has both read and write permissions.
-
-#### 3. POST to the `/api/chunk` endpoint
-
-See the [API reference for the create chunk(s) endpoint](/api-reference/chunk/create-or-upsert-chunk-or-chunks) to see all of the available options for adding things like `location`, `metadata`, or `timestamp` to your chunks.
-
-Below is a sample `curl` command to add a chunk to your dataset. Replace `<api-key>` with the API key you generated, and `<tr-dataset>` with the dataset ID you copied. 
-
-```bash
-curl --request POST \
-  --url https://api.trieve.ai/api/chunk \
-  --header 'Content-Type: application/json' \
-  --header 'TR-Dataset: <tr-dataset>' \
-  --header 'Authorization: <api-key>' \
-  --data '{
-  "chunk_html": "Hello World",
-  "tag_set": [
-    "hello",
-    "world"
-  ],
-}'
-```
-
-## Try search
-
-### On [search.trieve.ai](https://search.trieve.ai)
-
-You can try searching on the sample data you added by visiting [search.trieve.ai](https://search.trieve.ai) and entering a query in the search bar.
-
-<Note>
-  Make sure to select the dataset you uploaded the sample data to using the selector dropdown on the top left.
-</Note>
-
-![example-search-ui-query](https://cdn.trieve.ai/docs/example-search-ui-query.png)
-
-### Using Trieve API
-
-See the [API reference for the search endpoint](/api-reference/chunk/search) to see all of the available options for searching your dataset.
-
-Below is a sample `curl` command to search your dataset. Replace `<api-key>` and `<tr-dataset>` with the API key and dataset ID you copied respectively.
-
-```bash
-curl --request POST \
-  --url https://api.trieve.ai/api/chunk/search \
-  --header 'Content-Type: application/json' \
-  --header 'TR-Dataset: <tr-dataset>' \
-  --header 'Authorization: <api-key>' \
-  --data '{
-    "query": "Hello World"
-    "search_type": "hybrid"
-  }'
-```
-
-## Try recommendations
-
-### On [search.trieve.ai](https://search.trieve.ai)
-
-1. Open a chunk by itself by clicking on the external link icon on the right side of the chunk.
-
-![open-chunk-new-tab](https://cdn.trieve.ai/docs/open-chunk-new-tab.png)
-
-2. Click on the "Get Related Chunks" button below the chunk.
-
-![single-chunk-get-related-chunks-button](https://cdn.trieve.ai/docs/single-chunk-get-related-chunks-button.png)
-
-3. The recommended chunks will be displayed below the button.
-
-![single-chunk-related-chunks-result](https://cdn.trieve.ai/docs/single-chunk-related-chunks-result.png)
-
-### Using Trieve API
-
-See the [API reference for the recommend endpoint](/api-reference/chunk/get-recommended-chunks) to see all of the available options for getting recommendations for a specific chunk or chunks.
-
-## Try RAG
-
-<Tip>
-  You can turn on [HyDE](https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a) for RAG in the settings for your dataset at [dashboard.trieve.ai](https://dashboard.trieve.ai).
-</Tip>
-
-Trieve makes it easy to put RAG into your application. You can try RAG in the following ways:
-
-### On [chat.trieve.ai](https://chat.trieve.ai)
-
-You can try RAG on the sample data you added by visiting [chat.trieve.ai](https://chat.trieve.ai) and entering a query in the chat box.
-
-### Using Trieve API
-
-#### One-off on specific chunks
-
-Check the [API reference for the generate_from_chunks endpoint](/api-reference/chunk/rag-on-specified-chunks) to see details on how to perform LLM inference with a specific set of chunks in the context window.
-
-![trieve-rag-example](https://cdn.trieve.ai/docs/trieve-rag-example.png)
-
-#### RAG with stored conversation history
-
-Memory managed RAG requires calling the following two routes in sequence:
-
-1. [POST /api/topic](/api-reference/topic/create-topic) to create a topic with some `owner_id` where the conversation history will be stored. Commonly the `owner_id` is the user's ID or a fingerprint of the user's device. 
-Make sure to store the returned `id` for the next step.
-2. [POST /api/message](/api-reference/message/create-a-message) with the `topic_id` and some `new_message_content`. This will return a stream with some `N` chunks and LLM inference content separated by a `||` delimiter.
-
+  </Step>
+</Steps>

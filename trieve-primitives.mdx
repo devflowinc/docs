@@ -1,0 +1,20 @@
+---
+title: Trieve Primitives
+description: Basic terms and concepts used commonly within the Trieve ecosystem.
+---
+
+- **Chunk**: A chunk is a piece of data that is uploaded to Trieve. It is the smallest unit of data that can be searched, recommended, or used in RAG. Chunks are typically created by chunking a larger piece of data into smaller pieces. For example, a document can be chunked into paragraphs, sentences, or even words depending on the use case.
+
+    - **Tag Set**: A tag set is a collection of tags that can be associated with a chunk. Tags can be used to categorize or filter chunks based on specific criteria. For example, a chunk representing a job posting could be tagged with the job title, location, company name, etc.
+
+    - **Metadata**: Metadata is a json object that can be associated with a chunk. Metadata can be used to store additional information about a chunk, such as the source of the data, creation date, author, etc. Although filtering by metadata is supported, it is not recommended if latency is a concern.
+
+- **Groups**: Groups are a way to associate related chunks together. Chunks that belong to the same group are considered to be related in some way. For example, chunks representing different sections of a document can be grouped together to indicate that they are part of the same document. You can perform queries within a group or across groups.
+
+- **Dataset**: A dataset is a collection of chunks. Datasets are created in the Trieve dashboard and are used to organize and manage chunks. Datasets can be used to search, recommend, or generate responses using RAG.
+
+- **Search**: Search is the process of finding relevant chunks in a dataset based on a query. Trieve provides a search API that allows you to search for chunks based on text similarity.
+
+- **Recommendations**: Recommendations are a list of chunks that are similar to a given chunk. Trieve provides a recommendation API that allows you to get recommendations for a chunk based on text similarity.
+
+- **RAG (Retrieval Augmented Generation)**: RAG is a technique that combines search and generation to generate responses to user queries. Trieve provides a RAG API that allows you to generate responses to user queries based on the content of your dataset.

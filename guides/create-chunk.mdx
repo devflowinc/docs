@@ -14,15 +14,15 @@ The main route that we expose to handle this functionality is our [create chunk 
 ### Important Parameters
 
 - **`chunk_html`**: This is the content that will be embedded and made searchable. You can pass HTML here, and our service will automatically clean it for the embeddings.
-- **`chunk_vector`**: This allows you to provide your own pre-calculated embeddings. Use this if you have already calculated embeddings for your dataset and want to migrate them to Trieve.
 - **`group_ids` and `group_tracking_ids`**: These fields let you specify a group to associate the chunks with, useful for linking multiple chunks from one document.
-- **`link`, `location`, `tag_set`, and `time_stamp`**: These fields are indexed to enable fast filtering of chunks based on these attributes.
+- **`link`, `location`, `tag_set`, `num_value`, and `time_stamp`**: These fields are indexed to enable fast filtering of chunks based on these attributes.
 - **`metadata`**: This field allows you to include any arbitrary metadata in the form of a JSON object with the chunk. 
 <Note>
-For the best filtering performance, we recommend using the `link`, `location`, `tag_set`, and `time_stamp` rather than the metadata field as there are dedicated indexes for these. The metadata has an index built on it, but it is only optimized for match queries
+For the best filtering performance, we recommend using the `link`, `location`, `tag_set`, `num_value` and `time_stamp` rather than the metadata field as there are dedicated indexes for these. The metadata has an index built on it, but it is only optimized for match queries
 </Note>
 - **`tracking_id`**: This field allows you to assign an arbitrary ID to the chunk, aiding in coordination with your database system. You can search for chunks using this ID.
 - **`weight`**: This field allows you to assign a weight to the chunks, which can influence the chunk's ranking within search results. This is similar to merchandising features on other platforms.
+- **`semantic_boost` and `fulltext_boost`**: These fields allow you to boost the relevance of the chunk in the search results, by aligning the chunk closer to a specified phrase. This is useful for ensuring that for longer chunks, you can manually specify the most important part of the chunk, and improve relevance for the query patterns of your users.
 
 ### Formatting chunk_html
 
