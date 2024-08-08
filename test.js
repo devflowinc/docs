@@ -5,7 +5,7 @@
         dynamicDiv.className = 'p-2 border-t border-gray-200 dark:border-white/10 text-left text-gray-500 dark:text-gray-400';
         dynamicDiv.innerHTML = `
             Powered By 
-            <a href="https://trieve.ai" target="_blank">Trieve</a
+            <a href="https://trieve.ai" target="_blank">Trieve</a>
         `;
         targetElement.appendChild(dynamicDiv);
     }
