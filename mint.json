@@ -57,7 +57,7 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "trieve-primitives"]
+      "pages": ["introduction", "quickstart", "trieve-primitives", "screenshots"]
     },
     {
       "group": "Guides",
