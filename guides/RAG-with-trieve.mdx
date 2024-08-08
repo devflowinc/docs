@@ -5,7 +5,7 @@ icon: 'robot'
 ---
 
 ## Overview
-We provide functionality to do conversational search over your data using the Retrieve and Generate (RAG) model. This model allows you to chat with your data in a conversational manner, asking questions and getting responses in a natural language format. This is mainly done through our [RAG on specified chunks route](/api-reference/chunk/rag-on-specified-chunks) and [RAG route](/api-reference/message/create-a-message).
+We provide functionality to do conversational search over your data using the Retrieve and Generate (RAG) model. This model allows you to chat with your data in a conversational manner, asking questions and getting responses in a natural language format. This is mainly done through our [RAG on specified chunks route](/api-reference/chunk/rag-on-specified-chunks) and [RAG route](/api-reference/message/create-message).
 
 
 ## RAG on specified chunks
@@ -31,7 +31,7 @@ This strategy allows you to chat with all the chunks in your dataset. This is us
         - `name`: This is the name of the topic. 
         - `owner_id`: This is the ID of the user that owns the topic. This is typically a browser fingerprint or your user's id. It is used to group topics together for a user.
 
-    2. You can then use the `topic_id` that is returned from the `create-topic` route to use the [create message route](/api-reference/message/create-a-message).
+    2. You can then use the `topic_id` that is returned from the `create-topic` route to use the [create message route](/api-reference/message/create-message).
         ### Important Parameters
         - `topic_id`: This is the ID of the topic that you want to chat with
         - `new_message_content`: This is the new message that the user sends to the model
