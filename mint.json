@@ -60,6 +60,15 @@
       "pages": ["introduction", "quickstart", "trieve-primitives", "screenshots"]
     },
     {
+      "group": "Self Hosting",
+      "pages": [
+        "self-hosting/docker-compose",
+        "self-hosting/local-kube",
+        "self-hosting/aws",
+        "self-hosting/gcp"
+            ]
+    },
+    {
       "group": "Guides",
       "pages": [
         "guides/create-chunk",

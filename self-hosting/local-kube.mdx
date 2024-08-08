@@ -1,0 +1,92 @@
+---
+title: Local Kubernetes Setup
+description: Learn how to self-host Trieve on local Kubernetes
+icon: computer-classic
+---
+
+## Local Kuberntes
+
+We reccomend using `kind`
+
+1) Create kind cluster with a local image registry
+
+```sh
+./scripts/kind-with-registry.sh
+```
+
+2) Install clickhouse operator
+
+```sh
+./helm/install-clickhouse-operator.sh
+```
+
+3) Pull docker images from dockerhub and push into kind repository.
+
+```sh
+./scripts/pull-and-push.sh
+```
+
+4) Install clickhouse operator
+
+```sh
+./helm/install-clickhouse-operator.sh
+```
+
+5) Install the helm chart into kubernetes cluster
+
+```sh
+helm install -f helm/local-values.yaml local helm/
+```
+
+6) Edit the coredns entry for auth.localtrieve.com to work as an alias within kubernetes.
+
+```sh
+kubectl edit -n kube-system configmaps/coredns
+```
+
+Add in the following rule within the coredns settings. `rewrite name auth.localtrieve.com keycloak.default.svc.cluster.local`
+
+It should look something like this.
+
+```
+.:53 {
+    errors
+    health {
+       lameduck 5s
+    }
+    ready
+    kubernetes cluster.local in-addr.arpa ip6.arpa {
+       pods insecure
+       fallthrough in-addr.arpa ip6.arpa
+       ttl 30
+    }
+    prometheus :9153
+    forward . /etc/resolv.conf {
+       max_concurrent 1000
+    }
+    rewrite name auth.localtrieve.com keycloak.default.svc.cluster.local
+    cache 30
+    loop
+    reload
+    loadbalance
+}
+```
+
+8) Edit `/etc/hosts` and add the following entries here.
+
+```
+127.0.0.1  api.localtrieve.com
+127.0.0.1  search.localtrieve.com
+127.0.0.1  dashboard.localtrieve.com
+127.0.0.1  chat.localtrieve.com
+127.0.0.1  auth.localtrieve.com
+```
+
+### Testing
+
+The fastest way to test is using the Trieve CLI
+
+```
+trieve login # Make sure to set the api url to http://api.localtrieve.com
+trieve dataset example
+```
