@@ -57,7 +57,7 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "trieve-primitives", "screenshots"]
+      "pages": ["getting-started/introduction", "getting-started/quickstart", "getting-started/trieve-primitives", "getting-started/screenshots"]
     },
     {
       "group": "Self Hosting",
