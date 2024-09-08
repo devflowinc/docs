@@ -57,7 +57,12 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["getting-started/introduction", "getting-started/quickstart", "getting-started/trieve-primitives", "getting-started/screenshots"]
+      "pages": [
+        "getting-started/introduction",
+        "getting-started/quickstart",
+        "getting-started/trieve-primitives",
+        "getting-started/screenshots"
+      ]
     },
     {
       "group": "Self Hosting",
@@ -66,7 +71,7 @@
         "self-hosting/local-kube",
         "self-hosting/aws",
         "self-hosting/gcp"
-            ]
+      ]
     },
     {
       "group": "Guides",
@@ -161,25 +166,29 @@
         "api-reference/analytics/get-rag-analytics",
         "api-reference/analytics/get-recommendation-analytics",
         "api-reference/analytics/get-search-analytics",
-        "api-reference/analytics/get-cluster-analytics"
+        "api-reference/analytics/get-cluster-analytics",
+        "api-reference/analytics/get-top-datasets",
+        "api-reference/analytics/rate-query",
+        "api-reference/analytics/send-event-data"
       ]
-    },
-    {
-      "group": "Events",
-      "pages": ["api-reference/events/get-events-for-the-dataset"]
     },
     {
       "group": "Dataset",
       "pages": [
         "api-reference/dataset/create-dataset",
-        "api-reference/dataset/update-dataset",
+        "api-reference/dataset/update-dataset-by-id-or-tracking-id",
         "api-reference/dataset/clear-dataset",
+        "api-reference/dataset/get-dataset-by-id",
+        "api-reference/dataset/get-all-tags",
         "api-reference/dataset/get-datasets-from-organization",
         "api-reference/dataset/delete-dataset-by-tracking-id",
         "api-reference/dataset/get-usage-by-dataset-id",
-        "api-reference/dataset/get-dataset",
         "api-reference/dataset/delete-dataset"
       ]
+    },
+    {
+      "group": "Events",
+      "pages": ["api-reference/events/get-events-for-the-dataset"]
     },
     {
       "group": "Organization",
