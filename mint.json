@@ -39,6 +39,11 @@
   ],
   "anchors": [
     {
+      "name": "TypeScript SDK",
+      "icon": "js",
+      "url": "https://ts-sdk.trieve.ai"
+    },
+    {
       "name": "Github",
       "icon": "github",
       "url": "https://github.com/devflowinc/trieve"
