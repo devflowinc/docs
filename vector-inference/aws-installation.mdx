@@ -1,0 +1,177 @@
+---
+title: 'AWS Installation'
+description: 'Install Trieve Vector Inference'
+icon: 'aws'
+---
+
+## Installation Requirements
+
+- `eksctl` >= 0.171 ([eksctl installation guide](https://eksctl.io/installation))
+- `aws` >= 2.15 ([aws installation guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html))
+- `kubectl` >= 1.28 ([kubectl installation guide](https://kubernetes.io/docs/tasks/tools/#kubectl))
+- `helm` >= 3.14 ([helm installation guide](https://helm.sh/docs/intro/install/#helm))
+
+You'll also need a license to run Trieve Vector Inference
+
+### Getting your license
+
+(contact us here)
+
+## Check AWS quota
+
+<Warning>
+    Ensure you have quotas for Both GPU's and Load Balancers.
+</Warning>
+
+1) At least **4 vCPUs** for On-Demand G and VT instances in the region of choice.
+
+Check quota for [here](https://us-west-1.console.aws.amazon.com/servicequotas/home/services/ec2/quotas/L-3819A6DF)
+
+2) You will need **1 load-balancer** per each model you want.
+
+Check quotas for [here](https://us-west-1.console.aws.amazon.com/servicequotas/home/services/ec2/quotas/L-3819A6DF)
+
+## Deploying the Cluster
+
+### Setting up environment variables 
+
+Create eks cluster and install needed plugins
+
+Your AWS Account ID:
+```sh
+export AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query "Account" --output text)"
+```
+
+Your AWS REGION:
+```sh
+export AWS_REGION=us-east-2
+```
+
+Your Kubernetes cluster name:
+
+```sh
+export CLUSTER_NAME=trieve-gpu
+```
+
+Your machine types, we recommend `g4dn.xlarge`, as it is the cheapest on AWS. A single small node is needed for extra utility.
+
+```sh
+export CPU_INSTANCE_TYPE=t3.small
+export GPU_INSTANCE_TYPE=g4dn.xlarge
+export GPU_COUNT=1
+```
+
+**To use our reccomended defaults**
+
+```sh
+export AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query "Account" --output text)"
+export AWS_REGION=us-east-2
+export CLUSTER_NAME=trieve-gpu
+export CPU_INSTANCE_TYPE=t3.small
+export GPU_INSTANCE_TYPE=g4dn.xlarge
+export GPU_COUNT=1
+```
+
+### Create your cluster
+
+Download the bootstrap script
+```sh
+wget cdn.trieve.ai/bootstrap-eks.sh
+```
+
+Run the bootstrap script with bash
+
+```sh
+bash bootstrap-eks.sh
+```
+
+This will take around 25 minutes to complete
+
+## Install Trieve Vector Inference
+
+### Configure `embedding_models.yaml`
+
+Frist download the example configiguration file
+
+```sh
+wget https://cdn.trieve.ai/embedding_models.yaml
+```
+
+Now you can modify your `embedding_models.yaml`, this defines all the models that you will want to use
+
+```yaml embedding_models.yaml
+accessKey: "<your-access-key-here>"
+
+models:
+  bgeM3:
+    replicas: 2
+    revision: main
+    modelName: BAAI/bge-m3 # The end of the URL https://huggingface.co/BAAI/bge-m3
+    hfToken: "" # If you have a private hugging face repo
+  spladeDoc:
+    replicas: 2
+    modelName: naver/efficient-splade-VI-BT-large-doc # The end of the URL https://huggingface.co/naver/efficient-splade-VI-BT-large-doc
+    isSplade: true
+  spladeQuery:
+    replicas: 2
+    modelName: naver/efficient-splade-VI-BT-large-doc # The end of the URL https://huggingface.co/naver/efficient-splade-VI-BT-large-doc
+    isSplade: true
+  bge-reranker:
+    replicas: 2
+    modelName: BAAI/bge-reranker-large
+    isSplade: false
+```
+
+### Install the helm chart
+
+```sh
+helm upgrade -i vector-inference \
+    oci://registry-1.docker.io/trieve/embeddings-helm \
+    -f embedding_models.yaml
+```
+
+### Get your model endpoints
+
+```sh
+kubectl get ingress
+```
+
+The output looks something like this:
+
+```
+NAME                                              CLASS   HOSTS   ADDRESS                                                                  PORTS   AGE
+vector-inference-embedding-bge-reranker-ingress   alb     *       k8s-default-vectorin-18b7ade77a-2040086997.us-east-2.elb.amazonaws.com   80      73s
+vector-inference-embedding-bgem3-ingress          alb     *       k8s-default-vectorin-25e84e25f0-1362792264.us-east-2.elb.amazonaws.com   80      73s
+vector-inference-embedding-spladedoc-ingress      alb     *       k8s-default-vectorin-8af81ad2bd-192706382.us-east-2.elb.amazonaws.com    80      72s
+vector-inference-embedding-spladequery-ingress    alb     *       k8s-default-vectorin-10404abaee-1617952667.us-east-2.elb.amazonaws.com   80      3m20s
+```
+
+## Using Trieve Vector Inference
+
+Each `ingress` point will be using their own Application Load Balancer within AWS. The `Address` provided is the model's endpoint that you can make [dense embeddings](/vector-inference/embed), [sparse embeddings](/vector-inference/embed_sparse), or [reranker calls](/vector-inference/reranker) based on the models you chose
+
+Check out the guides for more information on configureation
+
+<CardGroup cols={3}>
+  <Card icon="magnifying-glass" title="Using Splade Models" href="/vector-inference/splade">
+	How to setup a dedicated instance for the sparse splade embedding model
+  </Card>
+  <Card icon="brackets-curly" title="Using Custom Models" href="/vector-inference/dense">
+	How to use private or gated hugging face models. Or any models that you want
+  </Card>
+  <Card icon="microchip-ai" title="OpenAI compatibility" href="/vector-inference/openai">
+	Trieve Vector Inference has openai compatible routes
+  </Card>
+</CardGroup>
+
+## Optional: Delete the cluster
+
+```sh
+cluster_name=trieve-gpu
+region=us-east-2
+
+helm uninstall vector-release
+helm uninstall nvdp -n kube-system
+helm uninstall aws-load-balancer-controller -n kube-system
+eksctl delete cluster --region=${REGION} --name=${CLUSTER_NAME}
+```

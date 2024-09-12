@@ -1,0 +1,47 @@
+---
+title: "Working with Splade v2"
+---
+
+## What is splade?
+
+`Splade` is similar to other inverted index approaches like `bm25`. `Splade` includes term expansion
+
+## Using with Trieve Vector Inference
+
+<Steps>
+<Step title="Update embedding_models.yaml">
+To use splade with Trieve Vector Inference, you will need to adapt both the `doc` and `query` models
+
+The splade `document` model is the model you use to encode files, where the `query` model is the one to encode the query that you will be searching with
+
+```yaml embedding_models.yaml
+models:
+  # ...
+  spladeDoc:
+    replicas: 1
+    modelName: naver/efficient-splade-VI-BT-large-doc
+    isSplade: true
+  spladeQuery:
+    replicas: 1
+    modelName: naver/efficient-splade-VI-BT-large-query
+    isSplade: true
+  # ...
+```
+</Step>
+
+<Step title="Upgrade your TVF cluster">
+Update TVF to include your models
+
+```bash
+helm upgrade -i vector-inference \
+    oci://registry-1.docker.io/trieve/embeddings-helm \
+    -f embedding_models.yaml
+```
+</Step>
+
+<Step title="Get embeddings endpoint">
+```sh
+kubectl get ing
+```
+</Step>
+</Steps>

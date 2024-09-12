@@ -1,0 +1,42 @@
+---
+title: "Working with Reranker"
+---
+
+## What is a Reranker / CrossEncoder?
+
+`Splade` is similar to other inverted index approaches like `bm25`. `Splade` includes term expansion
+
+## Using with Trieve Vector Inference
+
+<Steps>
+<Step title="Update embedding_models.yaml">
+To use a reranker model with Trieve Vector Inference, you will need to update your embedding_models.yaml file
+
+```yaml embedding_models.yaml
+...
+models:
+  ...
+  my-reranker-model:
+    replicas: 1
+    revision: main
+    modelName: BAAI/bge-reranker-large
+...
+```
+</Step>
+
+<Step title="Upgrade your TVF cluster">
+Update TVF to include your models
+
+```bash
+helm upgrade -i vector-inference \
+    oci://registry-1.docker.io/trieve/embeddings-helm \
+    -f embedding_models.yaml
+```
+</Step>
+
+<Step title="Get embeddings endpoint">
+```sh
+kubectl get ing
+```
+</Step>
+</Steps>

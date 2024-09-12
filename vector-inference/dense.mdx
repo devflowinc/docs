@@ -1,0 +1,45 @@
+---
+title: 'Using Custom Models'
+---
+
+## Custom or fine tuned models in Trieve Vector Inference
+
+The [open source text models](https://huggingface.co/spaces/mteb/leaderboard) on hugging face may not be what you always want, 
+
+
+<Steps>
+<Step title="Update embedding_models.yaml">
+To use a private or custom model with Trieve Vector Inference, you will need to update your `embedding_models.yaml` file.
+
+If the model is a private or gated hugging face model, you will need to include your huggingface api token
+
+```yaml embedding_models.yaml
+...
+models:
+  ...
+  my-custom-model:
+    replicas: 1
+    revision: main
+    modelName: trieve/private-model-example
+	hfToken: "hf_**********************************"
+...
+```
+</Step>
+
+<Step title="Update your TVI cluster">
+Update TVI to include your models
+
+```bash
+helm upgrade -i vector-inference \
+    oci://registry-1.docker.io/trieve/embeddings-helm \
+    -f embedding_models.yaml
+```
+</Step>
+
+<Step title="Get embeddings endpoint">
+```sh
+kubectl get ing
+```
+</Step>
+</Steps>
+
