@@ -35,6 +35,10 @@
     {
       "name": "API Reference",
       "url": "api-reference"
+    },
+    {
+      "name": "Vector Inference",
+      "url": "vector-inference"
     }
   ],
   "anchors": [
@@ -66,7 +70,8 @@
         "getting-started/introduction",
         "getting-started/quickstart",
         "getting-started/trieve-primitives",
-        "getting-started/screenshots"
+        "getting-started/screenshots",
+        "vector-inference/introduction"
       ]
     },
     {
@@ -75,7 +80,8 @@
         "self-hosting/docker-compose",
         "self-hosting/local-kube",
         "self-hosting/aws",
-        "self-hosting/gcp"
+        "self-hosting/gcp",
+        "vector-inference/aws-installation"
       ]
     },
     {
@@ -85,7 +91,21 @@
         "guides/uploading-files",
         "guides/searching-with-trieve",
         "guides/recommending-with-trieve",
-        "guides/RAG-with-trieve"
+        "guides/RAG-with-trieve",
+        "vector-inference/rerank",
+        "vector-inference/splade",
+        "vector-inference/dense",
+        "vector-inference/openai"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "vector-inference/embed",
+        "vector-inference/embed_all",
+        "vector-inference/embed_sparse",
+        "vector-inference/reranker",
+        "vector-inference/openai_compat"
       ]
     },
     {

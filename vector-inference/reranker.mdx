@@ -1,0 +1,140 @@
+---
+title: 'Get ranks'
+sidebarTitle: 'POST /rerank'
+description: 'Runs Reranker. Returns a 424 status code if the model is not a Reranker model'
+---
+
+<RequestExample>
+
+```json Raw Json
+{
+  "query": "What are some good electric cars",
+  "texts": [
+      "Here’s the information about the Mercedes CLR GTR: The Mercedes CLR GTR is a remarkable racing car ...",
+      "The Tesla Cybertruck is an all-electric, battery-powered light-duty truck unveiled by Tesla, Inc. ..."
+  ],
+  "raw_scores": false,
+  "return_text": false,
+  "truncate": false,
+  "truncation_direction": "right"
+}
+```
+
+```sh curl
+curl -X POST \
+     -H "Content-Type: application/json" \
+     -d '{
+      "query": "What are some good electric cars",
+      "texts": [
+          "Here’s the information about the Mercedes CLR GTR: The Mercedes CLR GTR is a remarkable racing car ...",
+          "The Tesla Cybertruck is an all-electric, battery-powered light-duty truck unveiled by Tesla, Inc. ..."
+      ],
+      "raw_scores": false,
+      "return_text": false,
+      "truncate": false,
+      "truncation_direction": "right"
+    }' \
+     --url http://<your-url>/rerank
+```
+
+```py python
+import requests
+
+endpoint = "<your-custom-endpoint>"
+
+requests.post(f"{endpoint}/rerank", json={
+    "query": "What are some good electric cars",
+    "texts": [
+      "Here’s the information about the Mercedes CLR GTR: The Mercedes CLR GTR is a remarkable racing car ...",
+      "The Tesla Cybertruck is an all-electric, battery-powered light-duty truck unveiled by Tesla, Inc. ..."
+    ],
+    "raw_scores": False,
+    "return_text": False,
+    "truncate": False,
+    "truncation_direction": "right"
+});
+
+## or 
+
+requests.post(f"{endpoint}/rerank", json={
+    "inputs": "test single input"
+});
+
+
+```
+
+</RequestExample>
+
+<ResponseExample>
+```json 200 Ranks
+[
+    {
+        "index":1,
+        "score":0.15253653,
+        // if return_text = true
+        "text": "The Tesla Cybertruck is an all-electric, battery-powered light-duty truck unveiled by Tesla, Inc. ..."
+    },
+    {
+        "index":0,
+        "score":0.00498227
+        // if return_text = true
+        "text": "Here’s the information about the Mercedes CLR GTR: The Mercedes CLR GTR is a remarkable racing car ..."
+    }
+]
+```
+
+```json 413
+{
+    "error": "Batch size error",
+    "error_type": "validation"
+}
+```
+
+```json 422
+{
+    "error": "Tokenization error",
+    "error_type": "validation"
+}
+```
+
+```json 424
+{
+    "error": "Inference failed",
+    "error_type": "backend"
+}
+```
+
+```json 429
+{
+    "error": "Model is overloaded",
+    "error_type": "overloaded"
+}
+```
+</ResponseExample>
+
+
+
+<ParamField path="query" type="string" required>
+  Inputs that need to be embedded
+</ParamField>
+
+<ParamField path="texts" type="string[]" required>
+  Inputs that need to be embedded
+</ParamField>
+
+<ParamField path="raw_scores" type="boolean" default="false">
+  Output the raw reranker score or the normalized score between 0-1.
+  When `false`, score is between 0 and 1, otherwise range is indeterminate 
+</ParamField>
+
+<ParamField path="return_text" type="boolean" default="false">
+  Return the text with along with each rank
+</ParamField>
+
+<ParamField path="truncate" type="boolean" default="false">
+Automatically truncate inputs that are longer than the maximum supported size
+</ParamField>
+
+<ParamField path="truncate_direction" type='"right" | "left"' default="right">
+</ParamField>
+

@@ -1,0 +1,105 @@
+---
+title: 'Install Trieve vector inference'
+description: 'Install Trieve Vector Inference'
+icon: 'files'
+---
+
+## Installation Requirements
+
+- `eksctl` >= 0.171 ([eksctl installation guide](https://eksctl.io/installation))
+- `aws` >= 2.15 ([aws installation guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html))
+- `kubectl` >= 1.28 ([kubectl installation guide](https://kubernetes.io/docs/tasks/tools/#kubectl))
+- `helm` >= 3.14 ([helm installation guide](https://helm.sh/docs/intro/install/#helm))
+
+You'll also need a license to run Trieve Vector Inference
+
+### Getting your license
+
+(contact us here)
+
+## Check AWS quota
+
+Ensure you have quotas for
+1) At least **4 vCPUs** for On-Demand G and VT instances in the region of choice.
+
+Check quota for *us-east-2* [here](https://us-west-1.console.aws.amazon.com/servicequotas/home/services/ec2/quotas/L-3819A6DF)
+
+- At least **1 load-balancer per each model you want.
+
+Check quota for *us-east-2* [here](https://us-west-1.console.aws.amazon.com/servicequotas/home/services/ec2/quotas/L-3819A6DF)
+
+## Deploying the Cluster
+
+### Setting up environment variables 
+
+Create eks cluster and install needed plugins
+
+Your AWS Account ID:
+```sh
+export AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query "Account" --output text)"
+```
+
+Your AWS REGION:
+```sh
+export AWS_REGION=us-east-2
+```
+
+Your Kubernetes cluster name:
+
+```sh
+export CLUSTER_NAME=trieve-gpu
+```
+
+Your machine types, we recommend `g4dn.xlarge`, as it is the cheapest on AWS. A single small node is needed for extra utility.
+
+```sh
+export CPU_INSTANCE_TYPE=t3.small
+export GPU_INSTANCE_TYPE=g4dn.xlarge
+export GPU_COUNT=1
+```
+
+### Create your cluster
+
+```sh
+curl ./create_cluster.sh | sh
+```
+
+This will take around 25 minutes to complete
+
+## Install Trieve Vector Inference
+
+### Specify your embedding models
+
+Modify `embedding_models.yaml` for the models that you want to use
+
+### Install the helm chart
+
+```sh
+helm upgrade -i vector-inference oci://registry-1.docker.io/trieve/embeddings-helm -f embedding_models.yaml
+```
+
+### Get your model endpoints
+
+```sh
+kubectl get ingress
+```
+
+![](./assets/ingress.png)
+
+## Using Trieve Vector Inference
+
+```sh
+curl -X POST   -H "Content-Type: application/json"   -d '{"inputs": "cancer" ,"model": "en"}
+```
+
+## Optional: Delete the cluster
+
+```sh
+cluster_name=trieve-gpu
+region=us-east-2
+
+helm uninstall vector-release
+helm uninstall nvdp -n kube-system
+helm uninstall aws-load-balancer-controller -n kube-system
+eksctl delete cluster --region=${REGION} --name=${CLUSTER_NAME}
+```
