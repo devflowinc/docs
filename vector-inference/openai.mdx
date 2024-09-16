@@ -1,3 +1,39 @@
 ---
-title: "OpenAI compatible interface"
+title: "Using OpenAI SDK"
 ---
+
+Trieve Vector Inference is compatible with the OpenAI api. This means you're able to just replace the endpoint, without changing any pre-existing code.
+Here's an example with the `openai` python sdk
+
+First install the dependencies 
+
+```sh
+pip install openai
+pip install requests
+pip install python-dotenv
+```
+
+```python openai_compatibility.py
+import openai
+import time
+import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+endpoint = "http://<your-ingress-endpoint-here>"
+
+openai.base_url = endpoint
+
+client = openai.OpenAI(
+    # This is the default and can be omitted
+    api_key=os.environ.get("OPENAI_API_KEY"),
+    base_url=endpoint
+)
+
+embedding = client.embeddings.create(
+    input="This is some example input",
+    model="BAAI/bge-m3"
+)
+```
