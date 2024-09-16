@@ -61,7 +61,13 @@ export GPU_INSTANCE_TYPE=g4dn.xlarge
 export GPU_COUNT=1
 ```
 
-**To use our reccomended defaults**
+Disable AWS CLI pagination (optional):
+
+```sh
+export AWS_PAGER=""
+```
+
+**To use our recommended defaults**
 
 ```sh
 export AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query "Account" --output text)"
@@ -70,16 +76,17 @@ export CLUSTER_NAME=trieve-gpu
 export CPU_INSTANCE_TYPE=t3.small
 export GPU_INSTANCE_TYPE=g4dn.xlarge
 export GPU_COUNT=1
+export AWS_PAGER=""
 ```
 
 ### Create your cluster
 
-Download the bootstrap script
+Download the `bootstrap-eks.sh` script
 ```sh
 wget cdn.trieve.ai/bootstrap-eks.sh
 ```
 
-Run the bootstrap script with bash
+Run `bootstrap-eks.sh` with bash
 
 ```sh
 bash bootstrap-eks.sh
@@ -91,7 +98,7 @@ This will take around 25 minutes to complete
 
 ### Configure `embedding_models.yaml`
 
-Frist download the example configiguration file
+First download the example configuration file
 
 ```sh
 wget https://cdn.trieve.ai/embedding_models.yaml
@@ -150,7 +157,7 @@ vector-inference-embedding-spladequery-ingress    alb     *       k8s-default-ve
 
 Each `ingress` point will be using their own Application Load Balancer within AWS. The `Address` provided is the model's endpoint that you can make [dense embeddings](/vector-inference/embed), [sparse embeddings](/vector-inference/embed_sparse), or [reranker calls](/vector-inference/reranker) based on the models you chose
 
-Check out the guides for more information on configureation
+Check out the guides for more information on configuration
 
 <CardGroup cols={3}>
   <Card icon="magnifying-glass" title="Using Splade Models" href="/vector-inference/splade">
@@ -167,8 +174,10 @@ Check out the guides for more information on configureation
 ## Optional: Delete the cluster
 
 ```sh
-cluster_name=trieve-gpu
-region=us-east-2
+CLUSTER_NAME=trieve-gpu
+REGION=us-east-2
+
+aws eks update-kubeconfig --region ${REGION} --name ${CLUSTER_NAME}
 
 helm uninstall vector-release
 helm uninstall nvdp -n kube-system

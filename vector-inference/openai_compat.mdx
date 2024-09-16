@@ -20,7 +20,7 @@ Generating an embedding from a dense embedding model
 ```sh curl
 curl -X POST \
      -H "Content-Type: application/json"\
-     -d '{"inputs": "test input"}' \
+     -d '{"input": "test input"}' \
      --url http://<your-url>/v1/embeddings 
 ```
 
@@ -30,13 +30,13 @@ import requests
 endpoint = "<your-custom-endpoint>"
 
 requests.post(f"{endpoint}/v1/embeddings", json={
-    "inputs": ["test input", "test input 2"]
+    "input": ["test input", "test input 2"]
 });
 
 ## or 
 
 requests.post(f"{endpoint}/v1/embeddings", json={
-    "inputs": "test single input"
+    "input": "test single input"
 });
 
 
