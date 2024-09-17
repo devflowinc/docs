@@ -1,12 +1,14 @@
 ---
 title: "Working with Reranker"
+mode: wide
+icon: arrow-up-arrow-down
 ---
 
 ## What is a Reranker / CrossEncoder?
 
-`Splade` is similar to other inverted index approaches like `bm25`. `Splade` includes term expansion
+A `Reranker` model provides a powerful semantic boost to the search quality of any keyword or vector search system without requiring any overhaul or replacement.
 
-## Using with Trieve Vector Inference
+## Using Rerankers with Trieve Vector Inference
 
 <Steps>
 <Step title="Update embedding_models.yaml">
@@ -38,5 +40,14 @@ helm upgrade -i vector-inference \
 ```sh
 kubectl get ing
 ```
+
+```
+NAME                                              CLASS   HOSTS   ADDRESS                                                                 PORTS   AGE
+vector-inference-embedding-bge-reranker-ingress   alb     *       k8s-default-vectorin-b09efe8cf6-890425945.us-west-1.elb.amazonaws.com   80      77m
+```
+
+The output looks like this
+
+
 </Step>
 </Steps>

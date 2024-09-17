@@ -71,7 +71,8 @@
         "getting-started/quickstart",
         "getting-started/trieve-primitives",
         "getting-started/screenshots",
-        "vector-inference/introduction"
+        "vector-inference/introduction",
+        "vector-inference/pricing"
       ]
     },
     {
@@ -81,7 +82,8 @@
         "self-hosting/local-kube",
         "self-hosting/aws",
         "self-hosting/gcp",
-        "vector-inference/aws-installation"
+        "vector-inference/aws-installation",
+        "vector-inference/troubleshooting"
       ]
     },
     {
