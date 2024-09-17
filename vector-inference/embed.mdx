@@ -22,7 +22,7 @@ Generating an embedding from a dense embedding model
 curl -X POST \
      -H "Content-Type: application/json"\
      -d '{"inputs": "test input"}' \
-     --url http://<your-url>/embed 
+     --url "http://$ENDPOINT/embed" 
 ```
 
 ```py python

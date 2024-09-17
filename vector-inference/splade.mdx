@@ -1,12 +1,15 @@
 ---
 title: "Working with Splade v2"
+icon: magnifying-glass 
+description: Learn how to use splade with TVI.
+mode: wide
 ---
 
 ## What is splade?
 
-`Splade` is similar to other inverted index approaches like `bm25`. `Splade` includes term expansion
+`Splade` is similar to other inverted index approaches like `bm25`. `Splade` includes neural term expansion, meaning that it is able to match on synonym's much better than traditional bm25
 
-## Using with Trieve Vector Inference
+## Using Splade with Trieve Vector Inference
 
 <Steps>
 <Step title="Update embedding_models.yaml">
@@ -43,5 +46,18 @@ helm upgrade -i vector-inference \
 ```sh
 kubectl get ing
 ```
+</Step>
+
+<Step title="Make call to generate sparse vector">
+    ```sh
+    ENDPOINT="k8s-default-vectorin...elb.amazonaws.com"
+
+    curl -X POST \
+         -H "Content-Type: application/json"\
+         -d '{"inputs": "test input"}' \
+         --url http://$ENDPOINT/embed_sparse
+    ```
+
+  For more information checkout the [API reference](/vector-inference/embed_sparse) for sparse vectors
 </Step>
 </Steps>
