@@ -94,6 +94,7 @@
         "guides/searching-with-trieve",
         "guides/recommending-with-trieve",
         "guides/RAG-with-trieve",
+        "guides/analytics-quickstart",
         "vector-inference/rerank",
         "vector-inference/splade",
         "vector-inference/dense",
@@ -186,7 +187,6 @@
       "api-reference/file/delete-file"
     ]
   },
-
   {
     "group": "Analytics",
     "pages": [
@@ -194,9 +194,10 @@
       "api-reference/analytics/send-event-data",
       "api-reference/analytics/get-all-events",
       "api-reference/analytics/get-ctr-analytics",
+      "api-reference/analytics/rate-rag",
       "api-reference/analytics/get-rag-analytics",
       "api-reference/analytics/get-recommendation-analytics",
-      "api-reference/analytics/rate-query",
+      "api-reference/analytics/rate-search",
       "api-reference/analytics/get-search-analytics",
       "api-reference/analytics/get-cluster-analytics",
       "api-reference/analytics/get-top-datasets"
