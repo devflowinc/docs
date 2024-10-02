@@ -16,12 +16,12 @@ Trieve automatically collects all of the searches and RAG chats that are made in
 
 We provide extensive analytics on your searches all of which can be found in the [search analytics route](api-reference/analytics/get-search-analytics).
 These analytics include:
-1. **Latency over time**: This graph shows the average latency of searches over time.
-2. **Searches over time**: This graph shows the number of searches made over time.
-3. **Head Queries**: This table shows the head queries made in your dataset.
-4. **Low Confidence Queries**: This table shows the queries that have low confidence scores, which can be useful for improving your search results.
-5. **No Results Queries**: This table shows the queries that returned no results, which can be useful for improving your search results.
-6. **Popular Filters**: This table shows the most popular filters used in searches.
+- **Head Queries**: Head queries is a collection of the most common queries.
+- **Low Confidence Queries**: The queries where all your results have scores, which can be useful for improving your search results.
+- **No Results Queries**: This table shows the queries that returned no results, which can be useful for improving your search results.
+- **Popular Filters**: This table shows the most popular filters used in searches.
+- **Latency / time**: This graph shows the average latency of searches over time.
+- **Searches / time**: This graph shows the number of searches made over time.
 
 You can see all of this data on the dashboard in the analytics section, as well as be able to export them to a CSV so that you can analyze them in your own tools.
 ![](https://trieve.b-cdn.net/Screenshot%202024-10-01%20at%201.46.51%E2%80%AFPM.png)
@@ -30,145 +30,158 @@ You can see all of this data on the dashboard in the analytics section, as well 
 
 We provide extensive analytics on your RAG chats all of which can be found in the [RAG analytics route](api-reference/analytics/get-rag-analytics).
 These analytics include:
-1. **Usage over time**: This graph shows the number of RAG chats made over time.
-2. **All RAG Chats**: This table shows all of the RAG chats made in your dataset.
+- **Usage over time**: This graph shows the number of RAG chats made over time.
+- **All RAG Chats**: This table shows all of the RAG chats made in your dataset.
 
 You can see all of this data on the dashboard in the analytics section, as well as be able to export them to a CSV so that you can analyze them in your own tools.
 ![](https://trieve.b-cdn.net/Screenshot%202024-10-01%20at%202.06.27%E2%80%AFPM.png)
 
 ## Custom Metrics
 
-<Steps>
-    <Step title="Get the Search ID" icon="magnifying-glass">
-        All V2 Searches Return an `id`, this `id` is will be used for all `search` event types
+### Getting the Search ID
+All V2 Searches Return an `id`, this `id` is will be used for all `search` event types
 
-        ```json search_response.json
-        {
-            "chunks" : [
-                // ... Your Chunk Data
-            ], 
-            id: "" // UUID used to track
-            // ... other data
-        }
-        ```
+```json search_response.json
+{
+    "chunks" : [
+        // ... Your Chunk Data
+    ], 
+    id: "" // UUID used to track
+    // ... other data
+}
+```
 
-		RAG requests return a `TR-QueryID` Header in the Response Headers.
+RAG requests return a `TR-QueryID` Header in the Response Headers.
 
-    </Step>
-    <Step title="Track Click Through Rate data" icon="computer-mouse">
-        Send CTR data to Trieve using the [send CTR data route](/api-reference/analytics/send-ctr-data). Referencing your search `id` from the previous step.
+### Track Click Through Rate data
+Send Clik-Through Rate data to Trieve using the [send CTR data route](/api-reference/analytics/send-ctr-data). Referencing your search `id` from the previous step.
 
-		`chunk_id` in this case is the chunk the user clicked on from the search
+`chunk_id` in this case is the chunk the user clicked on from the search
 
-        <CodeGroup>
-        ```json curl
-        curl -X POST https://api.trieve.ai/api/analytics/ctr \
-          -H "TR-Dataset: YOUR_DATASET_ID" \
-          -H "Authorization: <YOUR_API_KEY>" \
-            -d '{
-                "ctr_type": "search | rag",
-                "clicked_chunk_id": "<chunk_id>",
-                "position": 1,
-                "request_id": "<your-search-id>"
-            }'
-        ```
+<CodeGroup>
+```json curl
+curl -X POST https://api.trieve.ai/api/analytics/ctr \
+  -H "TR-Dataset: YOUR_DATASET_ID" \
+  -H "Authorization: <YOUR_API_KEY>" \
+    -d '{
+        "ctr_type": "search | rag",
+        "clicked_chunk_id": "<chunk_id>",
+        "position": 1,
+        "request_id": "<your-search-id>"
+    }'
+```
 
-        ```ts TS SDK
-        import { TrieveSDK } from "trieve-ts-sdk";
+```ts TS SDK
+import { TrieveSDK } from "trieve-ts-sdk";
 
-		let search_id = ""; // Set your search_id here
-		let chunk_id = ""; // The chunk clicked
-		let api_key = "tr-**************"; // Your api key here
+let search_id = ""; // Set your search_id here
+let chunk_id = ""; // The chunk clicked
+let api_key = "tr-**************"; // Your api key here
 
-        export const trieve = new TrieveSDK({
-          apiKey: "tr-********************************",
-          datasetId: api_key,
-        });
+export const trieve = new TrieveSDK({
+  apiKey: "tr-********************************",
+  datasetId: api_key,
+});
 
-        const data = await trieve.sendCTRData({
-            ctr_type: "search | rag",
-            clicked_chunk_id: chunk_id,
-            position: 1,
-            request_id: search_id,
-        });
-        ```
-        </CodeGroup>
-    </Step>
-	<Step title="Allow the user to rate the search" icon="hundred-points">
-		You can also send user feedback to the Trieve API using the [rate search query route](/api-reference/analytics/rate-search) or [rate RAG query route](/api-reference/analytics/rate-rag).
+const data = await trieve.sendCTRData({
+    ctr_type: "search | rag",
+    clicked_chunk_id: chunk_id,
+    position: 1,
+    request_id: search_id,
+});
+```
+</CodeGroup>
 
-		The `rating` parameter can be any number of your choosing. Feel free to make your own rating scales
-		<CodeGroup>
-		```json curl
-		curl -X POST https://api.trieve.ai/api/analytics/rate-search \
-		  -H "TR-Dataset: YOUR_DATASET_ID" \
-		  -H "Authorization: YOUR_API_KEY" \
-			-d '{
-				"query_id": "<your-search-id>",
-				"rating": 5,
-				"note": "Great results!"
-			}'
-		```
+### Allow the user to rate the search
+You can also send user feedback to the Trieve API using the [rate search query route](/api-reference/analytics/rate-search) or [rate RAG query route](/api-reference/analytics/rate-rag).
 
-		```ts TS SDK
-		import { TrieveSDK } from "trieve-ts-sdk";
+The `rating` parameter can be any number of your choosing. Feel free to make your own rating scales
+<CodeGroup>
+```json curl
+curl -X POST https://api.trieve.ai/api/analytics/rate-search \
+  -H "TR-Dataset: YOUR_DATASET_ID" \
+  -H "Authorization: YOUR_API_KEY" \
+    -d '{
+        "query_id": "<your-search-id>",
+        "rating": 5,
+        "note": "Great results!"
+    }'
+```
 
-		let search_id = ""; // Set your search_id here
-		let api_key = "tr-**************"; // Your api key here
+```ts TS SDK
+import { TrieveSDK } from "trieve-ts-sdk";
 
-		export const trieve = new TrieveSDK({
-		  apiKey: "tr-********************************",
-		  datasetId: "<your-api-key>",
-		});
+let search_id = ""; // Set your search_id here
+let api_key = "tr-**************"; // Your api key here
 
-		const data = await trieve.rateSearchQuery({
-			query_id: search_id,
-			rating: 5,
-			note: "Great results!",
-		});
-		```
-		</CodeGroup>
-	</Step>
-    <Step title="Custom event types" icon="gear">
-		You can send custom events to the Trieve API using the [send event route](/api-reference/analytics/send-event-data).
-Referencing your search `id` from the previous step
-		<CodeGroup>
-				```json curl
-				curl -X POST https://api.trieve.ai/api/analytics/event \
-					-H "TR-Dataset: YOUR_DATASET_ID" \
-					-H "Authorization: YOUR_API_KEY" \
-					-d '{
-						"event_type": "add_to_cart",
-							"event_name": "Add to Cart",
-							"items": [
-								"Cheesesticks",
-							"Pizza",
-							],
-							"request_id": "<your-search-id>"
-					}'
-		```
+export const trieve = new TrieveSDK({
+  apiKey: "tr-********************************",
+  datasetId: "<your-api-key>",
+});
 
-		```ts TS SDK
-		import { TrieveSDK } from "trieve-ts-sdk";
+const data = await trieve.rateSearchQuery({
+    query_id: search_id,
+    rating: 5,
+    note: "Great results!",
+});
+```
+</CodeGroup>
 
-		let search_id = ""; // Set your search_id here
-		let api_key = "tr-**************"; // Your api key here
+### Custom event types
+You can send custom events to the Trieve API using the [send event route](/api-reference/analytics/send-event-data). Referencing your search `id` from the previous step
+<CodeGroup>
+```json curl
+curl -X POST https://api.trieve.ai/api/analytics/event \
+    -H "TR-Dataset: YOUR_DATASET_ID" \
+    -H "Authorization: YOUR_API_KEY" \
+    -d '{
+        "event_type": "add_to_cart",
+            "event_name": "Add to Cart",
+            "items": [
+                "Cheesesticks",
+            "Pizza",
+            ],
+            "request_id": "<your-search-id>"
+    }'
+```
 
-		export const trieve = new TrieveSDK({
-			apiKey: "tr-********************************",
-			datasetId: api_key,
-		});
+```ts TS SDK
+import { TrieveSDK } from "trieve-ts-sdk";
 
-		const data = await trieve.sendEventData({
-				event_type: "add_to_cart",
-				event_name: "Add to Cart",
-				items: ["Cheesesticks", "Pizza"],
-				request_id: search_id,
-		});
-		```
-		</CodeGroup>
-    </Step>
+let search_id = ""; // Set your search_id here
+let api_key = "tr-**************"; // Your api key here
 
-</Steps>
+export const trieve = new TrieveSDK({
+    apiKey: "tr-********************************",
+    datasetId: api_key,
+});
+
+const data = await trieve.sendEventData({
+        event_type: "add_to_cart",
+        event_name: "Add to Cart",
+        items: ["Cheesesticks", "Pizza"],
+        request_id: search_id,
+});
+```
+</CodeGroup>
 
 You can query this custom event data using the [get all events route](/api-reference/analytics/get-all-events). This will return all of the custom events that you have sent to the Trieve API.
+
+```bash curl
+curl --request POST \
+  --url https://api.trieve.ai/api/analytics/events \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "filter": {
+    "date_range": {
+      "gt": "2021-08-10T00:00:00Z",
+      "lt": "2021-08-11T00:00:00Z"
+    },
+    "event_type": "your_custom_event_type",
+    "is_conversion": true,
+    "metadata_filter": "path = \"value\"",
+    "user_id": "user1"
+  }
+}'
+```
