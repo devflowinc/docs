@@ -72,7 +72,8 @@
         "getting-started/trieve-primitives",
         "getting-started/screenshots",
         "vector-inference/introduction",
-        "vector-inference/pricing"
+        "vector-inference/pricing",
+        "vector-inference/architecture"
       ]
     },
     {
@@ -83,7 +84,8 @@
         "self-hosting/aws",
         "self-hosting/gcp",
         "vector-inference/aws-installation",
-        "vector-inference/troubleshooting"
+        "vector-inference/troubleshooting",
+        "vector-inference/upgrading"
       ]
     },
     {
@@ -108,7 +110,8 @@
         "vector-inference/embed_all",
         "vector-inference/embed_sparse",
         "vector-inference/reranker",
-        "vector-inference/openai_compat"
+        "vector-inference/openai_compat",
+        "vector-inference/health_check"
       ]
     },
     {

@@ -4,12 +4,22 @@ description: 'Install Trieve Vector Inference in your own aws account'
 icon: 'aws'
 ---
 
-## Installation Requirements
+<Note>This Guide takes ~30 minutes to complete. (20 minutes of that is waiting on EKS) </Note>
+
+## Installation Requirements:
 
 - `eksctl` >= 0.171 ([eksctl installation guide](https://eksctl.io/installation))
 - `aws` >= 2.15 ([aws installation guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html))
 - `kubectl` >= 1.28 ([kubectl installation guide](https://kubernetes.io/docs/tasks/tools/#kubectl))
 - `helm` >= 3.14 ([helm installation guide](https://helm.sh/docs/intro/install/#helm))
+
+<Accordion title="IAM Policy Minimum Requirements">
+  You need to have an IAM policy that allows to use the `eksctl` cli.
+
+  The most up-to-date guide is located [here](https://eksctl.io/usage/minimum-iam-policies)
+
+  You are able to use the root account, however AWS does not reccomend doing this.
+</Accordion>
 
 You'll also need a license to run Trieve Vector Inference
 
@@ -48,6 +58,9 @@ export AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query "Account" --output 
 ```
 
 Your AWS REGION:
+
+<Note> TVI supports all regions that have the `GPU_INSTANCE` that are chosen </Note>
+
 ```sh
 export AWS_REGION=us-east-2
 ```
