@@ -1,0 +1,21 @@
+---
+title: 'Upgrading your Instance'
+description: 'For any updates to Trieve Vector Inference this is how you should upgrade'
+icon: 'rocket'
+---
+
+<Steps>
+  <Step title="Update your helm repo dependencies">
+    ```sh
+      helm repo update
+    ```
+  </Step>
+
+  <Step title="Upgrade the Trieve Vector Inference Helm chart">
+    ```sh
+    helm upgrade vector-inference \
+      oci://registry-1.docker.io/trieve/embeddings-helm \
+      -f embedding_models.yaml
+    ```
+  </Step>
+</Steps>
