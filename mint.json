@@ -165,8 +165,9 @@
   {
     "group": "Topic",
     "pages": [
-      "api-reference/topic/update-topic",
       "api-reference/topic/create-topic",
+      "api-reference/topic/update-topic",
+      "api-reference/topic/clone-topic",
       "api-reference/topic/get-all-topics-for-owner-id",
       "api-reference/topic/delete-topic"
     ]
