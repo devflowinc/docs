@@ -210,15 +210,17 @@
     {
     "group": "Dataset",
     "pages": [
-      "api-reference/dataset/update-dataset-by-id-or-tracking-id",
       "api-reference/dataset/create-dataset",
+      "api-reference/dataset/update-dataset-by-id-or-tracking-id",
+      "api-reference/dataset/delete-dataset",
+      "api-reference/dataset/delete-dataset-by-tracking-id",
+      "api-reference/dataset/get-dataset-by-id",
+      "api-reference/dataset/get-dataset-by-tracking-id",
       "api-reference/dataset/clear-dataset",
       "api-reference/dataset/get-all-tags",
       "api-reference/dataset/get-datasets-from-organization",
-      "api-reference/dataset/delete-dataset-by-tracking-id",
       "api-reference/dataset/get-usage-by-dataset-id",
-      "api-reference/dataset/get-dataset-by-id",
-      "api-reference/dataset/delete-dataset"
+      "api-reference/dataset/get-dataset-crawl-options"
     ]
   },
     {
