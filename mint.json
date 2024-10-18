@@ -116,177 +116,171 @@
       "pages": ["examples/job-board", "examples/ecommerce"]
     },
 
-  {
-    "group": "Chunk",
-    "pages": [
-      "api-reference/chunk/update-chunk",
-      "api-reference/chunk/create-or-upsert-chunk-or-chunks",
-      "api-reference/chunk/autocomplete",
-      "api-reference/chunk/count-chunks-above-threshold",
-      "api-reference/chunk/rag-on-specified-chunks",
-      "api-reference/chunk/get-recommended-chunks",
-      "api-reference/chunk/search",
-      "api-reference/chunk/generate-suggested-queries",
-      "api-reference/chunk/update-chunk-by-tracking-id",
-      "api-reference/chunk/get-chunk-by-tracking-id",
-      "api-reference/chunk/delete-chunk-by-tracking-id",
-      "api-reference/chunk/get-chunk-by-id",
-      "api-reference/chunk/delete-chunk",
-      "api-reference/chunk/get-chunks-by-ids",
-      "api-reference/chunk/scroll-chunks",
-      "api-reference/chunk/get-chunks-by-tracking-ids"
-    ]
-  },
-  {
-    "group": "Chunk Group",
-    "pages": [
-      "api-reference/chunk-group/update-group",
-      "api-reference/chunk-group/create-or-upsert-group-or-groups",
-      "api-reference/chunk-group/add-chunk-to-group",
-      "api-reference/chunk-group/remove-chunk-from-group",
-      "api-reference/chunk-group/get-groups-for-chunks",
-      "api-reference/chunk-group/search-over-groups",
-      "api-reference/chunk-group/get-recommended-groups",
-      "api-reference/chunk-group/search-within-group",
-      "api-reference/chunk-group/get-chunks-in-group-by-tracking-id",
-      "api-reference/chunk-group/get-group-by-tracking-id",
-      "api-reference/chunk-group/update-group-by-tracking-id",
-      "api-reference/chunk-group/add-chunk-to-group-by-tracking-id",
-      "api-reference/chunk-group/delete-group-by-tracking-id",
-      "api-reference/chunk-group/get-group",
-      "api-reference/chunk-group/delete-group",
-      "api-reference/chunk-group/get-chunks-in-group",
-      "api-reference/chunk-group/get-groups-for-dataset"
-    ]
-  },
-  {
-    "group": "Topic",
-    "pages": [
-      "api-reference/topic/update-topic",
-      "api-reference/topic/create-topic",
-      "api-reference/topic/get-all-topics-for-owner-id",
-      "api-reference/topic/delete-topic"
-    ]
-  },
     {
-    "group": "Message",
-    "pages": [
-      "api-reference/message/edit-message",
-      "api-reference/message/create-message",
-      "api-reference/message/regenerate-message",
-      "api-reference/message/regenerate-message-1",
-      "api-reference/message/get-all-messages-for-a-given-topic"
-    ]
-  },
+      "group": "Chunk",
+      "pages": [
+        "api-reference/chunk/update-chunk",
+        "api-reference/chunk/create-or-upsert-chunk-or-chunks",
+        "api-reference/chunk/autocomplete",
+        "api-reference/chunk/count-chunks-above-threshold",
+        "api-reference/chunk/rag-on-specified-chunks",
+        "api-reference/chunk/get-recommended-chunks",
+        "api-reference/chunk/search",
+        "api-reference/chunk/generate-suggested-queries",
+        "api-reference/chunk/update-chunk-by-tracking-id",
+        "api-reference/chunk/get-chunk-by-tracking-id",
+        "api-reference/chunk/delete-chunk-by-tracking-id",
+        "api-reference/chunk/get-chunk-by-id",
+        "api-reference/chunk/delete-chunk",
+        "api-reference/chunk/get-chunks-by-ids",
+        "api-reference/chunk/scroll-chunks",
+        "api-reference/chunk/get-chunks-by-tracking-ids"
+      ]
+    },
     {
-    "group": "File",
-    "pages": [
-      "api-reference/file/get-files-for-dataset",
-      "api-reference/file/upload-file",
-      "api-reference/file/get-file",
-      "api-reference/file/delete-file"
-    ]
-  },
-  {
-    "group": "Analytics",
-    "pages": [
-      "api-reference/analytics/send-ctr-data",
-      "api-reference/analytics/send-event-data",
-      "api-reference/analytics/get-all-events",
-      "api-reference/analytics/get-ctr-analytics",
-      "api-reference/analytics/rate-rag",
-      "api-reference/analytics/get-rag-analytics",
-      "api-reference/analytics/get-recommendation-analytics",
-      "api-reference/analytics/rate-search",
-      "api-reference/analytics/get-search-analytics",
-      "api-reference/analytics/get-cluster-analytics",
-      "api-reference/analytics/get-top-datasets"
-    ]
-  },
+      "group": "Chunk Group",
+      "pages": [
+        "api-reference/chunk-group/update-group",
+        "api-reference/chunk-group/create-or-upsert-group-or-groups",
+        "api-reference/chunk-group/add-chunk-to-group",
+        "api-reference/chunk-group/remove-chunk-from-group",
+        "api-reference/chunk-group/get-groups-for-chunks",
+        "api-reference/chunk-group/search-over-groups",
+        "api-reference/chunk-group/get-recommended-groups",
+        "api-reference/chunk-group/search-within-group",
+        "api-reference/chunk-group/get-chunks-in-group-by-tracking-id",
+        "api-reference/chunk-group/get-group-by-tracking-id",
+        "api-reference/chunk-group/update-group-by-tracking-id",
+        "api-reference/chunk-group/add-chunk-to-group-by-tracking-id",
+        "api-reference/chunk-group/delete-group-by-tracking-id",
+        "api-reference/chunk-group/get-group",
+        "api-reference/chunk-group/delete-group",
+        "api-reference/chunk-group/get-chunks-in-group",
+        "api-reference/chunk-group/get-groups-for-dataset"
+      ]
+    },
     {
-    "group": "Dataset",
-    "pages": [
-      "api-reference/dataset/update-dataset-by-id-or-tracking-id",
-      "api-reference/dataset/create-dataset",
-      "api-reference/dataset/clear-dataset",
-      "api-reference/dataset/get-all-tags",
-      "api-reference/dataset/get-datasets-from-organization",
-      "api-reference/dataset/delete-dataset-by-tracking-id",
-      "api-reference/dataset/get-usage-by-dataset-id",
-      "api-reference/dataset/get-dataset-by-id",
-      "api-reference/dataset/delete-dataset"
-    ]
-  },
+      "group": "Topic",
+      "pages": [
+        "api-reference/topic/update-topic",
+        "api-reference/topic/create-topic",
+        "api-reference/topic/get-all-topics-for-owner-id",
+        "api-reference/topic/delete-topic"
+      ]
+    },
     {
-    "group": "Events",
-    "pages": [
-      "api-reference/events/get-events-for-the-dataset"
-    ]
-  },
-  {
-    "group": "Organization",
-    "pages": [
-      "api-reference/organization/update-organization",
-      "api-reference/organization/create-organization",
-      "api-reference/organization/update-all-dataset-configurations",
-      "api-reference/organization/get-organization-usage",
-      "api-reference/organization/get-organization-users",
-      "api-reference/organization/get-organization",
-      "api-reference/organization/delete-organization"
-    ]
-  },
-    
-  {
-    "group": "User",
-    "pages": [
-      "api-reference/user/update-user",
-      "api-reference/user/set-user-api-key",
-      "api-reference/user/delete-user-api-key"
-    ]
-  },
-  {
-    "group": "Auth",
-    "pages": [
-      "api-reference/auth/login",
-      "api-reference/auth/logout",
-      "api-reference/auth/openid-connect-callback",
-      "api-reference/auth/get-me"
-    ]
-  },
+      "group": "Message",
+      "pages": [
+        "api-reference/message/edit-message",
+        "api-reference/message/create-message",
+        "api-reference/message/regenerate-message",
+        "api-reference/message/regenerate-message-1",
+        "api-reference/message/get-all-messages-for-a-given-topic"
+      ]
+    },
+    {
+      "group": "File",
+      "pages": [
+        "api-reference/file/get-files-for-dataset",
+        "api-reference/file/upload-file",
+        "api-reference/file/get-file",
+        "api-reference/file/delete-file"
+      ]
+    },
+    {
+      "group": "Analytics",
+      "pages": [
+        "api-reference/analytics/send-ctr-data",
+        "api-reference/analytics/send-event-data",
+        "api-reference/analytics/get-all-events",
+        "api-reference/analytics/get-ctr-analytics",
+        "api-reference/analytics/rate-rag",
+        "api-reference/analytics/get-rag-analytics",
+        "api-reference/analytics/get-recommendation-analytics",
+        "api-reference/analytics/rate-search",
+        "api-reference/analytics/get-search-analytics",
+        "api-reference/analytics/get-cluster-analytics",
+        "api-reference/analytics/get-top-datasets"
+      ]
+    },
+    {
+      "group": "Dataset",
+      "pages": [
+        "api-reference/dataset/update-dataset-by-id-or-tracking-id",
+        "api-reference/dataset/create-dataset",
+        "api-reference/dataset/clear-dataset",
+        "api-reference/dataset/get-all-tags",
+        "api-reference/dataset/get-datasets-from-organization",
+        "api-reference/dataset/delete-dataset-by-tracking-id",
+        "api-reference/dataset/get-usage-by-dataset-id",
+        "api-reference/dataset/get-dataset-by-id",
+        "api-reference/dataset/delete-dataset"
+      ]
+    },
+    {
+      "group": "Events",
+      "pages": ["api-reference/events/get-events-for-the-dataset"]
+    },
+    {
+      "group": "Organization",
+      "pages": [
+        "api-reference/organization/update-organization",
+        "api-reference/organization/create-organization",
+        "api-reference/organization/update-all-dataset-configurations",
+        "api-reference/organization/get-organization-usage",
+        "api-reference/organization/get-organization-users",
+        "api-reference/organization/get-organization",
+        "api-reference/organization/delete-organization"
+      ]
+    },
 
-  {
-    "group": "Health",
-    "pages": [
-      "api-reference/health/health-check"
-    ]
-  },
-  {
-    "group": "Invitation",
-    "pages": [
-      "api-reference/invitation/send-invitation",
-      "api-reference/invitation/delete-invitation",
-      "api-reference/invitation/get-invitations"
-    ]
-  },
-  
-  {
-    "group": "Stripe",
-    "pages": [
-      "api-reference/stripe/create-checkout-session-setup",
-      "api-reference/stripe/get-all-invoices",
-      "api-reference/stripe/checkout",
-      "api-reference/stripe/get-all-plans",
-      "api-reference/stripe/cancel-subscription",
-      "api-reference/stripe/update-subscription-plan"
-    ]
-  },
+    {
+      "group": "User",
+      "pages": [
+        "api-reference/user/update-user",
+        "api-reference/user/set-user-api-key",
+        "api-reference/user/delete-user-api-key"
+      ]
+    },
+    {
+      "group": "Auth",
+      "pages": [
+        "api-reference/auth/login",
+        "api-reference/auth/logout",
+        "api-reference/auth/openid-connect-callback",
+        "api-reference/auth/get-me"
+      ]
+    },
 
-  {
-    "group": "Metrics",
-    "pages": [
-      "api-reference/metrics/get-prometheus-metrics"
-    ]
-  }
+    {
+      "group": "Health",
+      "pages": ["api-reference/health/health-check"]
+    },
+    {
+      "group": "Invitation",
+      "pages": [
+        "api-reference/invitation/send-invitation",
+        "api-reference/invitation/delete-invitation",
+        "api-reference/invitation/get-invitations"
+      ]
+    },
+
+    {
+      "group": "Stripe",
+      "pages": [
+        "api-reference/stripe/create-checkout-session-setup",
+        "api-reference/stripe/get-all-invoices",
+        "api-reference/stripe/checkout",
+        "api-reference/stripe/get-all-plans",
+        "api-reference/stripe/cancel-subscription",
+        "api-reference/stripe/update-subscription-plan"
+      ]
+    },
+
+    {
+      "group": "Metrics",
+      "pages": ["api-reference/metrics/get-prometheus-metrics"]
+    }
   ],
   "footerSocials": {
     "x": "https://x.com/trieveai",
