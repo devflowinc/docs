@@ -1,0 +1,101 @@
+---
+title: "Creating Organizations and Datasets with Trieve"
+description: "Learn how to create and manage organizations and datasets with Trieve"
+icon: "users"
+iconType: "regular"
+---
+
+## Overview
+
+We provide the ability to create and independently manage organizations and datasets for multi-tenant use cases. With Trieve, you have full control of each organization's users, configurations, and datasets.
+
+## Creating an Organization
+
+The main route we use to expose this functionality is the [create organization route](/api-reference/organization/create-organization). Use the `name` parameter to pass a arbitrary, unique name which will be used to identify the organization.
+
+Example of creating an organization on demand through the API:
+
+```json curl
+curl --request PUT \
+  --url https://api.trieve.ai/api/organization \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
+  --data '{
+  "name": "My Organization" // Replace with a unique name for your organization
+}'
+```
+
+## Creating a Dataset
+
+To create a dataset, use the [create dataset route](/api-reference/dataset/create-dataset).
+
+### Important parameters
+
+- `crawl_options`: Provides the options to setup crawling to populate your dataset (e.g., include/exclude paths, tags, and more).
+- `dataset_name`: The name of the dataset. This must be a unique within the organization.
+- `server_configuration`: Provide the server configuration for the dataset such as RAG and system prompt, stop tokens, embedding models, and more.
+- `tracking_id`: A unique, optional tracking ID for the dataset that can be used to track the dataset in external systems.
+
+Example of creating a dataset through the API:
+
+```json curl
+curl --request POST \
+  --url https://api.trieve.ai/api/dataset \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
+  --data '{
+    "dataset_name": "New Dataset", // Replace with a name for your dataset
+    "organization_id": "********-****-****-****-************",
+
+    // Update with the desired configurations for your dataset
+    "server_configuration": {
+      "BM25_ENABLED": true,
+      "DISTANCE_METRIC": "cosine",
+      "EMBEDDING_MODEL_NAME": "text-embedding-3-small",
+      "LLM_DEFAULT_MODEL": "gpt-3.5-turbo-1106",
+      "RAG_PROMPT": "Use the following retrieved documents...",
+      "SEMANTIC_ENABLED": true,
+      "SYSTEM_PROMPT": "You are a helpful assistant",
+    }
+}'
+```
+
+## Managing multiple organizations
+
+Trieve provides a solution for multi-tenanted environments, allowing users to manage and operate across multiple organizations. Each organization can have its own datasets, configurations, and users.
+
+To access different organizations, use the `TR-Organization` header. For example, to fetch the details of a specific organization, you can do:
+
+```json curl
+curl --request GET \
+  --url https://api.trieve.ai/api/organization/{organization_id} \
+  --header 'Authorization: <api-key>' \
+  --header 'TR-Organization: <tr-organization>' // The id of the organization you want to fetch
+```
+
+## Update configuration across datasets
+
+To update all dataset configs in an organization, use the [update all dataset configurations route](/api-reference/organization/update-all-dataset-configurations). Use the `server_configuration` parameter to pass in a new configuration for all datasets in the organization.
+
+Example of updating all dataset configurations in an organization:
+
+```json curl
+curl --request POST \
+  --url https://api.trieve.ai/api/organization/update_dataset_configs \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \ // Specify the organization whose dataset configurations you want to update
+  --data '{
+  "organization_id": "********-****-****-****-************",
+  "server_configuration": {
+    // Keys that you would like to change
+  }
+}'
+```
+
+<Note>
+  Only the specified keys in the `server_configuration` object will be updated
+  for each dataset, keeping the unique values for other fields unchanged.
+</Note>
