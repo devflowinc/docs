@@ -98,6 +98,7 @@
         "guides/RAG-with-trieve",
         "guides/analytics-quickstart",
         "guides/create-organizations-and-dataset",
+        "guides/group-with-trieve",
         "vector-inference/rerank",
         "vector-inference/splade",
         "vector-inference/dense",

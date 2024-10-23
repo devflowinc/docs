@@ -1,0 +1,55 @@
+---
+title: "Using Groups with Trieve"
+description: "Learn how to create and use groups with Trieve"
+icon: "layer-group"
+---
+
+## Overview
+
+We provide the ability to cluster and structure related chunks of data. This allows for specific search and recommendation paradigms -- constraining results to specific groups.
+
+## Groups vs Tags
+
+Tags provide users the ability, through the `tag_set` attribute in chunks and groups, to categorize and label specific chunks to allow for quick filtering. This lacks many of the higher level functionality around groups, which allow you to organize and search related content at a broader level.
+
+## Creating Groups
+
+To create a group, use the [create or upsert group API route](/api-reference/chunk-group/create-or-upsert-group-or-groups).
+
+### Important Parameters
+
+- `name`: The name of the group. This does not need to be unique.
+- `description`: A description of the group and its corresponding chunks.
+- `metadata`: A JSON object containing any additional information to associate with chunks in this chunk group.
+- `tracking_id`: An optional, unique identifier to assign to this chunk group.
+- `tag_set`: A list of strings to categorize chunks within this chunk group.
+
+```json curl
+curl --request POST \
+  --url https://api.trieve.ai/api/chunk_group \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Dataset: <tr-dataset>' \
+  --data '{
+  "name": "Example Group", // Name for the group
+  "description": "This is an example group.", // A brief description for the chunk group
+  "metadata": {}, // Optional metadata for the group
+  "tag_set": ["example", "guide", "group"], // String list of tags to associate with this group's chunks
+  "tracking_id": "EXAMPLEGROUPGUIDE", // Unique tracking id to identify this group in external systems
+```
+
+### Accessing Chunk in Group
+
+Trieve allows you to assign arbitrary ID's to groups, through the `group_tracking_id` field, to sync with external systems. This also means that you can access and search using this field.
+
+For example, to get chunks in group by the `group_tracking_id`, you can use the [get chunks in group by tracking ID]("/api-reference/chunk-group/get-chunks-in-group-by-tracking-id") route.
+
+```json curl
+curl --request GET \
+  // Replace {group_tracking_id} with the actual tracking ID of the chunk group
+  --url https://api.trieve.ai/api/chunk_group/tracking_id/{group_tracking_id}/{page} \
+  --header 'Authorization: <api-key>' \
+  --header 'TR-Dataset: <tr-dataset>'
+```
+
+## Adding Chunks to Group
