@@ -10,11 +10,11 @@ We provide the ability to cluster and structure related chunks of data. This all
 
 ## Groups vs Tags
 
-Tags provide users the ability, through the `tag_set` attribute in chunks and groups, to categorize and label specific chunks to allow for quick filtering. This lacks many of the higher level functionality around groups, which allow you to organize and search related content at a broader level.
+Tags provide users the ability, through the `tag_set` attribute in chunks and groups, to categorize and label specific chunks, allowing for quick filtering. This lacks many of the higher level functionality around groups, which allow you to organize and search related content at a broader level.
 
 ## Creating Groups
 
-To create a group, use the [create or upsert group API route](/api-reference/chunk-group/create-or-upsert-group-or-groups).
+To create a group, use the [create or upsert group API](/api-reference/chunk-group/create-or-upsert-group-or-groups) route.
 
 ### Important Parameters
 
@@ -31,18 +31,19 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --header 'TR-Dataset: <tr-dataset>' \
   --data '{
-  "name": "Example Group", // Name for the group
-  "description": "This is an example group.", // A brief description for the chunk group
-  "metadata": {}, // Optional metadata for the group
-  "tag_set": ["example", "guide", "group"], // String list of tags to associate with this group's chunks
-  "tracking_id": "EXAMPLEGROUPGUIDE", // Unique tracking id to identify this group in external systems
+  "name": "Example Group",
+  "description": "This is an example group.",
+  "metadata": {},
+  "tag_set": ["example", "guide", "group"],
+  "tracking_id": "EXAMPLEGROUPGUIDE",
+  }'
 ```
 
-### Accessing Chunk in Group
+### Accessing Chunks in a Group
 
-Trieve allows you to assign arbitrary ID's to groups, through the `group_tracking_id` field, to sync with external systems. This also means that you can access and search using this field.
+Trieve allows you to assign unique, arbitrary IDs to groups, through the `group_tracking_id` field, to sync with external systems. This also means that you can access and search groups using this field.
 
-For example, to get chunks in group by the `group_tracking_id`, you can use the [get chunks in group by tracking ID]("/api-reference/chunk-group/get-chunks-in-group-by-tracking-id") route.
+For example, to fetch all chunks in a group by the `group_tracking_id`, use the [get chunks in group by tracking ID](/api-reference/chunk-group/get-chunks-in-group-by-tracking-id) route.
 
 ```json curl
 curl --request GET \
@@ -52,4 +53,92 @@ curl --request GET \
   --header 'TR-Dataset: <tr-dataset>'
 ```
 
-## Adding Chunks to Group
+## Adding Chunks to Groups
+
+To add an existing chunk to a group, use the [add chunk to group](/api-reference/chunk-group/add-chunk-to-group) route.
+
+```json curl
+curl --request POST \
+    // Replace {group_id} with the Trieve generated ids for the group
+  --url https://api.trieve.ai/api/chunk_group/chunk/{group_id} \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Dataset: <tr-dataset>' \
+  --data '{
+	// ID of the chunk to add to the group
+  "chunk_id": "********-****-****-****-********",
+	// Tracking ID of the chunk to add to the group
+  "chunk_tracking_id": "<string>"
+}'
+```
+
+<Note>
+  `group_id` is the **Trieve generated** ids for groups whereas the
+  `group_tracking_id` is a **user-assigned** tracking_ids for groups. Groups
+  with `group_ids` must be created first and cannot be arbitrarily created.
+</Note>
+
+To assign a chunk to a group on creation, use the [create or upsert chunk or chunks](/api-reference/chunk/create-or-upsert-chunk-or-chunks) route and specify the `group_ids` or `group_tracking_ids`. Specify one or more existing group IDs that the chunks should be placed into, or provide group tracking IDs. If any IDs within the list of `group_tracking_ids` do not exist, new groups corresponding to those tracking IDs will be created.
+
+```json curl
+curl --request POST \
+  --url https://api.trieve.ai/api/chunk \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Dataset: <tr-dataset>' \
+  --data '{
+  "chunk_html": "<p>Some HTML content</p>",
+  // Enter a list of group IDs to associate with the chunk
+  "group_ids": [
+    "********-****-****-****-************"
+  ],
+  // Enter a list of group tracking IDs to associate with the chunk
+  // If a group_tracking_id does not exist, a corresponding group will be created
+  "group_tracking_ids": [
+    "example_group_tracking_id"
+  ],
+  "metadata": {
+    "key1": "value1",
+    "key2": "value2"
+  },
+  "link": "https://example.com",
+  "tracking_id": "example_chunk_tracking_id"
+}'
+```
+
+## View Groups in Search Playground
+
+Once you create a group and assign chunks, you can easily view and manage these groups through the [search playground](https://search.trieve.ai/).
+
+To view groups:
+
+1. Navigate and login to the search playground at https://search.trieve.ai/.
+2. Click on `Groups` in the Navbar.
+3. View group details (such as name, description, and date created).
+4. Click on any group name to access its corresponding chunks.
+
+## Searching Groups
+
+In addition to searching over independent chunks, we allow users to [search within groups](/api-reference/chunk-group/search-within-group) and [search over groups](/api-reference/chunk-group/search-over-groups).
+
+<Note>
+  Search over groups returns the groups of chunks similar to the search query
+  while search within groups restricts the search to a single group.
+</Note>
+
+Search _over_ groups can be performed similar to search over chunks (checkout guide [here](/guides/searching-with-trieve)), with the addition of the `group_size` field to specify the number of chunks to fetch for each group.
+
+Similarly, to search _within_ a group, use the `group_id` or `group_tracking_id` fields to specify which group you want to search in.
+
+## Recommendations Groups
+
+Trieve also provides the ability to get recommended groups and recommended chunks within a group through the [get recommended groups](/api-reference/chunk-group/get-recommended-groups) and the [get recommended chunks](/api-reference/chunk/get-recommended-chunks) routes.
+
+Fetching recommended groups through the get recommended groups route is similiar to using the get recommended chunks route (checkout guide [here](/guides/recommending-with-trieve)), with the addition of:
+
+- `positive_group_tracking_ids`: the tracking IDs of groups that serve as positive examples when curating recommendations.
+- `negative_group_tracking_ids`: the tracking IDs of groups that serve as negative examples when getting recommendations.
+- `group_size`: the number of chunks to be fetched for each group.
+- `limit`: the max number of groups (rather than chunks) that should be returned.
+
+To get recommended chunks within a group, you can use the `get_recommended_chunks` route with a filter on `group_ids` or `group_tracking_ids`.
