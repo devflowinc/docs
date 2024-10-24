@@ -1,10 +1,10 @@
 ---
 title: 'AWS Installation'
-description: 'Install Trieve Vector Inference in your own aws account'
+description: 'Install Trieve Vector Inference in your own AWS account'
 icon: 'aws'
 ---
 
-<Note>This Guide takes ~30 minutes to complete. (20 minutes of that is waiting on EKS) </Note>
+<Note>This guide takes ~30 minutes to complete. Expect ~20 minutes of this to be EKS spinning itself up. </Note>
 
 ## Installation Requirements:
 
@@ -14,50 +14,50 @@ icon: 'aws'
 - `helm` >= 3.14 ([helm installation guide](https://helm.sh/docs/intro/install/#helm))
 
 <Accordion title="IAM Policy Minimum Requirements">
-  You need to have an IAM policy that allows to use the `eksctl` cli.
+  You need to have an IAM policy that allows to use the `eksctl` CLI.
 
   The most up-to-date guide is located [here](https://eksctl.io/usage/minimum-iam-policies)
 
-  You are able to use the root account, however AWS does not reccomend doing this.
+  You are able to use the root account. However, AWS does not recommend doing this.
 </Accordion>
 
-You'll also need a license to run Trieve Vector Inference
+You'll also need a license to run TVI.
 
 ### Getting your license
 
 Contact us:
 - Email us at humans@trieve.ai
-- [book a meeting](https://cal.com/nick.k/meet)
+- [Book a meeting](https://cal.com/nick.k/meet)
 - Call us @ 628-222-4090
 
 Our pricing is [here](/vector-inference/pricing)
 
-## Check AWS quota
+## Check AWS Quota
 
 <Warning>
-    Ensure you have quotas for Both GPU's and Load Balancers.
+    Ensure you have quotas for both GPUs and load balancers.
 </Warning>
 
 1) At least **4 vCPUs** for On-Demand G and VT instances in the region of choice.
 
-Check quota for [here](https://us-west-1.console.aws.amazon.com/servicequotas/home/services/ec2/quotas/L-3819A6DF)
+Check quota [here](https://us-west-1.console.aws.amazon.com/servicequotas/home/services/ec2/quotas/L-3819A6DF)
 
-2) You will need **1 load-balancer** per each model you want.
+2) You will need **1 load balancer** for **each** model you want.
 
-Check quotas for [here](https://us-west-1.console.aws.amazon.com/servicequotas/home/services/ec2/quotas/L-3819A6DF)
+Check quota [here](https://us-east-2.console.aws.amazon.com/servicequotas/home/services/elasticloadbalancing/quotas/L-53DA6B97)
 
 ## Deploying the Cluster
 
 ### Setting up environment variables 
 
-Create eks cluster and install needed plugins
+Create EKS cluster and install needed plugins
 
 Your AWS Account ID:
 ```sh
 export AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query "Account" --output text)"
 ```
 
-Your AWS REGION:
+Your AWS Region:
 
 <Note> TVI supports all regions that have the `GPU_INSTANCE` that are chosen </Note>
 
