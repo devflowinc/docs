@@ -71,7 +71,7 @@ Your Kubernetes cluster name:
 export CLUSTER_NAME=trieve-gpu
 ```
 
-Your machine types, we recommend `g4dn.xlarge`, as it is the cheapest on AWS. A single small node is needed for extra utility.
+Your machine types, we recommend `g4dn.xlarge`, as it is the cheapest on AWS. A single small node is needed for extra utility:
 
 ```sh
 export CPU_INSTANCE_TYPE=t3.small
@@ -85,7 +85,7 @@ Disable AWS CLI pagination (optional):
 export AWS_PAGER=""
 ```
 
-**To use our recommended defaults**
+**To use our recommended defaults:**
 
 ```sh
 export AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query "Account" --output text)"
@@ -110,19 +110,19 @@ Run `bootstrap-eks.sh` with bash
 bash bootstrap-eks.sh
 ```
 
-This will take around 25 minutes to complete
+This will take ~25 minutes to complete.
 
 ## Install Trieve Vector Inference
 
 ### Configure `embedding_models.yaml`
 
-First download the example configuration file
+First, download the example configuration file:
 
 ```sh
 wget https://cdn.trieve.ai/embedding_models.yaml
 ```
 
-Now you can modify your `embedding_models.yaml`, this defines all the models that you will want to use
+Now you can modify your `embedding_models.yaml`. This defines all the models that you will want to use:
 
 ```yaml embedding_models.yaml
 accessKey: "<your-access-key-here>"
@@ -173,19 +173,19 @@ vector-inference-embedding-spladequery-ingress    alb     *       k8s-default-ve
 
 ## Using Trieve Vector Inference
 
-Each `ingress` point will be using their own Application Load Balancer within AWS. The `Address` provided is the model's endpoint that you can make [dense embeddings](/vector-inference/embed), [sparse embeddings](/vector-inference/embed_sparse), or [reranker calls](/vector-inference/reranker) based on the models you chose
+Each `ingress` point will be using their own Application Load Balancer within AWS. The `Address` provided is the model's endpoint that you can make [dense embeddings](/vector-inference/embed), [sparse embeddings](/vector-inference/embed_sparse), or [reranker calls](/vector-inference/reranker) based on the models you chose.
 
-Check out the guides for more information on configuration
+Check out the guides for more information on configuration.
 
 <CardGroup cols={3}>
-  <Card icon="magnifying-glass" title="Using Splade Models" href="/vector-inference/splade">
-	How to setup a dedicated instance for the sparse splade embedding model
+  <Card icon="magnifying-glass" title="Using SPLADE Models" href="/vector-inference/splade">
+	How to setup a dedicated instance for the sparse SPLADE embedding model
   </Card>
   <Card icon="brackets-curly" title="Using Custom Models" href="/vector-inference/dense">
-	How to use private or gated hugging face models. Or any models that you want
+	How to use private, gated Hugging Face models, or any models that you want
   </Card>
   <Card icon="microchip-ai" title="OpenAI compatibility" href="/vector-inference/openai">
-	Trieve Vector Inference has openai compatible routes
+	Trieve Vector Inference has OpenAI compatible routes
   </Card>
 </CardGroup>
 
