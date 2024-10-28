@@ -75,7 +75,9 @@ Modify `embedding_models.yaml` for the models that you want to use
 ### Install the helm chart
 
 ```sh
-helm upgrade -i vector-inference oci://registry-1.docker.io/trieve/embeddings-helm -f embedding_models.yaml
+helm upgrade -i vector-inference \
+    oci://709825985650.dkr.ecr.us-east-1.amazonaws.com/trieve/trieve-embeddings  \
+    -f embedding_models.yaml
 ```
 
 ### Get your model endpoints
