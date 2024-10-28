@@ -125,9 +125,13 @@ wget https://cdn.trieve.ai/embedding_models.yaml
 Now you can modify your `embedding_models.yaml`. This defines all the models that you will want to use:
 
 ```yaml embedding_models.yaml
-accessKey: "<your-access-key-here>"
-
 models:
+  # ...
+  # myEmbeddingModel:
+  #   replicas: 1
+  #   revision: main # The huggingface model 
+  #   hfToken: # the huggingface token
+  #   modelName BAAI/bge-m3 # The end of the URL https://huggingface.co/BAAI/bge-m3 
   bgeM3:
     replicas: 2
     revision: main
@@ -145,6 +149,7 @@ models:
     replicas: 2
     modelName: BAAI/bge-reranker-large
     isSplade: false
+  # ...
 ```
 
 ### Install the helm chart
