@@ -10,7 +10,7 @@ There are a lot of moving parts in `eksctl`. Here’s a list of common issues we
   <Accordion title='Error while deleting "1 pods are unevictable from node ip"'>
 
     This error happens when deleting the cluster and some pods in `kube-system` refuse to stop.
-    To fix this run the following command and the deletion process should be able to proceed.
+    To fix this, run the following command and the deletion process should be able to proceed.
 
     ```sh
     kubectl get pods -n kube-system -o NAME | xargs kubectl -n kube-system delete
@@ -18,7 +18,7 @@ There are a lot of moving parts in `eksctl`. Here’s a list of common issues we
   </Accordion>
 
   <Accordion title='Error while deleting "cleaning up AWS load balancers created by Kubernetes objects of Kind Service or Ingress"'>
-    This happens when the cluster doesn't properly delete load balancers, to fix this
+    This happens when the cluster doesn't properly delete load balancers. To fix this:
 
     <Steps>
     <Step title="Get load balancers to be deleted">
@@ -39,7 +39,7 @@ There are a lot of moving parts in `eksctl`. Here’s a list of common issues we
     </Step>
 
     <Step title="Delete Extra Load Balancers">
-      Go to EC2 > LoadBalancers ([link](https://us-west-1.console.aws.amazon.com/ec2/home?region=us-west-1#LoadBalancers:v=3;$case=tags:false%5C,client:false;$regex=tags:false%5C,client:false)) and delete the alb's that have the ingress point names
+      Go to EC2 > LoadBalancers ([link](https://us-west-1.console.aws.amazon.com/ec2/home?region=us-west-1#LoadBalancers:v=3;$case=tags:false%5C,client:false;$regex=tags:false%5C,client:false)) and delete the ALBs that have the ingress point names
     </Step>
 
   
