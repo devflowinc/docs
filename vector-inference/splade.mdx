@@ -13,9 +13,9 @@ SPLADE is similar to other inverted index approaches like BM25. SPLADE includes 
 
 <Steps>
 <Step title="Update embedding_models.yaml">
-To use splade with Trieve Vector Inference, you will need to adapt both the `doc` and `query` models
+To use SPLADE with Trieve Vector Inference, you will need to adapt both the `doc` and `query` models
 
-The splade `document` model is the model you use to encode files, where the `query` model is the one to encode the query that you will be searching with
+The SPLADE `document` model is the model you use to encode files, where the `query` model is the one to encode the query that you will be searching with
 
 ```yaml embedding_models.yaml
 models:
@@ -32,12 +32,12 @@ models:
 ```
 </Step>
 
-<Step title="Upgrade your TVF cluster">
-Update TVF to include your models
+<Step title="Upgrade your TVI cluster">
+Update TVI to include your models
 
 ```bash
 helm upgrade -i vector-inference \
-    oci://709825985650.dkr.ecr.us-east-1.amazonaws.com/trieve/trieve-embeddings \
+    oci://registry-1.docker.io/trieve/embeddings-helm \
     -f embedding_models.yaml
 ```
 </Step>
@@ -58,6 +58,6 @@ kubectl get ing
          --url http://$ENDPOINT/embed_sparse
     ```
 
-  For more information checkout the [API reference](/vector-inference/embed_sparse) for sparse vectors
+  For more information checkout the [API reference](/vector-inference/embed_sparse) for sparse vectors.
 </Step>
 </Steps>
