@@ -159,11 +159,24 @@ models:
     This helm chart will only work if you subscribe to the AWS Marketplace Listing
 </Info>
 
+<Steps>
+<Step title="Login to AWS ecr repository">
+```sh
+ aws ecr get-login-password \
+    --region us-east-1 | helm registry login \
+    --username AWS \
+    --password-stdin 709825985650.dkr.ecr.us-east-1.amazonaws.com
+```
+</Step>
+
+<Step title="Install the helm chart from the Marketplace ECR repository">
 ```sh
 helm upgrade -i vector-inference \
     oci://709825985650.dkr.ecr.us-east-1.amazonaws.com/trieve/trieve-embeddings \
     -f embedding_models.yaml
 ```
+</Step>
+</Steps>
 
 ### Get your model endpoints
 
