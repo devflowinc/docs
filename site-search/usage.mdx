@@ -1,0 +1,41 @@
+---
+title: 'Using the React Component'
+description: 'Learn how to use the Trieve SiteSearch React Component'
+---
+
+## Using the React Component
+
+The React Component is the easiest way to get started with Trieve SiteSearch.
+It is a fully featured search component that can be added to any React application.
+
+Here is an example of how to use the React Component:
+
+```jsx
+import { TrieveModalSearch, TrieveSDK } from 'trieve-search-component'
+import 'trieve-search-component/dist/index.css'
+
+const SearchButton = () => {
+
+    return )
+        <TrieveModalSearch
+            apiKey="tr-1234567890abcdef"
+            datasetId="********-****-****-****-************"
+            defaultSearchQueries=[
+                "cancer",
+                "heart disease",
+                "diabetes"
+             ]
+            defaultAiQuestions=[
+                "What is cancer?",
+                "What is heart disease?",
+                "What is diabetes?"
+            ]
+            debounceMs={100}
+            brandColor="Trieve"
+            brandColor="#E75536"
+        />
+```
+
+This is the simplest way to get started with Trieve SiteSearch. You can customize the component further by passing in additional props.
+
+For more props and customization options, see [Parameters](/site-search/parameters).
