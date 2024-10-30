@@ -1,5 +1,63 @@
 ---
 title: 'Docusaurus Plugin Theme'
-description: 'Learn how to Integrate using Docusaurus plugin'
+description: 'Learn how to add the Search Component using the Docusaurus plugin'
 icon: 't-rex'
 ---
+
+## Docusaurus Plugin Theme
+
+The first step is to install the plugin using your prefered method (npm, yarn, or pnpm).
+
+<CodeGroup>
+
+```sh npm
+npm i @trieve/docusaurus-search-theme
+```
+
+```sh yarn
+yarn add @trieve/docusaurus-search-theme
+```
+
+```sh pnpm
+pnpm add @trieve/docusaurus-search-theme
+```
+</CodeGroup>
+
+Modify your `docusaurus.config.js` file to include the plugin.
+
+<Warn>
+    Make sure you remove any other search plugins before adding this one.
+</Warn>
+
+```js docusaurus.config.js
+export default {
+  // ...
+  themes: [
+    require.resolve('@trieve/docusaurus-search-theme'),
+    {
+      apiKey: 'tr-********************************',
+      datasetId: 'd5d098bd-****-****-****-************',
+      defaultSearchQueries: [
+        'How to deploy Docusarus',
+        'Troubleshooting search',
+        'Difference between helm?',
+      ],
+      defaultAiQuestions: [
+        'Quickstart Guide',
+        'How to swizzle search component',
+        'Compiling static assets',
+      ],
+      brandLogoImgSrcUrl: 'https://cdn.trieve.ai/favicon.ico',
+      brandName: 'Trieve',
+      brandColor: '#3c8dcc',
+      responsive: true,
+      debounceMs: 50,
+    },
+  ],
+  // ...
+};
+```
+
+The second item in the array is the configuration object for the plugin.
+
+For more props and customization options, see [Parameters](/site-search/parameters).
