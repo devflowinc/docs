@@ -39,6 +39,10 @@
     {
       "name": "Vector Inference",
       "url": "vector-inference"
+    },
+    {
+      "name": "Site Search",
+      "url": "site-search"
     }
   ],
   "anchors": [
@@ -73,7 +77,11 @@
         "getting-started/screenshots",
         "vector-inference/introduction",
         "vector-inference/pricing",
-        "vector-inference/architecture"
+        "vector-inference/architecture",
+        "site-search/inspiration",
+        "site-search/usage",
+        "site-search/parameters",
+        "site-search/screenshots"
       ]
     },
     {
@@ -86,6 +94,12 @@
         "vector-inference/aws-installation",
         "vector-inference/troubleshooting",
         "vector-inference/upgrading"
+      ]
+    },
+    {
+      "group": "Plugins",
+      "pages": [
+        "site-search/plugin-docusarus"
       ]
     },
     {
