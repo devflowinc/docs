@@ -33,26 +33,28 @@ Modify your `docusaurus.config.js` file to include the plugin.
 export default {
   // ...
   themes: [
-    require.resolve('@trieve/docusaurus-search-theme'),
-    {
-      apiKey: 'tr-********************************',
-      datasetId: 'd5d098bd-****-****-****-************',
-      defaultSearchQueries: [
-        'How to deploy Docusarus',
-        'Troubleshooting search',
-        'Difference between helm?',
-      ],
-      defaultAiQuestions: [
-        'Quickstart Guide',
-        'How to swizzle search component',
-        'Compiling static assets',
-      ],
-      brandLogoImgSrcUrl: 'https://cdn.trieve.ai/favicon.ico',
-      brandName: 'Trieve',
-      brandColor: '#3c8dcc',
-      responsive: true,
-      debounceMs: 50,
-    },
+    [
+      require.resolve('@trieve/docusaurus-search-theme'),
+      {
+        apiKey: 'tr-********************************',
+        datasetId: 'd5d098bd-****-****-****-************',
+        defaultSearchQueries: [
+          'How to deploy Docusarus',
+          'Troubleshooting search',
+          'Difference between helm?',
+        ],
+        defaultAiQuestions: [
+          'Quickstart Guide',
+          'How to swizzle search component',
+          'Compiling static assets',
+        ],
+        brandLogoImgSrcUrl: 'https://cdn.trieve.ai/favicon.ico',
+        brandName: 'Trieve',
+        brandColor: '#3c8dcc',
+        responsive: true,
+        debounceMs: 50,
+      },
+    ]
   ],
   // ...
 };
