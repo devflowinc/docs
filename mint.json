@@ -98,9 +98,7 @@
     },
     {
       "group": "Plugins",
-      "pages": [
-        "site-search/plugin-docusarus"
-      ]
+      "pages": ["site-search/plugin-docusarus"]
     },
     {
       "group": "Guides",
@@ -138,19 +136,20 @@
     {
       "group": "Chunk",
       "pages": [
-        "api-reference/chunk/update-chunk",
         "api-reference/chunk/create-or-upsert-chunk-or-chunks",
-        "api-reference/chunk/autocomplete",
-        "api-reference/chunk/count-chunks-above-threshold",
-        "api-reference/chunk/rag-on-specified-chunks",
-        "api-reference/chunk/get-recommended-chunks",
         "api-reference/chunk/search",
+        "api-reference/chunk/autocomplete",
+        "api-reference/chunk/get-recommended-chunks",
+        "api-reference/chunk/rag-on-specified-chunks",
+        "api-reference/chunk/count-chunks-above-threshold",
         "api-reference/chunk/generate-suggested-queries",
+        "api-reference/chunk/update-chunk",
         "api-reference/chunk/update-chunk-by-tracking-id",
         "api-reference/chunk/get-chunk-by-tracking-id",
         "api-reference/chunk/delete-chunk-by-tracking-id",
         "api-reference/chunk/get-chunk-by-id",
         "api-reference/chunk/delete-chunk",
+        "api-reference/chunk/bulk-delete-chunk",
         "api-reference/chunk/get-chunks-by-ids",
         "api-reference/chunk/scroll-chunks",
         "api-reference/chunk/get-chunks-by-tracking-ids"
@@ -159,17 +158,16 @@
     {
       "group": "Chunk Group",
       "pages": [
-        "api-reference/chunk-group/update-group",
         "api-reference/chunk-group/create-or-upsert-group-or-groups",
+        "api-reference/chunk-group/search-over-groups",
+        "api-reference/chunk-group/search-within-group",
+        "api-reference/chunk-group/get-recommended-groups",
         "api-reference/chunk-group/add-chunk-to-group",
         "api-reference/chunk-group/remove-chunk-from-group",
         "api-reference/chunk-group/get-groups-for-chunks",
-        "api-reference/chunk-group/search-over-groups",
-        "api-reference/chunk-group/get-recommended-groups",
-        "api-reference/chunk-group/search-within-group",
         "api-reference/chunk-group/get-chunks-in-group-by-tracking-id",
         "api-reference/chunk-group/get-group-by-tracking-id",
-        "api-reference/chunk-group/update-group-by-tracking-id",
+        "api-reference/chunk-group/update-group",
         "api-reference/chunk-group/add-chunk-to-group-by-tracking-id",
         "api-reference/chunk-group/delete-group-by-tracking-id",
         "api-reference/chunk-group/get-group",
@@ -191,9 +189,8 @@
     {
       "group": "Message",
       "pages": [
-        "api-reference/message/edit-message",
         "api-reference/message/create-message",
-        "api-reference/message/regenerate-message",
+        "api-reference/message/edit-message",
         "api-reference/message/regenerate-message-1",
         "api-reference/message/get-all-messages-for-a-given-topic"
       ]
@@ -201,8 +198,8 @@
     {
       "group": "File",
       "pages": [
-        "api-reference/file/get-files-for-dataset",
         "api-reference/file/upload-file",
+        "api-reference/file/get-files-for-dataset",
         "api-reference/file/get-file",
         "api-reference/file/delete-file"
       ]
@@ -246,8 +243,8 @@
     {
       "group": "Organization",
       "pages": [
-        "api-reference/organization/update-organization",
         "api-reference/organization/create-organization",
+        "api-reference/organization/update-organization",
         "api-reference/organization/update-all-dataset-configurations",
         "api-reference/organization/get-organization-usage",
         "api-reference/organization/get-organization-users",
