@@ -1,0 +1,144 @@
+---
+title: "Using Exposed API keys with Trieve"
+description: "Learn how to create and use safe, access controlled api keys with Trieve"
+icon: 'key'
+---
+
+## Overview
+
+Proxying search and recommendations through your server is usually a bad idea. It adds latency, complexity, and can be a security risk. Instead, Trieve allows you to create and manage API keys that can be used directly in the client.
+
+To create an API key, use the [create API key](/api-reference/api-key/create-api-key) route.
+
+- TS-SDK method: [createApiKey](https://ts-sdk.trieve.ai/functions/User_Methods.createUserApiKey.html)
+- Python SDK method: [create_api_key](https://github.com/devflowinc/trieve/blob/main/clients/python-sdk/trieve_py_client/api/user_api.py#L45)
+
+Roughly, you can visualize the flow we are encouraging with the following diagram. Information on how to scope down the access a given API key has is provided are in the next several sections.
+
+![scoped api key pattern diagram](https://trieve.b-cdn.net/docs/client-api-key-req-pattern.png)
+
+All of the below examples can be used in combination with each other. For example, you can create an API key that can only access specific organizations, datasets, and tags within those datasets.
+
+## Limit to read-only access
+
+Specify the `role` field with the value `0` in your request.
+
+```json curl {7}
+curl --request POST \
+  --url https://api.trieve.ai/api/user/api_key \
+  --header 'Authorization
+  --header 'Content-Type: application/json' \
+  --data '{
+    "name": "Read only API key",
+    "role": 0
+  }'
+```
+
+## Set a time expiry
+
+Specify the `expires_at` field with the time in the future that the API key should expire in your request. This field accepts only ISO 8601 formatted dates.
+
+```json curl {6}
+curl --request POST \
+  --url https://api.trieve.ai/api/user/api_key \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "name": "expires at '2024-11-14 00:00:00' UTC",
+    "expires_at": "2024-11-14 00:00:00",
+    "role": 0,
+  }'
+```
+
+## Scope access to specific organizations
+
+Specify the `organization_ids` field with the organization IDs that the API key should have access to in your request.
+
+```json curl {7-9}
+curl --request POST \
+  --url https://api.trieve.ai/api/user/api_key \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "name": "Can only make requests to the 3c90c3cc... organization",
+    "organization_ids": [
+      "3c90c3cc-0d44-4b50-8888-8dd25736052a"
+    ],
+    "role": 1,
+  }'
+```
+
+## Scope access to specific datasets
+
+Specify the `dataset_ids` field with the dataset IDs that the API key should have access to in your request.
+
+```json curl {7-9}
+curl --request POST \
+  --url https://api.trieve.ai/api/user/api_key \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "name": "Can only make requests to the 9u90c3cc... dataset",
+    "dataset_ids": [
+      "9u90c3cc-0d44-4b50-8888-8dd25736052a"
+    ],
+    "role": 1,
+  }'
+```
+
+## Scope access to specific routes
+
+```json curl {7-21}
+curl --request POST \
+  --url https://api.trieve.ai/api/user/api_key \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "name": "Can only make requests to the 9u90c3cc... dataset",
+    "scopes": [
+      "POST /api/chunk/search",
+      "POST /api/chunk_group/search",
+      "POST /api/chunk/autocomplete",
+      "POST /api/chunk_group/group_oriented_search",
+      "POST /api/chunk/suggestions",
+      "POST /api/chunk/count",
+      "PUT /api/analytics/ctr",
+      "PUT /api/analytics/search",
+      "PUT /api/analytics/events",
+      "PUT /api/analytics/rag",
+      "POST /api/topic",
+      "POST /api/message",
+      "PUT /api/message"
+    ],
+    "role": 1,
+  }'
+```
+
+## Scope access to chunks matching a filter or other search request payload fields
+
+Specify a filter in the `default_params` field in your request. This filter will be applied to all requests made with this API key.
+
+You can use this to restrict access to data with more granularity than just dataset or organization.
+
+```json curl {7-18}
+curl --request POST \
+  --url https://api.trieve.ai/api/user/api_key \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "name": "Can only access chunks with the tag bucket-id-with-protected-access",
+     "default_params": {
+        "filters": {
+          "must": [
+            {
+              "field": "tag_set",
+              "match_all": [
+                "bucket-id-with-protected-access",
+              ]
+            },
+          ]
+        },
+      },
+    "role": 0,
+  }'
+```

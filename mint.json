@@ -116,6 +116,7 @@
         "guides/analytics-quickstart",
         "guides/create-organizations-and-dataset",
         "guides/group-with-trieve",
+        "guides/using-exposed-api-keys",
         "vector-inference/rerank",
         "vector-inference/splade",
         "vector-inference/dense",
