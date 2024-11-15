@@ -52,6 +52,11 @@
       "url": "https://ts-sdk.trieve.ai"
     },
     {
+      "name": "Python SDK",
+      "icon": "python",
+      "url": "https://pypi.org/project/trieve-py-client/"
+    },
+    {
       "name": "Github",
       "icon": "github",
       "url": "https://github.com/devflowinc/trieve"
@@ -140,19 +145,20 @@
         "api-reference/chunk/search",
         "api-reference/chunk/autocomplete",
         "api-reference/chunk/get-recommended-chunks",
-        "api-reference/chunk/rag-on-specified-chunks",
+        "api-reference/chunk/scroll-chunks",
         "api-reference/chunk/count-chunks-above-threshold",
         "api-reference/chunk/generate-suggested-queries",
+        "api-reference/chunk/rag-on-specified-chunks",
         "api-reference/chunk/update-chunk",
         "api-reference/chunk/update-chunk-by-tracking-id",
-        "api-reference/chunk/get-chunk-by-tracking-id",
-        "api-reference/chunk/delete-chunk-by-tracking-id",
         "api-reference/chunk/get-chunk-by-id",
-        "api-reference/chunk/delete-chunk",
-        "api-reference/chunk/bulk-delete-chunk",
+        "api-reference/chunk/get-chunk-by-tracking-id",
+        "api-reference/chunk/get-chunks-by-tracking-ids",
         "api-reference/chunk/get-chunks-by-ids",
-        "api-reference/chunk/scroll-chunks",
-        "api-reference/chunk/get-chunks-by-tracking-ids"
+        "api-reference/chunk/delete-chunk",
+        "api-reference/chunk/delete-chunk-by-tracking-id",
+        "api-reference/chunk/bulk-delete-chunk",
+        "api-reference/chunk/split-html-content-into-chunks"
       ]
     },
     {
@@ -163,15 +169,15 @@
         "api-reference/chunk-group/search-within-group",
         "api-reference/chunk-group/get-recommended-groups",
         "api-reference/chunk-group/add-chunk-to-group",
-        "api-reference/chunk-group/remove-chunk-from-group",
+        "api-reference/chunk-group/add-chunk-to-group-by-tracking-id",
         "api-reference/chunk-group/get-groups-for-chunks",
         "api-reference/chunk-group/get-chunks-in-group-by-tracking-id",
         "api-reference/chunk-group/get-group-by-tracking-id",
         "api-reference/chunk-group/update-group",
-        "api-reference/chunk-group/add-chunk-to-group-by-tracking-id",
+        "api-reference/chunk-group/remove-chunk-from-group",
         "api-reference/chunk-group/delete-group-by-tracking-id",
-        "api-reference/chunk-group/get-group",
         "api-reference/chunk-group/delete-group",
+        "api-reference/chunk-group/get-group",
         "api-reference/chunk-group/get-chunks-in-group",
         "api-reference/chunk-group/get-groups-for-dataset"
       ]
@@ -207,9 +213,10 @@
     {
       "group": "Analytics",
       "pages": [
+        "api-reference/analytics/send-user-event-data",
+        "api-reference/analytics/get-all-user-events",
+        "api-reference/analytics/get-user-event-by-id",
         "api-reference/analytics/send-ctr-data",
-        "api-reference/analytics/send-event-data",
-        "api-reference/analytics/get-all-events",
         "api-reference/analytics/get-ctr-analytics",
         "api-reference/analytics/rate-rag",
         "api-reference/analytics/get-rag-analytics",
@@ -224,16 +231,19 @@
       "group": "Dataset",
       "pages": [
         "api-reference/dataset/create-dataset",
+        "api-reference/dataset/batch-create-datasets",
         "api-reference/dataset/update-dataset-by-id-or-tracking-id",
         "api-reference/dataset/delete-dataset",
         "api-reference/dataset/delete-dataset-by-tracking-id",
+        "api-reference/dataset/clear-dataset",
         "api-reference/dataset/get-dataset-by-id",
         "api-reference/dataset/get-dataset-by-tracking-id",
-        "api-reference/dataset/clear-dataset",
         "api-reference/dataset/get-all-tags",
+        "api-reference/dataset/get-events-for-the-dataset",
         "api-reference/dataset/get-datasets-from-organization",
         "api-reference/dataset/get-usage-by-dataset-id",
-        "api-reference/dataset/get-dataset-crawl-options"
+        "api-reference/dataset/get-dataset-crawl-options",
+        "api-reference/public/get-apipublic_page"
       ]
     },
     {
@@ -256,8 +266,8 @@
     {
       "group": "User",
       "pages": [
-        "api-reference/user/update-user",
-        "api-reference/user/set-user-api-key",
+        "api-reference/user/create-user-api-key",
+        "api-reference/user/update-user-org-role",
         "api-reference/user/delete-user-api-key"
       ]
     },
