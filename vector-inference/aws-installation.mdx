@@ -130,22 +130,30 @@ Now you can modify your `embedding_models.yaml`. This defines all the models tha
 models:
   # ...
   # myEmbeddingModel:
+  #   # The number of replicas you want
   #   replicas: 1
-  #   revision: main # The huggingface model 
-  #   hfToken: # the huggingface token
-  #   modelName BAAI/bge-m3 # The end of the URL https://huggingface.co/BAAI/bge-m3 
+  #   # The huggingface revision
+  #   revision: main
+  #   # Your huggingface token if you have a private repo
+  #   hfToken:
+  #   # The end of the URL https://huggingface.co/BAAI/bge-m3 
+  #   modelName BAAI/bge-m3 
   bgeM3:
     replicas: 2
     revision: main
-    modelName: BAAI/bge-m3 # The end of the URL https://huggingface.co/BAAI/bge-m3
-    hfToken: "" # If you have a private hugging face repo
+    # The end of the URL https://huggingface.co/BAAI/bge-m3
+    modelName: BAAI/bge-m3 
+    # If you have a private hugging face repo
+    hfToken: "" 
   spladeDoc:
     replicas: 2
-    modelName: naver/efficient-splade-VI-BT-large-doc # The end of the URL https://huggingface.co/naver/efficient-splade-VI-BT-large-doc
+    # The end of the URL https://huggingface.co/naver/efficient-splade-VI-BT-large-doc
+    modelName: naver/efficient-splade-VI-BT-large-doc 
     isSplade: true
   spladeQuery:
     replicas: 2
-    modelName: naver/efficient-splade-VI-BT-large-doc # The end of the URL https://huggingface.co/naver/efficient-splade-VI-BT-large-doc
+    # The end of the URL https://huggingface.co/naver/efficient-splade-VI-BT-large-doc
+    modelName: naver/efficient-splade-VI-BT-large-doc 
     isSplade: true
   bge-reranker:
     replicas: 2
@@ -194,6 +202,8 @@ vector-inference-embedding-bgem3-ingress          alb     *       k8s-default-ve
 vector-inference-embedding-spladedoc-ingress      alb     *       k8s-default-vectorin-8af81ad2bd-192706382.us-east-2.elb.amazonaws.com    80      72s
 vector-inference-embedding-spladequery-ingress    alb     *       k8s-default-vectorin-10404abaee-1617952667.us-east-2.elb.amazonaws.com   80      3m20s
 ```
+
+The `Address` field is the endpoint that you can make [dense embeddings](/vector-inference/embed), [sparse embeddings](/vector-inference/embed_sparse), or [reranker calls](/vector-inference/reranker) based on the models you chose.
 
 ## Using Trieve Vector Inference
 
