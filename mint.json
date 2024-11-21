@@ -7,7 +7,7 @@
     "href": "https://trieve.ai"
   },
   "openapi": "https://api.trieve.ai/api-docs/openapi.json",
-  "favicon": "./icons/android-chrome-512x512.png",
+  "favicon": "./icons/android-chrome-512x512-new.png",
   "colors": {
     "primary": "#a33eb5",
     "light": "#a33eb5",
