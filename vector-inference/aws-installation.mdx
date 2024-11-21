@@ -13,6 +13,7 @@ mode: wide
 - `aws` >= 2.15 ([aws installation guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html))
 - `kubectl` >= 1.28 ([kubectl installation guide](https://kubernetes.io/docs/tasks/tools/#kubectl))
 - `helm` >= 3.14 ([helm installation guide](https://helm.sh/docs/intro/install/#helm))
+- A Trieve Vector Inference License
 
 <Accordion title="IAM Policy Minimum Requirements">
   You need to have an IAM policy that allows to use the `eksctl` CLI.
@@ -21,8 +22,6 @@ mode: wide
 
   You are able to use the root account. However, AWS does not recommend doing this.
 </Accordion>
-
-You'll also need a license to run TVI.
 
 ### Getting your license
 
@@ -52,16 +51,12 @@ Check quota [here](https://us-east-2.console.aws.amazon.com/servicequotas/home/s
 
 ### Setting up environment variables 
 
-Create EKS cluster and install needed plugins
-
 Your AWS Account ID:
 ```sh
 export AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query "Account" --output text)"
 ```
 
 Your AWS Region:
-
-<Note> TVI supports all regions that have the `GPU_INSTANCE` that are chosen </Note>
 
 ```sh
 export AWS_REGION=us-east-2
@@ -99,7 +94,14 @@ export GPU_COUNT=1
 export AWS_PAGER=""
 ```
 
+<Note> TVI supports all regions that have the `GPU_INSTANCE` that are chosen </Note>
+
+
 ### Create your cluster
+
+Create EKS cluster and install needed plugins
+
+The `bootstrap-eks.sh` script will create the EKS cluster, install the AWS Load Balancer Controller, and install the NVIDIA Device Plugin. This will also manage any IAM permissions that are needed for the plugins to work.
 
 Download the `bootstrap-eks.sh` script
 ```sh
@@ -165,8 +167,11 @@ models:
 ### Install the helm chart
 
 <Info>
-    This helm chart will only work if you subscribe to the AWS Marketplace Listing
+    This helm chart will only work if you subscribe to the AWS Marketplace Listing.
 </Info>
+<Info>
+    Contact us at humans@trieve.ai if you do not have access to the AWS Marketplace or cannot use AWS marketplace.
+  </Info>
 
 <Steps>
 <Step title="Login to AWS ecr repository">
@@ -204,6 +209,27 @@ vector-inference-embedding-spladequery-ingress    alb     *       k8s-default-ve
 ```
 
 The `Address` field is the endpoint that you can make [dense embeddings](/vector-inference/embed), [sparse embeddings](/vector-inference/embed_sparse), or [reranker calls](/vector-inference/reranker) based on the models you chose.
+
+## To ensure everything is working, make a request to the model endpoint provided.
+
+```sh
+# Replace the endpoint with the one you got from the previous step
+export ENDPOINT=k8s-default-vectorin-18b7ade77a-2040086997.us-east-2.elb.amazonaws.com
+
+curl -X POST \
+     -H "Content-Type: application/json"\
+     -d '{"inputs": "test input"}' \
+     --url "http://$ENDPOINT/embed" \
+     -w "\n\nInfernce Took%{time_total} seconds\!\n"
+```
+
+The output should look like something like this
+
+```sh
+# The vector
+[[ 0.038483415, -0.00076982786, -0.020039458 ... ], [ 0.04496114, -0.039057795, -0.022400795, ... ]]
+Inference only Took 0.067066 seconds!
+```
 
 ## Using Trieve Vector Inference
 
