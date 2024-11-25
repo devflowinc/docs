@@ -103,7 +103,9 @@
     },
     {
       "group": "Plugins",
-      "pages": ["site-search/plugin-docusarus"]
+      "pages": [
+        "site-search/plugin-docusarus"
+      ]
     },
     {
       "group": "Guides",
@@ -136,9 +138,11 @@
     },
     {
       "group": "Examples",
-      "pages": ["examples/job-board", "examples/ecommerce"]
+      "pages": [
+        "examples/job-board",
+        "examples/ecommerce"
+      ]
     },
-
     {
       "group": "Chunk",
       "pages": [
@@ -187,8 +191,8 @@
       "group": "Topic",
       "pages": [
         "api-reference/topic/create-topic",
-        "api-reference/topic/update-topic",
         "api-reference/topic/clone-topic",
+        "api-reference/topic/update-topic",
         "api-reference/topic/get-all-topics-for-owner-id",
         "api-reference/topic/delete-topic"
       ]
@@ -199,6 +203,7 @@
         "api-reference/message/create-message",
         "api-reference/message/edit-message",
         "api-reference/message/regenerate-message-1",
+        "api-reference/message/get-a-message-by-its-id",
         "api-reference/message/get-all-messages-for-a-given-topic"
       ]
     },
@@ -214,18 +219,18 @@
     {
       "group": "Analytics",
       "pages": [
-        "api-reference/analytics/send-user-event-data",
         "api-reference/analytics/get-all-user-events",
-        "api-reference/analytics/get-user-event-by-id",
-        "api-reference/analytics/send-ctr-data",
         "api-reference/analytics/get-ctr-analytics",
-        "api-reference/analytics/rate-rag",
         "api-reference/analytics/get-rag-analytics",
         "api-reference/analytics/get-recommendation-analytics",
-        "api-reference/analytics/rate-search",
         "api-reference/analytics/get-search-analytics",
         "api-reference/analytics/get-cluster-analytics",
-        "api-reference/analytics/get-top-datasets"
+        "api-reference/analytics/get-top-datasets",
+        "api-reference/analytics/send-user-event-data",
+        "api-reference/analytics/send-ctr-data",
+        "api-reference/analytics/rate-rag",
+        "api-reference/analytics/rate-search",
+        "api-reference/analytics/get-user-event-by-id"
       ]
     },
     {
@@ -233,83 +238,80 @@
       "pages": [
         "api-reference/dataset/create-dataset",
         "api-reference/dataset/batch-create-datasets",
+        "api-reference/dataset/get-all-tags",
+        "api-reference/dataset/get-events-for-the-dataset",
         "api-reference/dataset/update-dataset-by-id-or-tracking-id",
-        "api-reference/dataset/delete-dataset",
-        "api-reference/dataset/delete-dataset-by-tracking-id",
         "api-reference/dataset/clear-dataset",
         "api-reference/dataset/get-dataset-by-id",
         "api-reference/dataset/get-dataset-by-tracking-id",
-        "api-reference/dataset/get-all-tags",
-        "api-reference/dataset/get-events-for-the-dataset",
         "api-reference/dataset/get-datasets-from-organization",
         "api-reference/dataset/get-usage-by-dataset-id",
         "api-reference/dataset/get-dataset-crawl-options",
-        "api-reference/public/get-apipublic_page"
+        "api-reference/public/get-apipublic_page",
+        "api-reference/dataset/delete-dataset",
+        "api-reference/dataset/delete-dataset-by-tracking-id"
       ]
-    },
-    {
-      "group": "Events",
-      "pages": ["api-reference/events/get-events-for-the-dataset"]
     },
     {
       "group": "Organization",
       "pages": [
         "api-reference/organization/create-organization",
-        "api-reference/organization/update-organization",
+        "api-reference/organization/create-organization-api-key",
         "api-reference/organization/update-all-dataset-configurations",
+        "api-reference/organization/update-organization",
+        "api-reference/organization/get-organization-api-keys",
         "api-reference/organization/get-organization-usage",
         "api-reference/organization/get-organization-users",
         "api-reference/organization/get-organization",
-        "api-reference/organization/delete-organization"
+        "api-reference/organization/delete-organization",
+        "api-reference/organization/delete-organization-api-key"
       ]
     },
-
     {
       "group": "User",
       "pages": [
-        "api-reference/user/create-user-api-key",
-        "api-reference/user/update-user-org-role",
-        "api-reference/user/delete-user-api-key"
+        "api-reference/user/update-user-org-role"
       ]
     },
     {
       "group": "Auth",
       "pages": [
         "api-reference/auth/login",
-        "api-reference/auth/logout",
         "api-reference/auth/openid-connect-callback",
-        "api-reference/auth/get-me"
+        "api-reference/auth/get-me",
+        "api-reference/auth/logout"
       ]
     },
-
     {
       "group": "Health",
-      "pages": ["api-reference/health/health-check"]
+      "pages": [
+        "api-reference/health/health-check"
+      ]
     },
     {
       "group": "Invitation",
       "pages": [
         "api-reference/invitation/send-invitation",
-        "api-reference/invitation/delete-invitation",
-        "api-reference/invitation/get-invitations"
+        "api-reference/invitation/get-invitations",
+        "api-reference/invitation/delete-invitation"
       ]
     },
-
     {
       "group": "Stripe",
       "pages": [
         "api-reference/stripe/create-checkout-session-setup",
+        "api-reference/stripe/update-subscription-plan",
         "api-reference/stripe/get-all-invoices",
         "api-reference/stripe/checkout",
         "api-reference/stripe/get-all-plans",
-        "api-reference/stripe/cancel-subscription",
-        "api-reference/stripe/update-subscription-plan"
+        "api-reference/stripe/cancel-subscription"
       ]
     },
-
     {
       "group": "Metrics",
-      "pages": ["api-reference/metrics/get-prometheus-metrics"]
+      "pages": [
+        "api-reference/metrics/get-prometheus-metrics"
+      ]
     }
   ],
   "footerSocials": {

@@ -8,10 +8,10 @@ icon: 'key'
 
 Proxying search and recommendations through your server is usually a bad idea. It adds latency, complexity, and can be a security risk. Instead, Trieve allows you to create and manage API keys that can be used directly in the client.
 
-To create an API key, use the [create API key](/api-reference/api-key/create-api-key) route.
+To create an API key, use the [create Organization API key](/api-reference/organization/create-organization-api-key) route.
 
-- TS-SDK method: [createApiKey](https://ts-sdk.trieve.ai/functions/User_Methods.createUserApiKey.html)
-- Python SDK method: [create_api_key](https://github.com/devflowinc/trieve/blob/main/clients/python-sdk/trieve_py_client/api/user_api.py#L45)
+- TS-SDK method: [createApiKey](https://ts-sdk.trieve.ai/functions/Organization_Methods.createOrganizationApiKey.html)
+- Python SDK method: [create_api_key](https://github.com/devflowinc/trieve/blob/main/clients/python-sdk/trieve_py_client/api/org_api.py)
 
 Roughly, you can visualize the flow we are encouraging with the following diagram. Information on how to scope down the access a given API key has is provided are in the next several sections.
 
@@ -23,11 +23,12 @@ All of the below examples can be used in combination with each other. For exampl
 
 Specify the `role` field with the value `0` in your request.
 
-```json curl {7}
+```json curl {8}
 curl --request POST \
-  --url https://api.trieve.ai/api/user/api_key \
+  --url https://api.trieve.ai/api/organization/api-key \
   --header 'Authorization
   --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
   --data '{
     "name": "Read only API key",
     "role": 0
@@ -38,11 +39,12 @@ curl --request POST \
 
 Specify the `expires_at` field with the time in the future that the API key should expire in your request. This field accepts only ISO 8601 formatted dates.
 
-```json curl {6}
+```json curl {7}
 curl --request POST \
-  --url https://api.trieve.ai/api/user/api_key \
+  --url https://api.trieve.ai/api/organization/api-key \
   --header 'Authorization: <api-key>' \
   --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
   --data '{
     "name": "expires at '2024-11-14 00:00:00' UTC",
     "expires_at": "2024-11-14 00:00:00",
@@ -54,11 +56,12 @@ curl --request POST \
 
 Specify the `organization_ids` field with the organization IDs that the API key should have access to in your request.
 
-```json curl {7-9}
+```json curl {8-10}
 curl --request POST \
-  --url https://api.trieve.ai/api/user/api_key \
+  --url https://api.trieve.ai/api/organization/api-key \
   --header 'Authorization: <api-key>' \
   --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
   --data '{
     "name": "Can only make requests to the 3c90c3cc... organization",
     "organization_ids": [
@@ -72,11 +75,12 @@ curl --request POST \
 
 Specify the `dataset_ids` field with the dataset IDs that the API key should have access to in your request.
 
-```json curl {7-9}
+```json curl {8-10}
 curl --request POST \
-  --url https://api.trieve.ai/api/user/api_key \
+  --url https://api.trieve.ai/api/organization/api-key \
   --header 'Authorization: <api-key>' \
   --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
   --data '{
     "name": "Can only make requests to the 9u90c3cc... dataset",
     "dataset_ids": [
@@ -88,11 +92,12 @@ curl --request POST \
 
 ## Scope access to specific routes
 
-```json curl {7-21}
+```json curl {8-22}
 curl --request POST \
-  --url https://api.trieve.ai/api/user/api_key \
+  --url https://api.trieve.ai/api/organization/api-key \
   --header 'Authorization: <api-key>' \
   --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
   --data '{
     "name": "Can only make requests to the 9u90c3cc... dataset",
     "scopes": [
@@ -120,9 +125,9 @@ Specify a filter in the `default_params` field in your request. This filter will
 
 You can use this to restrict access to data with more granularity than just dataset or organization.
 
-```json curl {7-18}
+```json curl {8-19}
 curl --request POST \
-  --url https://api.trieve.ai/api/user/api_key \
+  --url https://api.trieve.ai/api/organization/api-key \
   --header 'Authorization: <api-key>' \
   --header 'Content-Type: application/json' \
   --data '{
