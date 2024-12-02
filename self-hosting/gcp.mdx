@@ -14,11 +14,14 @@ Things you need
 - kubectl
 - k9s (optional)
 
+
+### 1. Authenticate with GCP
+
 ```sh
-aws configure
+gcloud auth login
 ```
 
-### Provision Terraform
+### 2. Provision Terraform
 
 aws should be configured with your IAM credentails chosen. Run the following commands to create the EKS cluster
 
