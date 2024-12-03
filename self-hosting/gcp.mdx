@@ -14,6 +14,13 @@ Things you need
 - kubectl
 - k9s (optional)
 
+### 0. Clone the Trieve repository
+
+```sh
+git clone https://github.com/devflowinc/trieve.git
+cd trieve
+```
+
 
 ### 1. Authenticate with GCP
 
@@ -25,119 +32,226 @@ gcloud auth login
 
 aws should be configured with your IAM credentails chosen. Run the following commands to create the EKS cluster
 
+Copy the default `vars.tfvars.example` file and fill in the values
+
+```
+cp terraform/gcloud/vars.tfvars.example terraform/gcloud/vars.tfvars
+```
+
+You will need to add your google cloud project id. You can also change the cluster and node types as needed
+
+```vars.tfvars
+project = "***********-*******-******"
+cluster_name = "trievegcp"
+region = "us-west2"
+zone = "us-west2-a"
+```
+
 ```sh
 cd terraform/gcloud
 terraform init
-terraform apply
+terraform apply -var vars.tfvars
 ```
 
-This should provision an eks cluster with elb and ebs drivers
+This should provision a GKE cluster, Elasticache instance, and a CloudSQL instance.
 
-### 3 Create values.yaml
+### Login to the cluster
+
+```
+gcloud container clusters get-credentials --region us-east1-b trievegcp
+```
+
+### Install Other Trieve Depenedencies
+
+Trieve depends on the following:
+- [Keycloak](https://www.keycloak.org/) (or some other oidc compliant Auth Provider)
+- [Postgres](https://www.postgresql.org/) We are using CloudSQL
+- [Redis](https://redis.io/) We are using Elasticache
+- [Clickhouse](https://clickhouse.tech/) We are using clickhouse-operator
+- [Qdrant](https://qdrant.tech/) We are using qdrant-operator
+
+#### Clickhouse
+
+
+First install the clickhouse operator and clickhouse installation.
+
+Note that this has a preconfigured password and user. We will use these in the helm chart.
+They will need to be changed in a production environment according to your password policy.
 
 ```sh
-export SENTRY_CHAT_DSN=https://********************************@sentry.trieve.ai/6
-export ENVIRONMENT=gcloud
-export DOMAIN=example.com # Only used for local
-export EXTERNAL_DOMAIN=example.com
-export DASHBOARD_URL=https://dashboard.example.com
-export SALT=goodsaltisveryyummy
-export SECRET_KEY=1234512345123451234512345123451234512345123451234512345123451234512345123451234h
-export ADMIN_API_KEY=asdasdasdasdasd
-export OIDC_CLIENT_SECRET=YllmLDTy67MbsUBrUAWvQ7z9aMq0QcKx
-export ISSUER_URL=https://oidc.example.com
-export AUTH_REDIRECT_URL=https://oidc.example.com/realms/trieve/protocol/openid-connect/auth
-export REDIRECT_URL=https://oidc.example.com/realms/trieve/protocol/openid-connect/auth
-export SMTP_RELAY=smtp.gmail.com
-export SMTP_USERNAME=trieve@gmail.com
-export SMTP_PASSWORD=pass************
-export SMTP_EMAIL_ADDRESS=triever@gmail.com
-export LLM_API_KEY=sk-or-v1-**************************************************************** # Open Router API KEY
-export OPENAI_API_KEY=sk-************************************************ # OPENAI API KEY
-export OPENAI_BASE_URL=https://api.openai.com/v1
-export S3_ENDPOINT=https://<bucket>.s3.amazonaws.com
-export S3_ACCESS_KEY=ZaaZZaaZZaaZZaaZZaaZ
-export S3_SECRET_KEY=ssssssssssssssssssssTTTTTTTTTTTTTTTTTTTT
-export S3_BUCKET=trieve
-export AWS_REGION=us-east-1 # Useful if your bucket is in s3
-export STRIPE_API_KEY=sk_test_***************************************************************************************************
-export STRIPE_WEBHOOK_SECRET=sk_test_***************************************************************************************************
 
-helm/from-env.sh
+kubectl apply -f helm/test-production/clickhouse/
+# Apply twice to ensure crds are installed
+kubectl apply -f helm/test-production/clickhouse/
+
 ```
 
-This step generates a file in `helm/values.yaml`. It alllows you to modify the environment variables
-
-### 4. Deploy the helm chart
+Check the status of the clickhouse installation.
 
 ```sh
-gcloud container clusters get-credentials test-cluster
-helm install -f helm/values.yaml trieve helm/
+
+kubectl get ClickhouseInstallations
+
 ```
 
-Ensure everything has been deployed with
+```
+NAME                CLUSTERS   HOSTS   STATUS      HOSTS-COMPLETED   AGE
+trieve-clickhouse   1          1       Completed                     3m3s
+```
+
+#### OIDC Compliant server (keycloak)
+
+This is an example of installing keycloak on GCP. You can use any other OIDC compliant provider.
+Note that this is using postgresql as a statefulset with a prefilled username/password, you can use a managed service like CloudSQL or CloudNativePG.
+For higher security.
+
+This also includes a KeycloakRealm that contains the recommended default settings for a keycloak realm. This also has a prefilled clientSecret which
+should be rotated post installation.
 
 ```sh
-kubectl get pods
+kubectl apply -f helm/test-production/keycloak/
+# Apply twice to ensure crds are installed
+kubectl apply -f helm/test-production/keycloak/
 ```
-
-### SubChart usage
-
-Postgres, Redis, and qdrant are installed within this helm chart via a subchart. You can opt out of using the helm chart installation and using a managed service can be toggled via. the `useSubChart` parameters and setting the `uri` to a managed service. We reccomend placing at least Postgres and Redis out side of the helm chart and keeping Qdrant in the helm chart for a production usecase.
-
-### 6. Set DNS records
-
-First get the ingress addresses using
 
 ```sh
-kubectl get ingress
+kubectl get sts trieve-keycloak
 ```
 
-You will get output that looks like this
+#### Qdrant
+
+For qdrnat we reccomend you install it via helm chart, with these values.yaml.
+Note that this is for a qdrant cluster with 3 nodes and GB ram per node.
+
+Each node also has qdrant-node taint on it, so that the trieve pods can be scheduled on the same nodes types
+
+Note that `apiKey` is also preset to `qdrant-api-key`, this may need to be changed if you plan on enabling 
+qdrant ingress.
+
+```yaml
+
+helm repo add qdrant https://qdrant.github.io/qdrant-helm
+helm repo update
+helm upgrade -i qdrant qdrant/qdrant -f helm/test-production/qdrant-values.yaml
 
 ```
-NAME                CLASS   HOSTS                  ADDRESS        PORTS   AGE
-ingress-chat        <none>  chat.domain.com        25.50.100.31   80      9s
-ingress-dashboard   <none>  dashboard.domain.com   25.50.100.32   80      9s
-ingress-search      <none>  search.domain.co       25.50.100.35   80      9s
-ingress-server      <none>  api.domain.com         25.50.100.36   80      9s
+
+Verify Qdrant is installed
+
+```sh
+kubectl get sts qdrant
 ```
 
-Set CNAME's accordingly, we recommend using Cloudflare to CNAME and provision the SSL Cert
-Once you set the ingress rules properly, the server should be able to properly deploy.
-
-### 7. Setup/OIDC provider and Authorized Redirect URL'S
-
-The last step is to setup an OIDC compliant server like `keycloak` for authentication and get an `issuerUrl` and `clientSecret`. This is how you do it within Keycloak.
-
-A) Create a new realm called `trieve`
-B) Go into Clients and create a new client called `trieve`.
-
-Enable client authentication and set the following allowed redirect url's
-
-- https://api.domain.com/*
-- https://search.domain.com/*
-- https://chat.domain.com/*
-- https://dashboard.domain.com/*
-
-You will get the client secret in the `Credentials` tab.
-
-You will need to set the following values in the `helm/values.yaml` file, it should be prefilled already with default values
-
 ```
+NAME     READY   AGE
+qdrant   3/3     54s
+```
+
+You may need to update `helm/values.gcp.yaml` with a new qdrant apiKey
+
+```yaml
+...
 config:
-  oidc:
-    clientSecret: $OIDC_CLIENT_SECRET
-    clientId: trieve
-    issuerUrl: https://auth.domain.com/realms/trieve
-    authRedirectUrl: https://auth.domain.com/realms/trieve/protocol/openid-connect/auth
+...
+  qdrant:
+...
+    apiKey: qdrant-api-key
+...
 ```
 
-### Testing
+#### Redis
 
-The fastest way to test is using the Trieve CLI
+For simplicity, we are using Elasticache. This was configured in the terraform script. You can view the ip using
+
+```sh
+
+cd terraform/gcloud
+terraform output redis_host
 
 ```
-trieve login # Make sure to set the api url to https://api.domain.com
-trieve dataset example
+
+set values in the `helm/values.gcp.yaml` file
+
+```yaml
+
+config:
+  redis:
+    uri: redis://<your-redis-uri>
+
 ```
+
+### Install Trieve
+
+#### Modify domain names for ingresses
+
+```yaml
+domains:
+  dashboard:
+    host: dashboard.trieve.ai
+    class: gce
+  server:
+    host: api.trieve.ai
+    class: gce
+  search:
+    host: search.trieve.ai
+    class: gce
+  chat:
+    host: chat.trieve.ai
+    class: gce
+```
+
+### Setup postgresql connection with cloudsql proxy
+
+First install cloudsql proxy
+
+```yaml
+
+kubectl apply -f ./helm/test-production/cloud-sql-proxy.yaml
+
+```
+
+Be sure to update `helm/values.gcp.yaml` with the correct connection string if you modified the default values
+
+```yaml
+postgres:
+  dbURI: "postgres://postgres:password@cloud-sql:5432/postgres"
+```
+
+Install the helm chart
+
+```sh
+
+helm upgrade -i -f helm/values.gcp.yaml trieve-gcp helm/
+
+```
+
+### Verify the installation
+
+After installing, `kubectl get deployments` should look like this.
+
+```
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+bktree-worker       1/1     1            1           14m
+chat                1/1     1            1           14m
+crawl-worker        1/1     1            1           14m
+dashboard           1/1     1            1           14m
+delete-worker       1/1     1            1           14m
+group-worker        1/1     1            1           14m
+ingest              10/10   10           10          14m
+keycloak-operator   1/1     1            1           46m
+redis               1/1     1            1           46m
+search              1/1     1            1           14m
+server              0/3     1            0           14m
+sync-qdrant         0/0     0            0           14m
+word-worker         1/1     1            1           14m
+```
+
+### Setting your Ingress
+
+Run `kubectl get ingress` to get the ip address of the ingress points.
+You will need to add an A record for each of them accouding to your `domains:` as defined
+in your `helm/values.gcp.yaml` file.
+
+You will also need to update any other references to that domain name in the `helm/values.gcp.yaml` file.
+
+Ensure you run `helm upgrade -i -f helm/values.gcp.yaml trieve-gcp helm/` after making changes. to apply them.
