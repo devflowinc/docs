@@ -64,7 +64,7 @@ This will provision the following:
 gcloud container clusters get-credentials --region us-east1-b trievegcp
 ```
 
-## Install Other Trieve Depenedencies
+## Install Trieve Depenedencies
 
 Trieve depends on the following:
 - [Clickhouse](https://clickhouse.tech/) We are using clickhouse-operator
@@ -116,7 +116,7 @@ NAME                CLUSTERS   HOSTS   STATUS      HOSTS-COMPLETED   AGE
 trieve-clickhouse   1          1       Completed                     3m3s
 ```
 
-### OIDC Compliant server (keycloak)
+### OIDC Compliant server (Keycloak)
 
 This is an example of installing keycloak on GCP. You can use any other OIDC compliant provider.
 Note that this is using postgresql as a statefulset with a prefilled username/password, you can use a managed service like CloudSQL or CloudNativePG.
@@ -193,6 +193,12 @@ kubectl apply -f ./helm/test-production/cloud-sql-proxy.yaml
 
 Be sure to update `helm/values.gcp.yaml` with the correct connection string if you modified the default values
 
+```yaml
+...
+postgres:
+  dbURI: "postgres://postgres:password@cloud-sql:5432/postgres"
+...
+```
 
 ## Install Trieve
 
@@ -207,16 +213,16 @@ We highlight the locations where you need to replace `yourdomain.com` with your 
 domains:
   dashboard:
     host: dashboard.yourdomain.com
-    class: nginx
+    class: gce
   server:
     host: api.yourdomain.com
-    class: nginx
+    class: gce
   search:
     host: search.yourdomain.com
-    class: nginx
+    class: gce
   chat:
     host: chat.yourdomain.com
-    class: nginx
+    class: gce
 ...
 config:
 ...
@@ -231,11 +237,6 @@ config:
   oidc:
     issuerUrl: "https://auth.yourdomain.com/realms/trieve"
     authRedirectUrl: "https://auth.yourdomain.com/realms/trieve/protocol/openid-connect/auth"
-```
-
-```yaml
-postgres:
-  dbURI: "postgres://postgres:password@cloud-sql:5432/postgres"
 ```
 
 Install the helm chart
@@ -262,7 +263,7 @@ ingest              10/10   10           10          14m
 keycloak-operator   1/1     1            1           46m
 redis               1/1     1            1           46m
 search              1/1     1            1           14m
-server              0/3     1            0           14m
+server              3/3     1            0           14m
 sync-qdrant         0/0     0            0           14m
 word-worker         1/1     1            1           14m
 ```
@@ -280,11 +281,11 @@ kubectl get ingress
 You will get an output like this:
 
 ```sh
-ingress-chat                nginx    chat.yourdomain.com        4.157.193.10   80, 443   7m43s
-ingress-dashboard           nginx    dashboard.yourdomain.com   4.157.193.10   80, 443   7m43s
-ingress-keycloak            nginx    auth.yourdomain.com        4.157.193.10   80, 443   20m
-ingress-search              nginx    search.yourdomain.com      4.157.193.10   80, 443   7m43s
-ingress-server              nginx    api.yourdomain.com         4.157.193.10   80, 443   7m43s
+ingress-chat                gce    chat.yourdomain.com        4.157.193.10   80, 443   7m43s
+ingress-dashboard           gce    dashboard.yourdomain.com   4.157.193.10   80, 443   7m43s
+ingress-keycloak            gce    auth.yourdomain.com        4.157.193.10   80, 443   20m
+ingress-search              gce    search.yourdomain.com      4.157.193.10   80, 443   7m43s
+ingress-server              gce    api.yourdomain.com         4.157.193.10   80, 443   7m43s
 ```
 
 #### Add A records
@@ -298,6 +299,6 @@ search.yourdomain.com    -> 4.157.193.10 # Example IP
 api.yourdomain.com       -> 4.157.193.10 # Example IP
 ```
 
-You will also need to update any other references to that domain name in the `helm/values.az.yaml` file.
+You will also need to update any other references to that domain name in the `helm/values.gcp.yaml` file.
 
-Ensure you run `helm upgrade -i -f helm/values.az.yaml trieve-az helm/` after making changes. to apply them.
+Ensure you run `helm upgrade -i -f helm/values.gcp.yaml trieve-gcp helm/` after making changes. to apply them.
