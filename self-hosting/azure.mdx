@@ -1,16 +1,12 @@
----
-title: GCP Self Hosting
-description: Learn how to self-host Trieve on Google Cloud Platform
-icon: google
----
 
-# Installing Trieve on GCP (GKE)
 
-Things you need
+# Installing Trieve on Azure (AKS)
+
+Things you need:
 
 - Domain name
 - helm cli
-- google cloud cli
+- azure cli
 - kubectl
 - k9s (optional)
 
@@ -21,66 +17,41 @@ git clone https://github.com/devflowinc/trieve.git
 cd trieve
 ```
 
-
-## Login to GCP
+##  Login to Azure
 
 ```sh
-gcloud auth login
+az login --use-device-code
 ```
 
 ## Provision Terraform
 
-Copy the default `vars.tfvars.example` file and fill in the values
-
-```
-cp terraform/gcloud/vars.tfvars.example terraform/gcloud/vars.tfvars
-```
-
-Modify `terraform/gcloud/vars.tfvars` with your project id, cluster name, region, and zone.
-
-```vars.tfvars
-project = "***********-*******-******"
-cluster_name = "trievegcp"
-region = "us-west2"
-zone = "us-west2-a"
-```
-
-Finally run `terraform apply` to provision the resources.
+Azure should be configured with your IAM credentails chosen. Run the following commands to create the AKS cluster
 
 ```sh
-cd terraform/gcloud
+cd terraform/azure
 terraform init
-terraform apply -var vars.tfvars
+terraform apply
 ```
-
-This will provision the following:
-- GKE cluster
-- Elasticache instance
-- CloudSQL Postgres instance.
 
 ### Login to the cluster
 
 ```
-gcloud container clusters get-credentials --region us-east1-b trievegcp
+az aks get-credentials --resource-group trieve --name trieve
 ```
 
-## Install Other Trieve Depenedencies
+## Install Trieve Depenedencies
 
 Trieve depends on the following:
-- [Clickhouse](https://clickhouse.tech/) We are using clickhouse-operator
 - [Keycloak](https://www.keycloak.org/) (or some other oidc compliant Auth Provider)
-- [Qdrant](https://qdrant.tech/) We are using qdrant-operator
-- [Redis](https://redis.io/) We are using Elasticache
-- [Postgres](https://www.postgresql.org/) We are using CloudSQL
+- [Postgres](https://www.postgresql.org/) We are using the CloudNativePG operator.
+- [Redis](https://redis.io/) We are using the bitnami redis helm chart.
+- [Clickhouse](https://clickhouse.tech/) We are using clickhouse-operator.
+- [Qdrant](https://qdrant.tech/) We are using qdrant-helm chart.
 
 ### Ingress nginx + Cert Manager (optional)
 
 Ingress-nginx + Cert manager is how we will expose the trieve services to the internet. 
 Feel free to use whatever ingress controller you are comfortable with.
-
-<Note>
-For this guide we will be using ingress-nginx and cert-manager only for the keycloak installation.
-</Note>
 
 ```sh
 
@@ -100,9 +71,11 @@ Note that this has a preconfigured password and user. We will use these in the h
 They will need to be changed in a production environment according to your password policy.
 
 ```sh
+
 kubectl apply -f helm/test-production/clickhouse/
 # Apply twice to ensure crds are installed
 kubectl apply -f helm/test-production/clickhouse/
+
 ```
 
 Check the status of the clickhouse installation.
@@ -111,19 +84,25 @@ Check the status of the clickhouse installation.
 kubectl get ClickhouseInstallations
 ```
 
+When the above command returns the following, clickhosue is installed.
+
 ```
 NAME                CLUSTERS   HOSTS   STATUS      HOSTS-COMPLETED   AGE
 trieve-clickhouse   1          1       Completed                     3m3s
 ```
+### OIDC Compliant server (Keycloak)
 
-### OIDC Compliant server (keycloak)
+This is an example of installing keycloak on Azure. You can use any other OIDC compliant provider.
 
-This is an example of installing keycloak on GCP. You can use any other OIDC compliant provider.
-Note that this is using postgresql as a statefulset with a prefilled username/password, you can use a managed service like CloudSQL or CloudNativePG.
+<Warning>
+This is using postgresql as a statefulset with a prefilled username/password, you can use a managed service like RDS or CloudNativePG.
 For higher security.
+</Warning>
 
+<Warning>
 This also includes a KeycloakRealm that contains the recommended default settings for a keycloak realm. This also has a prefilled clientSecret which
 should be rotated post installation.
+</Warning>
 
 ```sh
 kubectl apply -f helm/test-production/keycloak/
@@ -131,9 +110,60 @@ kubectl apply -f helm/test-production/keycloak/
 kubectl apply -f helm/test-production/keycloak/
 ```
 
+To verify Keycloak has started run
+
 ```sh
 kubectl get sts trieve-keycloak
 ```
+
+#### Install the Keycloak Ingress and set your A record
+
+1) Edit `helm/test-production/keycloak-extras/keycloak-ingress.yaml` and replace `yourdomain.com` with your domain name.
+
+2) Apply the ingress
+
+```sh
+
+kubectl apply -f helm/test-production/keycloak-extras/keycloak-ingress.yaml
+
+```
+
+```sh
+
+kubectl get ingress ingress-keycloak
+
+```
+
+You will get an output like this:
+
+```
+NAME               CLASS   HOSTS                 ADDRESS        PORTS     AGE
+ingress-keycloak   nginx   auth.yourdomain.com   4.157.193.10   80, 443   2m10s
+```
+
+Add an A record to your domain registrar with the IP address of the ingress.
+```
+auth.yourdomain.com -> 4.157.193.10 # Example IP
+```
+
+#### Configure Keycloak authorized redirect URIs
+
+1) Access the Keycloak admin console at https://auth.YOUR-DOMAIN.COM/admin/master/console/#/trieve/clients/list
+2) Login with the default credentials:
+  Username: admin
+  Password: password
+3) Select the “trieve” client and add the following configurations:
+
+Valid redirect and Valid post logout redirect URIs:
+
+```
+https://api.YOUR-DOMAIN.COM/*
+https://dashboard.YOUR-DOMAIN.COM/*
+https://chat.YOUR-DOMAIN.COM/*
+https://search.YOUR-DOMAIN.COM/*
+```
+
+4) Save the changes
 
 ### Qdrant helm chart
 
@@ -164,46 +194,44 @@ NAME     READY   AGE
 qdrant   3/3     54s
 ```
 
-### Redis
+### Postgresql (via CloudNativePG)
 
-For simplicity, we are using the GCP managed redis. This was configured in the terraform script. You can view the ip using
+Insstall the postgresql operator and postgresql installation.
 
 ```sh
-cd terraform/gcloud
-terraform output redis_host
+kubectl apply --server-side -f helm/test-production/cnpg/operator.yaml
+# Apply twice to ensure crds are installed
+kubectl apply -f helm/test-production/cnpg/postgresql-instance.yaml
 ```
 
-set values in the `helm/values.gcp.yaml` file
+Verify the postgresql installation via.
 
-```yaml
-config:
-  redis:
-    uri: redis://<your-redis-uri>
+```sh
+# To verify the operator is installed
+kubectl get deployment -n cnpg-system cnpg-controller-manager
+# To verify the postgresql cluster is installed
+kubectl get pods -l cnpg.io/cluster=postgresql-cluster
 ```
 
-### Postgresql (via cloud-sql-proxy)
+### Redis helm chart
 
-First install cloudsql proxy
+For simplicity, we are using the bitnami redis helm chart. You can use the azure redis cache service if you prefer.
 
-```yaml
-
-kubectl apply -f ./helm/test-production/cloud-sql-proxy.yaml
-
+```sh
+helm upgrade -i redis oci://registry-1.docker.io/bitnamicharts/redis -f helm/test-production/redis-values.yaml
 ```
 
-Be sure to update `helm/values.gcp.yaml` with the correct connection string if you modified the default values
 
+# Install Trieve
 
-## Install Trieve
+### Modify domain names
 
-If you followed the steps above, `values.gcp.yaml` should be mostly preconfigured for you.
+If you followed the steps above, `values.az.yaml` should be mostly preconfigured for you.
 The only thing needed to modify are the domain names. Replace every instance of `yourdomain.com` with your domain name.
 
 We highlight the locations where you need to replace `yourdomain.com` with your domain name below.
 
-### Modify domain names
-
-```yaml
+```yaml values.az.yaml
 domains:
   dashboard:
     host: dashboard.yourdomain.com
@@ -233,17 +261,13 @@ config:
     authRedirectUrl: "https://auth.yourdomain.com/realms/trieve/protocol/openid-connect/auth"
 ```
 
-```yaml
-postgres:
-  dbURI: "postgres://postgres:password@cloud-sql:5432/postgres"
-```
 
 Install the helm chart
 
 ```sh
-
-helm upgrade -i -f helm/values.gcp.yaml trieve-gcp helm/
-
+helm upgrade -i trieve-az \
+  helm/ \
+  -f helm/values.az.yaml 
 ```
 
 ### Verify the installation
@@ -262,7 +286,7 @@ ingest              10/10   10           10          14m
 keycloak-operator   1/1     1            1           46m
 redis               1/1     1            1           46m
 search              1/1     1            1           14m
-server              0/3     1            0           14m
+server              3/3     1            0           14m
 sync-qdrant         0/0     0            0           14m
 word-worker         1/1     1            1           14m
 ```
