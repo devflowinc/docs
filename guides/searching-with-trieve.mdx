@@ -38,86 +38,71 @@ You can use the search UI at [search.trieve.ai](https://search.trieve.ai) to A/B
 <Tip>
 To optimize for the lowest latency, set `highlight_results` and `get_total_pages` to `false` and set `slim_chunks` to `true`. If you are willing to sacrifice some search quality for speed, use the `fulltext` search mode.
 </Tip>
-## Filtering
 
-We provide a system to allow users to filter the chunks that are returned.
+## Search Customizations
 
-The filters are structured around three clauses:
+### Embedding Models
 
-- **`must`**: All filters within this clause must be matched to return the chunks.
+Trieve supports multiple embedding models that can be used to search over your data.
+You can specify the embedding model to use in the `server_configuration` field when creating a dataset.
 
-  > Get chunks with both "CO" and "321" in their `tag_set`:
-  ```json
-  {
-    "must": [
-      {
-        "field": "tag_set",
-        "match": ["CO"]
-      },
-      {
-        "field": "tag_set",
-        "match": ["321"]
-      }
-    ]
-  }
-  ```
+<Warning>
+After creating a dataset, you cannot change the embedding model. If you need to change the embedding model, you must create a new dataset.
+</Warning>
 
-  > Get chunks with either "CO" OR "321" in their `tag_set`:
-  ```json
-  {
-    "must": [
-      {
-        "field": "tag_set",
-        "match": ["CO", "321"]
-      }
-    ]
-  }
-  ```
+### Reranker models
 
-- **`must_not`**: All filters in this clause must not be matched to return the chunks.
+Trieve supports multiple reranker models that can be used to rerank the search results.
+ 
+Currently, Trieve supports `bge-reranker-large` and cohere's `rerank-v3.5` model.
 
-  > Get chunks with neither "CO" nor "321" in their `tag_set`:
-  ```json
-  {
-    "must_not": [
-      {
-        "field": "tag_set",
-        "match": ["CO", "321"]
-      }
-    ]
-  }
-  ```
+![](https://cdn.trieve.ai/docs/reranker-model-edit.png)
 
-  > Get chunks that either don't have "CO" in their `tag_set` or don't have "321" in their `tag_set`:
-  ```json
-  {
-    "must_not": [
-      {
-        "field": "tag_set",
-        "match": ["CO"]
-      },
-      {
-        "field": "tag_set",
-        "match": ["321"]
-      }
-    ]
-  }
-  ```
+#### BAAI/bge-reranker-large
 
-- **`should`**: Any of these conditions can be matched to return a chunk.
+`bge-reranker-large` is a model by the Beijing Academy of Artificial Intelligence (BAAI) and is hosted by Trieve. This model does not require any additional configuration. and will be used by default on all `hybrid` searches.
 
-  > Get chunks that either have "CO" in their `tag_set` or "http://example.com" in their `link`:
-  ```json
-  {
-    "should": [
-      {
-        "field": "tag_set",
-        "match": ["CO"]
-      },
-      {
-        "field": "link",
-        "match": ["http://example.com"]
-      }
-    ]
-  }
-  ```
+To switch your reranker model to cohere's `rerank-v3.5`, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id). With the following Parameters
+
+```json
+curl --request POST \
+  --url https://api.trieve.ai/api/dataset \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
+  --data '{
+    "dataset_name": "New Dataset", // Replace with a name for your dataset
+    "organization_id": "********-****-****-****-************",
+
+    // Update with the desired configurations for your dataset
+    "server_configuration": {
+      "RERANKER_MODEL_NAME":"bge-reranker-large"
+    }
+}'
+```
+
+#### Cohere rerank-v3.5
+
+`rerank-v3.5` is a model hosted by docs.cohere.com. To use this model, you must provide the `cohere_api_key` in the `server_configuration` field when creating a dataset.
+
+To switch your reranker model to cohere's `rerank-v3.5`, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id). With the following Parameters
+
+```json
+curl --request POST \
+  --url https://api.trieve.ai/api/dataset \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
+  --data '{
+    "dataset_name": "New Dataset", // Replace with a name for your dataset
+    "organization_id": "********-****-****-****-************",
+
+    // Update with the desired configurations for your dataset
+    "server_configuration": {
+      "RERANKER_BASE_URL":"https://api.cohere.com/v2",
+      "RERANKER_MODEL_NAME":"rerank-v3.5"
+      "RERANKER_API_KEY":"<cohere_api_key>"
+    }
+}'
+
+```

@@ -15,7 +15,7 @@ The main route we use to expose this functionality is the [create organization r
 
 Example of creating an organization on demand through the API:
 
-```json curl
+```json
 curl --request PUT \
   --url https://api.trieve.ai/api/organization \
   --header 'Authorization: <api-key>' \
@@ -68,7 +68,7 @@ Trieve provides a solution for multi-tenanted environments, allowing users to ma
 
 To access different organizations, use the `TR-Organization` header. For example, to fetch the details of a specific organization, you can do:
 
-```json curl
+```json
 curl --request GET \
   --url https://api.trieve.ai/api/organization/{organization_id} \
   --header 'Authorization: <api-key>' \
@@ -81,7 +81,7 @@ To update all dataset configs in an organization, use the [update all dataset co
 
 Example of updating all dataset configurations in an organization:
 
-```json curl
+```json
 curl --request POST \
   --url https://api.trieve.ai/api/organization/update_dataset_configs \
   --header 'Authorization: <api-key>' \
