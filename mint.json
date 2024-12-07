@@ -113,6 +113,7 @@
       "pages": [
         "guides/create-chunk",
         "guides/uploading-files",
+        "guides/uploading-csv-and-jsonl-files",
         "guides/searching-with-trieve",
         "guides/recommending-with-trieve",
         "guides/RAG-with-trieve",
@@ -212,7 +213,7 @@
       "group": "File",
       "pages": [
         "api-reference/file/upload-file",
-        "api-reference/file/csv-jsonl-s3-puturl",
+        "api-reference/file/create-presigned-url-for-csv-jsonl",
         "api-reference/file/get-files-for-dataset",
         "api-reference/file/get-file",
         "api-reference/file/delete-file"

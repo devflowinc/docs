@@ -1,0 +1,80 @@
+---
+title: 'Uploading CSV and JSONL Files to Trieve'
+description: 'Learn how to upload bulk structured data to Trieve'
+icon: 'file-excel'
+---
+## Overview
+
+Trieve allows you to upload structured data in CSV and JSONL formats. We automatically create chunks for each row in the file, allowing you to search and filter your data easily.
+
+## Uploading a CSV or JSONL File to Trieve
+
+Since CSV and JSONL files can be large, our API allows you to provision a signed PUT URL to upload the file directly to our storage. Once the file is uploaded, Trieve will automatically process the file and create chunks for each row.
+
+### Step 1: Request a Signed PUT URL
+
+Use the [/api/file/csv_or_jsonl](/api-reference/file/create-presigned-url-for-csv-jsonl) to acquire a signed PUT URL for your CSV or JSONL file from the Trieve API. This URL is valid for 24 hours and allows you to upload the file directly to our storage.
+
+You can leverage the `mappings` field to control how the columns in the CSV or fields in the JSONL file are mapped to the chunks created by Trieve. This is optional and can be used to ensure that the data is structured correctly.
+
+```sh
+curl -X POST "https://api.trieve.ai/api/file/csv_or_jsonl" \
+  -H "Content-Type: application/json" \
+  -H "TR-Dataset: <Your Dataset ID>" \
+  -H "Authorization: <Your API Key>" \
+  -d '{
+    "description": "This is an example file containing information about titanic passengers.",
+    "file_name": "titantic.csv",
+    "mappings": [
+      {
+        "csv_jsonl_field": "PassengerId",
+        "chunk_req_payload_field": "tracking_id"
+      },
+      {
+        "csv_jsonl_field": "Survived",
+        "chunk_req_payload_field": "tag_set"
+      },
+      {
+        "csv_jsonl_field": "Fare",
+        "chunk_req_payload_field": "num_value"
+      }
+    ],
+    "link": "https://raw.githubusercontent.com/datasciencedojo/datasets/refs/heads/master/titanic.csv"
+  }'
+```
+
+Trieve's API will respond with an object containing the signed PUT URL and the file's properties as shown in the below example.
+
+```json
+{
+  "file_metadata": {
+    "id": "9ab52e58-0b38-4e4c-b114-139337f0548e",
+    "file_name": "titantic.csv",
+    "created_at": "2024-12-07T06:00:13.984143747",
+    "updated_at": "2024-12-07T06:00:13.984144067",
+    "size": 0,
+    "metadata": null,
+    "link": "https://raw.githubusercontent.com/datasciencedojo/datasets/refs/heads/master/titanic.csv",
+    "time_stamp": null,
+    "dataset_id": "<Your Dataset ID>",
+    "tag_set": null
+  },
+  "presigned_put_url": "https://trieve-s3bucket.s3.amazonaws.com/trieve-s3bucket/<id>"
+}
+```
+
+### Step 2: Upload the File to the Signed PUT URL
+
+Use the signed PUT URL provided by Trieve to upload the CSV or JSONL file to our storage. You can use tools like `curl`, `wget`, or any other HTTP client to upload the file.
+
+```sh
+curl -o ./titanic.csv https://raw.githubusercontent.com/datasciencedojo/datasets/refs/heads/master/titanic.csv
+
+curl -X PUT -T ./titanic.csv "<Presigned PUT URL>"
+```
+
+You are now done with the file upload process. Trieve will automatically process the file and create chunks for each row. You can check the progress by migrating your dataset's chunk count in the [dashboard](https://dashboard.trieve.ai) and test via the [search playground](https://search.trieve.ai) or [chat playground](https://chat.trieve.ai).
+
+## Advanced Options
+
+Additional options are available to customize the csv or jsonl file upload process. Reference the documentation for our [/api/file/csv_or_jsonl](/api-reference/file/create-presigned-url-for-csv-jsonl) route for more information.
