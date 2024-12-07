@@ -212,6 +212,7 @@
       "group": "File",
       "pages": [
         "api-reference/file/upload-file",
+        "api-reference/file/csv-jsonl-s3-puturl",
         "api-reference/file/get-files-for-dataset",
         "api-reference/file/get-file",
         "api-reference/file/delete-file"
