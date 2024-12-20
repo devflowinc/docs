@@ -38,23 +38,53 @@ You can see all of this data on the dashboard in the analytics section, as well 
 
 ## Custom Metrics
 
-### Getting the Search ID
-All V2 Searches Return an `id`, this `id` is will be used for all `search` event types
+### 1. Getting the Request ID
 
-```json search_response.json
+All searches, recommendations, and chats return a `requestID`. With this you can track:
+- Clicks
+- user ratings (on any scale you want)
+- Add to Cart's
+- User Views
+- Purchase's
+
+forwarding this `query_id` to any custom 
+
+#### Request ID from Searches
+
+All Searches Return an `id`, this `id` is your Request ID
+
+```json search_response.json {5}
+{
+    "chunks" : [
+        // ... Your search response
+    ], 
+    "id": "28f37011-179e-4927-9138-771132d0b6c3" // Request ID
+}
+```
+
+#### Request ID from Recommendations
+
+Calls to `/api/chunk/recommend` return an `id`
+
+```json recommend_response.json {5}
 {
     "chunks" : [
         // ... Your Chunk Data
     ], 
-    id: "" // UUID used to track
+    "id": "28f37011-179e-4927-9138-771132d0b6c3" // Request ID
     // ... other data
 }
 ```
 
-RAG requests return a `TR-QueryID` Header in the Response Headers.
+#### Request ID from LLM Messages
 
-### Track Click Through Rate data
-Send Clik-Through Rate data to Trieve using the [send CTR data route](/api-reference/analytics/send-ctr-data). Referencing your search `id` from the previous step.
+Calls to `/api/message` return a streaming response so the id is not located in the payload, the id is instead placed on the header `TR-QueryID`. 
+
+### 2. Enriching Events
+
+#### Track Click Through Rate data
+
+Send Click-Through Rate data to Trieve using the [send CTR data route](/api-reference/analytics/send-ctr-data). Referencing your search `id` from the previous step.
 
 `chunk_id` in this case is the chunk the user clicked on from the search
 
@@ -67,7 +97,7 @@ curl -X POST https://api.trieve.ai/api/analytics/ctr \
         "ctr_type": "search | rag",
         "clicked_chunk_id": "<chunk_id>",
         "position": 1,
-        "request_id": "<your-search-id>"
+        "request_id": "<your-request-id>"
     }'
 ```
 
@@ -92,7 +122,7 @@ const data = await trieve.sendCTRData({
 ```
 </CodeGroup>
 
-### Allow the user to rate the search
+#### Allow the user to rate the search
 You can also send user feedback to the Trieve API using the [rate search query route](/api-reference/analytics/rate-search) or [rate RAG query route](/api-reference/analytics/rate-rag).
 
 The `rating` parameter can be any number of your choosing. Feel free to make your own rating scales
@@ -102,7 +132,7 @@ curl -X POST https://api.trieve.ai/api/analytics/rate-search \
   -H "TR-Dataset: YOUR_DATASET_ID" \
   -H "Authorization: YOUR_API_KEY" \
     -d '{
-        "query_id": "<your-search-id>",
+        "query_id": "<your-request-id>",
         "rating": 5,
         "note": "Great results!"
     }'
@@ -127,8 +157,8 @@ const data = await trieve.rateSearchQuery({
 ```
 </CodeGroup>
 
-### Custom event types
-You can send custom events to the Trieve API using the [send event route](/api-reference/analytics/send-event-data). Referencing your search `id` from the previous step
+#### Custom event types
+You can send custom events to the Trieve API using the [send event route](/api-reference/analytics/send-user-event-data). Referencing your search `id` from the previous step
 <CodeGroup>
 ```json curl
 curl -X POST https://api.trieve.ai/api/analytics/event \
@@ -141,7 +171,7 @@ curl -X POST https://api.trieve.ai/api/analytics/event \
                 "Cheesesticks",
             "Pizza",
             ],
-            "request_id": "<your-search-id>"
+            "request_id": "<your-request-id>"
     }'
 ```
 
@@ -180,7 +210,7 @@ curl --request POST \
       "gt": "2021-08-10T00:00:00Z",
       "lt": "2021-08-11T00:00:00Z"
     },
-    "event_type": "your_custom_event_type",
+    "event_type": "<your_event_type>",
     "is_conversion": true,
     "metadata_filter": "path = \"value\"",
     "user_id": "user1"
