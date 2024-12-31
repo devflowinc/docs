@@ -8,7 +8,42 @@ icon: 'magnifying-glass'
 
 We provide the ability for you to search your data in a fast and performant manner. We have multiple search paradigms, which are exposed through the [search over chunks route](/api-reference/chunk/search), the [search within groups route](/api-reference/chunk-group/search-within-group), and the [search over groups route](/api-reference/chunk-group/search-over-groups).
 
-## Different Search Paradigms
+- `query`: The user query that is embedded and searched against the dataset.
+- `search_type`: Can be semantic, fulltext, or hybrid.
+Semantic: Uses cosine distance to determine the most relevant results.
+Fulltext: Uses a SPLADE model to find the most relevant results.
+Hybrid: Uses a reranker model that pulls one page of results from both fulltext and semantic searches to find the most relevant results.
+- `page`: The page of chunks to fetch. Pages are 1-indexed.
+- `page_size`: This lets you tune the number of results that are returned.
+- `highlight_results`: Enables subsentence highlighting of relevant portions of the text.
+- `slim_chunks`: Excludes chunk_html from the returned results to reduce network bandwidth. Useful for large chunks.
+- `recency_bias`: A value from 0-1 that tunes how much the recency of chunks (based on the timestamp field) affects the ranking.
+- `sort_options`: Options on how to sort.
+- `filters`: Apply filters to get exactly the results you want.
+
+## Search Modes
+
+Trieve offers 4 different types of search.
+
+### Semantic Search
+
+Semantic search uses an embeddnig model to generate a query vector. Defaults to using cosine similarity and `jina-base-en`
+
+Trieve uses only the embedding model to select and rerank the results.
+
+### Full Text search
+
+FullText search uses a SPLADE model to find the most relevant results to your given `query`.
+
+### BM25
+
+BM25 is the classical type of search index, it uses the BM25 ranking function to determine the results that are most similar to your given `query`.
+
+### Hybrid
+
+Hybrid search, does both a full text search, and semantic search. From those results it then uses a *reranker model* ( defaults to bge-reranker-large). 
+
+## Search Paradigms
 
 We offer three different search strategies for you to choose from:
 
@@ -21,25 +56,175 @@ We offer three different search strategies for you to choose from:
 You can use the search UI at [search.trieve.ai](https://search.trieve.ai) to A/B test which search method works best for you.
 </Tip>
 
-## Important Parameters
+### Conducting a Basic Search
 
-- **`query`**: The user query that is embedded and searched against the dataset.
-- **`search_type`**: Can be `semantic`, `fulltext`, or `hybrid`.
-  - **Semantic**: Uses cosine distance to determine the most relevant results.
-  - **Fulltext**: Uses a SPLADE model to find the most relevant results.
-  - **Hybrid**: Uses a reranker model that pulls one page of results from both `fulltext` and `semantic` searches to find the most relevant results.
-- **`page`**: The page of chunks to fetch. Pages are 1-indexed.
-- **`page_size`**: This lets you tune the number of results that are returned.
-- **`highlight_results`**: Enables subsentence highlighting of relevant portions of the text.
-- **`slim_chunks`**: Excludes `chunk_html` from the returned results to reduce network bandwidth. Useful for large chunks.
-- **`recency_bias`**: A value from 0-1 that tunes how much the recency of chunks (based on the `timestamp` field) affects the ranking.
-- **`filters`**: Apply filters to get exactly the results you want.
+### Searching multiple groups
 
-<Tip>
-To optimize for the lowest latency, set `highlight_results` and `get_total_pages` to `false` and set `slim_chunks` to `true`. If you are willing to sacrifice some search quality for speed, use the `fulltext` search mode.
-</Tip>
+### Search within a single group
 
-## Search Customizations
+## Filters
+
+Trieve filters are structured around three clauses:
+
+- `must`: All filters within this clause must be matched to return the chunks.
+- `must_not`: All filters in this clause must not be matched to return the chunks.
+- `should`: Any of these conditions can be matched to return a chunk.
+
+Each clause contains a `field_condition`.
+
+- `range`: Match a number between a range of `lt`, `gt`, `lte` or `gte`
+- `match_all`: A list, every field must have have a match.
+- `match_any`: A list, at least 1 field must be present.
+- `date_range`: Match a date between a range of `lt`, `gt`, `lte` or `gte`
+- `geo_radius`: Match a radius based on a `center` and a `radius`
+- `boolean`: Matches if the field is true or false
+
+> Get chunks with both "CO" and "321" in their `tag_set`
+
+```json
+"filters": {
+	"must": [
+		{
+			"field": "tag_set",
+			"match_all": ["CO", "321"]
+		}
+	]
+}
+```
+
+> Get chunks with either "CO" OR "321" in their tag_set:
+
+```json
+"filters": {
+  "must": [
+    {
+      "field": "tag_set",
+      "match_any": ["CO", "321"]
+    }
+  ]
+}
+```
+
+> Get chunks that are tagged within a GEO radius
+
+```json
+"filters": {
+  "must": [
+    {
+      "field": "geo_radius",
+      "geo_radius": {
+	    "center": {
+	      "lat": 20,
+	      "long": -30
+	    },
+	    "radius": 20,
+      }
+    }
+  ]
+}
+```
+
+> Get chunks with neither "CO" nor "321" in their tag_set:
+
+```json
+"filters": {
+  "must_not": [
+    {
+      "field": "tag_set",
+      "match_all": ["CO", "321"]
+    }
+  ]
+}
+```
+
+> Get chunks that either don't have "CO" in their tag_set or don't have "321" in their tag_set:
+
+```json
+"filters": {
+  "must_not": [
+    {
+      "field": "tag_set",
+      "match_any": ["CO", "321"]
+    },
+  ]
+}
+```
+
+> Get chunks that either have "CO" in their tag_set or "http://example.com" in their link:
+
+```json
+"filters": {
+  "should": [
+    {
+      "field": "tag_set",
+      "match": ["CO"]
+    },
+    {
+      "field": "link",
+      "match": ["http://example.com"]
+    }
+  ]
+}
+```
+
+> Get Chunks that have num_value between 20 and 30
+
+```json
+"filters": {
+  "must": [
+    {
+      "field": "num_value",
+      "range": {
+	"gte": 20.0,
+	"lte": 30.0,
+	"gt": 30.0,
+	"lt": 20.0
+      }
+    }
+  ]
+}
+```
+
+## Rerank By
+
+`rerank_type` can be either
+- `fulltext`: This will use the `fulltext` index to rerank the results, if `search_type` is `fulltext` then nothing different will happen.
+- `cross_encoder`: This will use the Reranker model that you predefined. By default `hybrid` search will use the `cross_encoder`.
+- `bm25`: This will use the `bm25` matching algorithm rerank the results, if `search_type` is `bm25` then nothing different will happen.
+- `semantic`: This will use the `semantic` vectors to rerank the results, if `search_type` is `semantic` then nothing different will happen.
+
+```json
+{
+  "sort_options": {
+    "sort_by": {
+      "rerank_type": "fulltext"
+    }
+  }
+}
+```
+
+## Multi Query
+
+MultiQuery provides a way to give multiple `query` objects with a given weight bias.
+
+To use the `multiquery`, instead of a single string, the `query` parameter receives a list of tuples,
+value 1 being the query and value 2 being a value on how important it is.
+
+As an example, search 
+> Searching, but the search term of "iphone" and a color.
+
+```json
+"query": [
+  [ "Flagship", 2 ],
+  [ "Red", 2 ],
+  [ "Iphone mini", 10 ]
+]
+```
+
+
+## Customizing your search models
+
+Trieve offers many ways to customize your embedding models and reranker models. Different embedding models and different reranker models are better suited for different tasks.
 
 ### Embedding Models
 
