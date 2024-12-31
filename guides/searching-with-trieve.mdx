@@ -31,36 +31,98 @@ Semantic search uses an embeddnig model to generate a query vector. Defaults to 
 
 Trieve uses only the embedding model to select and rerank the results.
 
+This search_type is `semantic`.
+
 ### Full Text search
 
 FullText search uses a SPLADE model to find the most relevant results to your given `query`.
+
+This search_type is `fulltext`.
 
 ### BM25
 
 BM25 is the classical type of search index, it uses the BM25 ranking function to determine the results that are most similar to your given `query`.
 
+This search_type is `bm25`.
+
 ### Hybrid
 
 Hybrid search, does both a full text search, and semantic search. From those results it then uses a *reranker model* ( defaults to bge-reranker-large). 
+
+This search_type is `hybrid`.
 
 ## Search Paradigms
 
 We offer three different search strategies for you to choose from:
 
-1. **Search over chunks**: This strategy allows you to search all of your chunks independently. This is useful when your chunks are independent and do not need to be grouped together.
-2. **Search within groups**: This strategy lets you constrain your results to within a selected group. This is useful for searching distinct groups within your dataset independently.
-3. **Search over groups**: This strategy allows you to search over the groups of chunks within your dataset. This returns the groups and the top chunks within each group that matched your query, providing better search quality for datasets with highly related chunks within groups.
+1. [**Search over chunks**](/api-reference/chunk/search): This strategy allows you to search all of your chunks independently. This is useful when your chunks are independent and do not need to be grouped together.
+2. [**Search within groups**](/api-reference/chunk-group/search-within-group): This strategy lets you constrain your results to within a selected group. This is useful for searching distinct groups within your dataset independently.
+3. [**Search over groups**](/api-reference/chunk-group/search-over-groups): This strategy allows you to search over the groups of chunks within your dataset. This returns the groups and the top chunks within each group that matched your query, providing better search quality for datasets with highly related chunks within groups.
+
+## Search over chunks
+
+```json
+POST /api/chunk/search
+Headers:
+{
+  "TR-Dataset": "<your-dataset-id>",
+  "Authorization": "tr-*******************"
+}
+Body:
+{
+  "query": "How to search with Trieve",
+  "search_type": "fulltext",
+  "page": 1,
+  "page_size": 10,
+  "score_threshold": 0.5
+}
+```
+
+## Search within group
+
+```json
+POST /api/chunk_group/search
+Headers:
+{
+  "TR-Dataset": "<your-dataset-id>",
+  "Authorization": "tr-*******************"
+}
+Body:
+{
+  "group_tracking_id": "my-group-tracking-id",
+  "query": "How to search with Trieve",
+  "search_type": "fulltext",
+  "page": 1,
+  "page_size": 10,
+  "score_threshold": 0.5
+}
+```
+
+## Search over groups
+
+```json
+POST api/chunk_group/group_oriented_search
+Headers:
+{
+  "TR-Dataset": "<your-dataset-id>",
+  "Authorization": "tr-*******************"
+}
+Body:
+{
+  "group_tracking_id": "my-group-tracking-id",
+  "group_size": 5,
+  "query": "How to search with Trieve",
+  "search_type": "fulltext",
+  "page": 1,
+  "page_size": 10,
+  "score_threshold": 0.5
+}
+```
 
 
 <Tip>
 You can use the search UI at [search.trieve.ai](https://search.trieve.ai) to A/B test which search method works best for you.
 </Tip>
-
-### Conducting a Basic Search
-
-### Searching multiple groups
-
-### Search within a single group
 
 ## Filters
 
@@ -196,7 +258,7 @@ Each clause contains a `field_condition`.
 ```json
 {
   "sort_options": {
-    "sort_by": {
+    "sort_by" {
       "rerank_type": "fulltext"
     }
   }
