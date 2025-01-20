@@ -52,11 +52,6 @@
       "url": "https://ts-sdk.trieve.ai"
     },
     {
-      "name": "Python SDK",
-      "icon": "python",
-      "url": "https://pypi.org/project/trieve-py-client/"
-    },
-    {
       "name": "Github",
       "icon": "github",
       "url": "https://github.com/devflowinc/trieve"
