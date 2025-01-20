@@ -81,7 +81,10 @@
         "site-search/introduction",
         "site-search/usage",
         "site-search/parameters",
-        "site-search/screenshots"
+        "site-search/screenshots",
+        "getting-started/quickstart",
+        "vector-inference/introduction",
+        "vector-inference/aws-installation"
       ]
     },
     {
@@ -99,7 +102,9 @@
     },
     {
       "group": "Plugins",
-      "pages": ["site-search/plugin-docusarus"]
+      "pages": [
+        "site-search/plugin-docusarus"
+      ]
     },
     {
       "group": "Guides",
@@ -117,7 +122,10 @@
         "vector-inference/rerank",
         "vector-inference/splade",
         "vector-inference/dense",
-        "vector-inference/openai"
+        "vector-inference/openai",
+        "guides/recommending-with-trieve",
+        "guides/analytics-quickstart",
+        "guides/searching-with-trieve"
       ]
     },
     {
@@ -133,7 +141,10 @@
     },
     {
       "group": "Examples",
-      "pages": ["examples/job-board", "examples/ecommerce"]
+      "pages": [
+        "examples/job-board",
+        "examples/ecommerce"
+      ]
     },
     {
       "group": "Chunk",
@@ -262,7 +273,9 @@
     },
     {
       "group": "User",
-      "pages": ["api-reference/user/update-user-org-role"]
+      "pages": [
+        "api-reference/user/update-user-org-role"
+      ]
     },
     {
       "group": "Auth",
@@ -275,7 +288,9 @@
     },
     {
       "group": "Health",
-      "pages": ["api-reference/health/health-check"]
+      "pages": [
+        "api-reference/health/health-check"
+      ]
     },
     {
       "group": "Invitation",
@@ -298,7 +313,9 @@
     },
     {
       "group": "Metrics",
-      "pages": ["api-reference/metrics/get-prometheus-metrics"]
+      "pages": [
+        "api-reference/metrics/get-prometheus-metrics"
+      ]
     }
   ],
   "footerSocials": {

@@ -3,34 +3,33 @@ title: "Quickstart"
 description: "Quickly start building search, recommendations, and RAG for your application with Trieve"
 ---
 
-
 <Steps>
-  <Step title="Create an account and dataset">
-    Head over to the [Trieve Dashboard](https://dashboard.trieve.ai) to create an account and dataset. With a free account, you can upload up to 1000 chunks and 512 MB of files.
+  <Step title="Create an Account and Dataset">
+    Head over to the [Trieve Dashboard](https://dashboard.trieve.ai) to create an account and dataset. With a free account, you can upload up to 1,000 chunks and 512 MB of files.
   
     ![title](https://trieve.b-cdn.net/2024-08-07_14-19.png)
   </Step>
-  <Step title="Upload your data">
-    You can interact with Trieve in two ways, either by using the UIs or by using the [API](/api-reference/).
+  <Step title="Upload Your Data">
+    You can interact with Trieve in two ways: either by using the UIs or by using the [API](/api-reference/).
 
     ### Using the UIs
-    After creating your dataset on the dashboard, you will be brought to the dataset page. From there, you can upload your data by clicking on the "Upload File" button.
+    After creating your dataset on the Trieve Dashboard, you will be brought to the dataset page. From there, you can upload your data by clicking on the "Upload File" button.
 
     ![title](https://trieve.b-cdn.net/2024-08-07_14-25.png)
 
-    Our API will automatically chunk your data for you in the background, and upload the resulting chunks into your Trieve dataset. 
+    Our API will automatically chunk your data for you in the background and upload the resulting chunks into your Trieve dataset. 
 
     ### Using the API
 
-    In order to interact with the API, you will need to grab your dataset ID and API key from the dashboard.
+    To interact with the API, you will need to grab your Dataset ID and API key from the Trieve Dashboard.
 
-    You can find your dataset ID on the dataset page:
+    You can find your Dataset ID on the dataset page:
     ![title](https://trieve.b-cdn.net/2024-08-07_14-29.png)
 
-    You can generate an API key on the API keys page:
+    You can generate an API key on the API Keys page:
     ![title](https://trieve.b-cdn.net/2024-08-07_14-30.png)
 
-    You can then use the API to upload your data, by providing the dataset ID and API key in the headers of your request.
+    You can then use the API to upload your data by providing the Dataset ID and API key in the headers of your request:
 
     ```
     {
@@ -39,16 +38,16 @@ description: "Quickly start building search, recommendations, and RAG for your a
     }
     ```
 
-    You can then use our [upload file route](/api-reference/file/upload-file) to upload your files and start interacting with your data.
+    Use our [upload file route](/api-reference/file/upload-file) to upload your files and start interacting with your data.
 
-    <Note>If you would like to manually pass chunks to Trieve, you can use the [create chunks route](/api-reference/chunk/create-or-upsert-chunk-or-chunks) </Note>
+    <Note>If you would like to manually pass chunks to Trieve, you can use the [create chunks route](/api-reference/chunk/create-or-upsert-chunk-or-chunks).</Note>
   
   </Step>
-  <Step title="Interact with your data">
-    You can now interact with your data in a variety of ways. You can search your data, get recommendations, or use RAG to generate responses to user queries using our UIs or API.
+  <Step title="Interact with Your Data">
+    You can now interact with your data in a variety of ways. You can search your data, get recommendations, or use RAG (Retrieval Augmented Generation) to generate responses to user queries using our UIs or API.
 
     ### Searching
-    You can try searching on the sample data you added by visiting [search.trieve.ai](https://search.trieve.ai) and entering a query in the search bar.
+    Try searching the sample data you added by visiting [search.trieve.ai](https://search.trieve.ai) and entering a query in the search bar.
 
     <Note>
       Make sure to select the dataset you uploaded the sample data to using the selector dropdown on the top left.
@@ -57,7 +56,7 @@ description: "Quickly start building search, recommendations, and RAG for your a
     ![example-search-ui-query](https://cdn.trieve.ai/docs/example-search-ui-query.png)
 
     ### RAG (Retrieval Augmented Generation)
-    You can try RAG on the sample data you added by visiting [chat.trieve.ai](https://chat.trieve.ai) and entering a query in the chat box.
+    Try RAG on the sample data you added by visiting [chat.trieve.ai](https://chat.trieve.ai) and entering a query in the chat box.
 
     ![trieve-rag-example](https://cdn.trieve.ai/docs/trieve-rag-example.png)
 

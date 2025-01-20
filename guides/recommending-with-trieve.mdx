@@ -6,7 +6,7 @@ icon: 'circle-user'
 
 ## Overview
 
-We provide the ability to get recommended chunks similar to your data through the [get recommended chunks route](/api-reference/chunk/get-recommended-chunks) or through the [get recommended groups route](/api-reference/chunk-group/get-recommended-groups).
+Trieve provides the ability to get recommended chunks similar to your data through the [get recommended chunks route](/api-reference/chunk/get-recommended-chunks) or through the [get recommended groups route](/api-reference/chunk-group/get-recommended-groups).
 
 ## Different Recommendation Types
 We have two different recommendation types:
@@ -15,7 +15,7 @@ We have two different recommendation types:
 
 ## Different Recommendation Strategies
 
-We offer different recommendation strategies for users to choose from:
+Trieve offers different recommendation strategies for users to choose from:
 
 1. **`average_vector`**: Averages the vectors of the positive examples and finds the most similar chunks.
     - This strategy averages all the positive and negative examples separately, then combines them into a single vector. It then searches for chunks that are most similar to this combined vector.
@@ -25,8 +25,8 @@ We offer different recommendation strategies for users to choose from:
 
 ## Important Parameters
 
-- **`positive_examples` and `positive_tracking_ids`**: Provide the IDs of chunks of which similar ones will be recommended.
-- **`negative_examples` and `negative_tracking_ids`**: Provide the IDs of chunks of which dissimilar ones will be avoided.
+- **`positive_examples` and `positive_tracking_ids`**: Provide the IDs of chunks for which similar chunks will be recommended.
+- **`negative_examples` and `negative_tracking_ids`**: Provide the IDs of chunks that should be used as negative examples to avoid similar content.
 - **`recommendation_type`**: Can be either `semantic` or `fulltext`.
   - **Semantic**: Uses cosine distance.
   - **Fulltext**: Uses a SPLADE model.

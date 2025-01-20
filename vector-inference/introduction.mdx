@@ -6,11 +6,11 @@ icon: rocket
 
 ## Inspiration
 
-SaSS offerings for text embeddings have 2 major issues:
-1) They have higher latency, due to batch processing.
+SaaS offerings for text embeddings have 2 major issues:
+1) They have higher latency due to batch processing.
 2) They have heavy rate limits.
 
-Trieve Vector Inference was created so you could Host Dedicated embedding servers in your own cloud.
+Trieve Vector Inference was created so you could host dedicated embedding servers in your own cloud.
 
 ## Performance Difference
 
@@ -21,40 +21,40 @@ Machine used to test was on `m5.large` in `us-west-1`.
 <Tabs>
 
 <Tab title="10 requests / sec">
-|             | OPENAI Cloud  | JINA AI Cloud* | JINA (SageMaker)**  | TVI Jina  | TVI BGE-M3   | TVI Nomic    | 
+|             | OpenAI Cloud  | JINA AI Cloud* | JINA (SageMaker)**  | TVI JINA  | TVI BGE-M3   | TVI Nomic    | 
 |-------------|---------------|----------------|---------------------|-------------|----------|----------|
-| P50 Latency | 193.15 ms     | 179.33 ms      | 185.21 ms           | <span class="text-primary"> 19.06 ms</span>    | <span class="text-primary"> 14.69 ms</span> | <span class="text-primary"> 21.36 ms</span> |
-| P90 Latency | 261.25 ms     | 271.87 ms      | 296.19 ms           | <span class="text-primary"> 23.09 ms</span>    | <span class="text-primary"> 16.90 ms</span> | <span class="text-primary"> 29.81 ms</span> |
-| P99 Latency | 621.05 ms     | 402.43 ms      | 306.94 ms           | <span class="text-primary"> 24.27 ms</span>    | <span class="text-primary"> 18.80 ms</span> | <span class="text-primary"> 30.29 ms</span> |
-| Requests Made  | 324        | 324            | 324                 | <span class="text-primary"> 324</span>         | <span class="text-primary"> 324</span>      | <span class="text-primary"> 324 </span>     |
-| Requests Failed | 0         | 0              | 3                   | <span class="text-primary"> 0 </span>        | <span class="text-primary"> 0</span>      | <span class="text-primary"> 0 </span>     |
+| P50 Latency | 193.15 ms     | 179.33 ms      | 185.21 ms           | <span class="text-primary">19.06 ms</span>    | <span class="text-primary">14.69 ms</span> | <span class="text-primary">21.36 ms</span> |
+| P90 Latency | 261.25 ms     | 271.87 ms      | 296.19 ms           | <span class="text-primary">23.09 ms</span>    | <span class="text-primary">16.90 ms</span> | <span class="text-primary">29.81 ms</span> |
+| P99 Latency | 621.05 ms     | 402.43 ms      | 306.94 ms           | <span class="text-primary">24.27 ms</span>    | <span class="text-primary">18.80 ms</span> | <span class="text-primary">30.29 ms</span> |
+| Requests Made  | 324        | 324            | 324                 | <span class="text-primary">324</span>         | <span class="text-primary">324</span>      | <span class="text-primary">324</span>     |
+| Requests Failed | 0         | 0              | 3                   | <span class="text-primary">0</span>          | <span class="text-primary">0</span>        | <span class="text-primary">0</span>     |
 </Tab>
 
 <Tab title="100 requests / sec">
-|             | OPENAI Cloud  | JINA AI Cloud* | JINA (SageMaker)**  | TVI Jina  | TVI BGE-M3   | TVI Nomic    | 
+|             | OpenAI Cloud  | JINA AI Cloud* | JINA (SageMaker)**  | TVI JINA  | TVI BGE-M3   | TVI Nomic    | 
 |-------------|---------------|----------------|---------------------|-------------|----------|----------|
-| P50 Latency | 180.74 ms     | 182.62 ms      | 515.84 ms           | <span class="text-primary"> 16.48 ms</span>    | <span class="text-primary"> 14.35 ms</span> | <span class="text-primary"> 23.22 ms</span> |
-| P90 Latency | 222.34 ms     | 262.65 ms      | 654.85 ms           | <span class="text-primary"> 20.70 ms</span>    | <span class="text-primary"> 16.15 ms</span> | <span class="text-primary"> 29.71 ms</span> |
-| P99 Latency | 1.11 sec      | 363.01 ms      | 724.48 ms           | <span class="text-primary"> 22.82 ms</span>    | <span class="text-primary"> 19.82 ms</span> | <span class="text-primary"> 31.07 ms</span> |
-| Requests Made  | 2,991      | 2,991          | 2963                | <span class="text-primary"> 3,015</span>        | <span class="text-primary"> 3,024</span>     | <span class="text-primary"> 3,024</span>     |
-| Requests Failed | 0         | 2,986          | 0                   | <span class="text-primary">0</span>          | <span class="text-primary"> 0</span>        | <span class="text-primary"> 0 </span>       |
+| P50 Latency | 180.74 ms     | 182.62 ms      | 515.84 ms           | <span class="text-primary">16.48 ms</span>    | <span class="text-primary">14.35 ms</span> | <span class="text-primary">23.22 ms</span> |
+| P90 Latency | 222.34 ms     | 262.65 ms      | 654.85 ms           | <span class="text-primary">20.70 ms</span>    | <span class="text-primary">16.15 ms</span> | <span class="text-primary">29.71 ms</span> |
+| P99 Latency | 1.11 sec      | 363.01 ms      | 724.48 ms           | <span class="text-primary">22.82 ms</span>    | <span class="text-primary">19.82 ms</span> | <span class="text-primary">31.07 ms</span> |
+| Requests Made  | 2,991      | 2,991          | 2,963               | <span class="text-primary">3,015</span>       | <span class="text-primary">3,024</span>    | <span class="text-primary">3,024</span>    |
+| Requests Failed | 0         | 2,986          | 0                   | <span class="text-primary">0</span>           | <span class="text-primary">0</span>        | <span class="text-primary">0</span>       |
 </Tab>
 
 <Tab title="1000 requests / sec">
-|             | OPENAI Cloud  | JINA AI Cloud* | JINA (SageMaker)** | TVI Jina | TVI BGE-M3    | TVI Nomic    | 
+|             | OpenAI Cloud  | JINA AI Cloud* | JINA (SageMaker)** | TVI JINA | TVI BGE-M3    | TVI Nomic    | 
 |-------------|---------------|----------------|---------------------|-------------|-----------|----------|
-| P50 Latency | 15.70 sec     | 15.82 sec      | 17.97 sec           | <span class="text-primary">24.40 ms</span>    | <span class="text-primary"> 14.86 ms</span>  | <span class="text-primary"> 23.74 ms</span>  |
-| P90 Latency | 22.01 sec     | 21.91 sec      | 25.30 sec           | <span class="text-primary"> 25.14 ms</span>    | <span class="text-primary"> 17.81 ms</span>  | <span class="text-primary"> 31.74 ms</span> |
-| P99 Latency | 23.59 sec     | 23.12 sec      | 27.03 sec           | <span class="text-primary"> 27.61 ms</span>    | <span class="text-primary"> 19.52 ms</span>  | <span class="text-primary"> 34.11 ms</span> |
-| Requests Made  | 6,234      | 6,771          | 2963                | <span class="text-primary"> 30,002</span>       | <span class="text-primary"> 30,002</span>     | <span class="text-primary"> 30,001</span> |
-| Requests Failed | 0         | 6,711          | 0                   | <span class="text-primary"> 0</span>           | <span class="text-primary"> 0 </span>        | <span class="text-primary"> 0</span>        |
+| P50 Latency | 15.70 sec     | 15.82 sec      | 17.97 sec          | <span class="text-primary">24.40 ms</span>    | <span class="text-primary">14.86 ms</span>  | <span class="text-primary">23.74 ms</span>  |
+| P90 Latency | 22.01 sec     | 21.91 sec      | 25.30 sec          | <span class="text-primary">25.14 ms</span>    | <span class="text-primary">17.81 ms</span>  | <span class="text-primary">31.74 ms</span> |
+| P99 Latency | 23.59 sec     | 23.12 sec      | 27.03 sec          | <span class="text-primary">27.61 ms</span>    | <span class="text-primary">19.52 ms</span>  | <span class="text-primary">34.11 ms</span> |
+| Requests Made  | 6,234      | 6,771          | 2,963              | <span class="text-primary">30,002</span>      | <span class="text-primary">30,002</span>    | <span class="text-primary">30,001</span> |
+| Requests Failed | 0         | 6,711          | 0                  | <span class="text-primary">0</span>           | <span class="text-primary">0</span>         | <span class="text-primary">0</span>        |
 </Tab>
 
 </Tabs>
 
-<Info> * Failed requests was when rate limiting hit in (Jina AI rate limit is 60 RPM or 300 RPM for premium plan) </Info>
+<Info> * Failed requests occurred when rate limiting was hit (JINA AI rate limit is 60 RPM or 300 RPM for premium plan) </Info>
 
-<Info> \** `jina-embeddings-v2-base-en` on Sagemaker with `ml.g4dn.xlarge` </Info>
+<Info> \** `jina-embeddings-v2-base-en` on SageMaker with `ml.g4dn.xlarge` </Info>
 
 ## See more
 

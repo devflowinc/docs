@@ -6,19 +6,19 @@ icon: 'magnifying-glass'
 
 ## Overview
 
-We provide the ability for you to search your data in a fast and performant manner. We have multiple search paradigms, which are exposed through the [search over chunks route](/api-reference/chunk/search), the [search within groups route](/api-reference/chunk-group/search-within-group), and the [search over groups route](/api-reference/chunk-group/search-over-groups).
+Trieve provides the ability to search your data in a fast and performant manner. We have multiple search paradigms, which are exposed through the [search over chunks route](/api-reference/chunk/search), the [search within groups route](/api-reference/chunk-group/search-within-group), and the [search over groups route](/api-reference/chunk-group/search-over-groups).
 
 - `query`: The user query that is embedded and searched against the dataset.
-- `search_type`: Can be semantic, fulltext, or hybrid.
-Semantic: Uses cosine distance to determine the most relevant results.
-Fulltext: Uses a SPLADE model to find the most relevant results.
-Hybrid: Uses a reranker model that pulls one page of results from both fulltext and semantic searches to find the most relevant results.
-- `page`: The page of chunks to fetch. Pages are 1-indexed.
-- `page_size`: This lets you tune the number of results that are returned.
+- `search_type`: Can be semantic, fulltext, or hybrid:
+  - Semantic: Uses cosine distance to determine the most relevant results.
+  - Fulltext: Uses a SPLADE model to find the most relevant results.
+  - Hybrid: Uses a reranker model that pulls one page of results from both fulltext and semantic searches to find the most relevant results.
+- `page`: The page of chunks to fetch (pages are 1-indexed).
+- `page_size`: Lets you tune the number of results that are returned.
 - `highlight_results`: Enables subsentence highlighting of relevant portions of the text.
-- `slim_chunks`: Excludes chunk_html from the returned results to reduce network bandwidth. Useful for large chunks.
+- `slim_chunks`: Excludes chunk_html from the returned results to reduce network bandwidth (useful for large chunks).
 - `recency_bias`: A value from 0-1 that tunes how much the recency of chunks (based on the timestamp field) affects the ranking.
-- `sort_options`: Options on how to sort.
+- `sort_options`: Options for result sorting.
 - `filters`: Apply filters to get exactly the results you want.
 
 ## Search Modes
@@ -27,13 +27,11 @@ Trieve offers 4 different types of search.
 
 ### Semantic Search
 
-Semantic search uses an embeddnig model to generate a query vector. Defaults to using cosine similarity and `jina-base-en`
-
-Trieve uses only the embedding model to select and rerank the results.
+Semantic search uses an embedding model to generate a query vector. It defaults to using cosine similarity and `jina-base-en`. Trieve uses only the embedding model to select and rerank the results.
 
 This search_type is `semantic`.
 
-### Full Text search
+### Full Text Search
 
 FullText search uses a SPLADE model to find the most relevant results to your given `query`.
 
@@ -41,13 +39,13 @@ This search_type is `fulltext`.
 
 ### BM25
 
-BM25 is the classical type of search index, it uses the BM25 ranking function to determine the results that are most similar to your given `query`.
+BM25 is the classical type of search index. It uses the BM25 ranking function to determine the results that are most similar to your given `query`.
 
 This search_type is `bm25`.
 
 ### Hybrid
 
-Hybrid search, does both a full text search, and semantic search. From those results it then uses a *reranker model* ( defaults to bge-reranker-large). 
+Hybrid search performs both a full text search and semantic search. From those results, it uses a reranker model (defaults to BGE-reranker-large) to determine final rankings.
 
 This search_type is `hybrid`.
 
@@ -59,10 +57,10 @@ We offer three different search strategies for you to choose from:
 2. [**Search within groups**](/api-reference/chunk-group/search-within-group): This strategy lets you constrain your results to within a selected group. This is useful for searching distinct groups within your dataset independently.
 3. [**Search over groups**](/api-reference/chunk-group/search-over-groups): This strategy allows you to search over the groups of chunks within your dataset. This returns the groups and the top chunks within each group that matched your query, providing better search quality for datasets with highly related chunks within groups.
 
-## Search over chunks
+## Search Over Chunks
 
 ```json
-POST /api/chunk/search
+POST /api/chunk/search 
 Headers:
 {
   "TR-Dataset": "<your-dataset-id>",
@@ -78,7 +76,7 @@ Body:
 }
 ```
 
-## Search within group
+## Search Within Group
 
 ```json
 POST /api/chunk_group/search
@@ -98,7 +96,7 @@ Body:
 }
 ```
 
-## Search over groups
+## Search Over Groups
 
 ```json
 POST api/chunk_group/group_oriented_search
@@ -119,7 +117,6 @@ Body:
 }
 ```
 
-
 <Tip>
 You can use the search UI at [search.trieve.ai](https://search.trieve.ai) to A/B test which search method works best for you.
 </Tip>
@@ -132,12 +129,12 @@ Trieve filters are structured around three clauses:
 - `must_not`: All filters in this clause must not be matched to return the chunks.
 - `should`: Any of these conditions can be matched to return a chunk.
 
-Each clause contains a `field_condition`.
+Each clause contains a `field_condition`:
 
-- `range`: Match a number between a range of `lt`, `gt`, `lte` or `gte`
-- `match_all`: A list, every field must have have a match.
-- `match_any`: A list, at least 1 field must be present.
-- `date_range`: Match a date between a range of `lt`, `gt`, `lte` or `gte`
+- `range`: Match a number between a range of `lt`, `gt`, `lte`, or `gte`
+- `match_all`: A list where every field must have a match
+- `match_any`: A list where at least 1 field must be present
+- `date_range`: Match a date between a range of `lt`, `gt`, `lte`, or `gte`
 - `geo_radius`: Match a radius based on a `center` and a `radius`
 - `boolean`: Matches if the field is true or false
 
@@ -249,16 +246,16 @@ Each clause contains a `field_condition`.
 
 ## Rerank By
 
-`rerank_type` can be either
-- `fulltext`: This will use the `fulltext` index to rerank the results, if `search_type` is `fulltext` then nothing different will happen.
-- `cross_encoder`: This will use the Reranker model that you predefined. By default `hybrid` search will use the `cross_encoder`.
-- `bm25`: This will use the `bm25` matching algorithm rerank the results, if `search_type` is `bm25` then nothing different will happen.
-- `semantic`: This will use the `semantic` vectors to rerank the results, if `search_type` is `semantic` then nothing different will happen.
+The `rerank_type` parameter can be one of the following:
+- `fulltext`: Uses the fulltext index to rerank the results. If `search_type` is `fulltext`, then no additional reranking occurs.
+- `cross_encoder`: Uses the reranker model that you predefined. By default, `hybrid` search uses the `cross_encoder`.
+- `bm25`: Uses the BM25 matching algorithm to rerank the results. If `search_type` is `bm25`, then no additional reranking occurs.
+- `semantic`: Uses the semantic vectors to rerank the results. If `search_type` is `semantic`, then no additional reranking occurs.
 
 ```json
 {
   "sort_options": {
-    "sort_by" {
+    "sort_by": {
       "rerank_type": "fulltext"
     }
   }
@@ -267,13 +264,9 @@ Each clause contains a `field_condition`.
 
 ## Multi Query
 
-MultiQuery provides a way to give multiple `query` objects with a given weight bias.
+MultiQuery provides a way to give multiple `query` objects with a given weight bias. Instead of a single string, the `query` parameter receives a list of tuples, where value 1 is the query and value 2 is the importance weight.
 
-To use the `multiquery`, instead of a single string, the `query` parameter receives a list of tuples,
-value 1 being the query and value 2 being a value on how important it is.
-
-As an example, search 
-> Searching, but the search term of "iphone" and a color.
+For example, searching with terms "iphone" and a color:
 
 ```json
 "query": [
@@ -283,33 +276,31 @@ As an example, search
 ]
 ```
 
+## Customizing Your Search Models
 
-## Customizing your search models
-
-Trieve offers many ways to customize your embedding models and reranker models. Different embedding models and different reranker models are better suited for different tasks.
+Trieve offers many ways to customize your embedding models and reranker models. Different models are better suited for different tasks.
 
 ### Embedding Models
 
-Trieve supports multiple embedding models that can be used to search over your data.
-You can specify the embedding model to use in the `server_configuration` field when creating a dataset.
+Trieve supports multiple embedding models that can be used to search over your data. You can specify the embedding model to use in the `server_configuration` field when creating a dataset.
 
 <Warning>
 After creating a dataset, you cannot change the embedding model. If you need to change the embedding model, you must create a new dataset.
 </Warning>
 
-### Reranker models
+### Reranker Models
 
 Trieve supports multiple reranker models that can be used to rerank the search results.
  
-Currently, Trieve supports `bge-reranker-large` and cohere's `rerank-v3.5` model.
+Currently, Trieve supports `BGE-reranker-large` and Cohere's `rerank-v3.5` model.
 
 ![](https://cdn.trieve.ai/docs/reranker-model-edit.png)
 
-#### BAAI/bge-reranker-large
+#### BAAI/BGE-reranker-large
 
-`bge-reranker-large` is a model by the Beijing Academy of Artificial Intelligence (BAAI) and is hosted by Trieve. This model does not require any additional configuration. and will be used by default on all `hybrid` searches.
+`BGE-reranker-large` is a model by the Beijing Academy of Artificial Intelligence (BAAI) and is hosted by Trieve. This model does not require any additional configuration and will be used by default on all `hybrid` searches.
 
-To switch your reranker model to cohere's `rerank-v3.5`, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id). With the following Parameters
+To switch your reranker model to Cohere's `rerank-v3.5`, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id) with the following parameters:
 
 ```json
 curl --request POST \
@@ -323,7 +314,7 @@ curl --request POST \
 
     // Update with the desired configurations for your dataset
     "server_configuration": {
-      "RERANKER_MODEL_NAME":"bge-reranker-large"
+      "RERANKER_MODEL_NAME": "bge-reranker-large"
     }
 }'
 ```
@@ -332,7 +323,7 @@ curl --request POST \
 
 `rerank-v3.5` is a model hosted by docs.cohere.com. To use this model, you must provide the `cohere_api_key` in the `server_configuration` field when creating a dataset.
 
-To switch your reranker model to cohere's `rerank-v3.5`, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id). With the following Parameters
+To switch your reranker model to Cohere's `rerank-v3.5`, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id) with the following parameters:
 
 ```json
 curl --request POST \
@@ -346,10 +337,9 @@ curl --request POST \
 
     // Update with the desired configurations for your dataset
     "server_configuration": {
-      "RERANKER_BASE_URL":"https://api.cohere.com/v2",
-      "RERANKER_MODEL_NAME":"rerank-v3.5"
-      "RERANKER_API_KEY":"<cohere_api_key>"
+      "RERANKER_BASE_URL": "https://api.cohere.com/v2",
+      "RERANKER_MODEL_NAME": "rerank-v3.5",
+      "RERANKER_API_KEY": "<cohere_api_key>"
     }
 }'
-
 ```
