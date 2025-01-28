@@ -81,7 +81,8 @@
         "site-search/introduction",
         "site-search/usage",
         "site-search/parameters",
-        "site-search/screenshots"
+        "site-search/screenshots",
+        "getting-started/introduction"
       ]
     },
     {
@@ -99,7 +100,9 @@
     },
     {
       "group": "Plugins",
-      "pages": ["site-search/plugin-docusarus"]
+      "pages": [
+        "site-search/plugin-docusarus"
+      ]
     },
     {
       "group": "Guides",
@@ -133,7 +136,10 @@
     },
     {
       "group": "Examples",
-      "pages": ["examples/job-board", "examples/ecommerce"]
+      "pages": [
+        "examples/job-board",
+        "examples/ecommerce"
+      ]
     },
     {
       "group": "Chunk",
@@ -262,7 +268,9 @@
     },
     {
       "group": "User",
-      "pages": ["api-reference/user/update-user-org-role"]
+      "pages": [
+        "api-reference/user/update-user-org-role"
+      ]
     },
     {
       "group": "Auth",
@@ -275,7 +283,9 @@
     },
     {
       "group": "Health",
-      "pages": ["api-reference/health/health-check"]
+      "pages": [
+        "api-reference/health/health-check"
+      ]
     },
     {
       "group": "Invitation",
@@ -298,7 +308,9 @@
     },
     {
       "group": "Metrics",
-      "pages": ["api-reference/metrics/get-prometheus-metrics"]
+      "pages": [
+        "api-reference/metrics/get-prometheus-metrics"
+      ]
     }
   ],
   "footerSocials": {

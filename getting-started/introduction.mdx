@@ -1,63 +1,95 @@
 ---
 title: Introduction
-description: Trieve is an API for building search, recommendations, and RAG experiences.
+description: Trieve is an API for building intelligent search, RAG (Retrieval Augmented Generation), and recommendation systems powered by LLMs.
 ---
+
+Trieve makes it effortless to add ChatGPT-like experiences and semantic search to your applications. By combining the power of large language models (LLMs) with advanced retrieval techniques, Trieve helps you build production-ready AI features in hours instead of months.
+
+## Key Capabilities
+
+<CardGroup cols={2}>
+  <Card title="Retrieval Augmented Generation (RAG)" icon="robot">
+    Build ChatGPT-like experiences on your data. Our RAG pipeline automatically retrieves relevant context and generates accurate, contextual responses using LLMs.
+  </Card>
+  <Card title="Semantic & Hybrid Search" icon="magnifying-glass">
+    Combine the power of semantic understanding with keyword matching for superior search results. Supports multi-modal search across text and embeddings.
+  </Card>
+  <Card title="Smart Recommendations" icon="sparkles">
+    Deliver personalized content recommendations using our intelligent recommendation engine that understands semantic relationships.
+  </Card>
+  <Card title="Analytics & Monitoring" icon="chart-mixed">
+    Track user interactions, monitor performance, and optimize your AI features with built-in analytics and observability.
+  </Card>
+</CardGroup>
 
 ## Quick Start
 
 <CardGroup cols={2}>
   <Card title="API Reference" icon="webhook" href="/api-reference">
-    Check out the API Reference to see all of the available endpoints and options for integrating Trieve into your application.
+    See all available endpoints and integration options in our comprehensive API documentation.
   </Card>
   <Card title="Getting Started" icon="play" href="/getting-started/quickstart">
-    Get started with Trieve quickly.
+    Follow our quickstart guide to add AI-powered features to your application in minutes.
   </Card>
-  <Card title="Build Search for a Job Board" icon="user-doctor" href="/examples/job-board">
-    Learn how to build a search experience for a job board using Trieve.
+  <Card title="Job Board Example" icon="user-doctor" href="/examples/job-board">
+    Learn how to build an intelligent job search platform with semantic matching.
   </Card>
-  <Card title="Build Search for Ecommerce" icon="cart-shopping" href="/examples/ecommerce">
-    Learn how to build a search experience for an ecommerce platform using Trieve.
+  <Card title="Ecommerce Example" icon="cart-shopping" href="/examples/ecommerce">
+    Create a smart product discovery experience with personalized recommendations.
   </Card>
 </CardGroup>
 
-Search and RAG are powerful primitives, but can take months to implement and deploy in production. Trieve abstracts away the complexity of these tasks, allowing you to focus on building your product.
+## How It Works
 
-With Trieve, you can build and deploy a ChatGPT like experience or a search engine on your data in a matter of hours.
+Trieve's architecture is designed for scalability and flexibility, with services that can be horizontally scaled based on your needs.
 
-### Demos of Trieve in Action
+<Accordion title="Reference Architecture">
+![trieve-system-diagram](https://cdn.trieve.ai/docs/Trieve-System-Diagram.webp)
+
+Key components:
+- **RAG Pipeline**: Intelligent document retrieval and LLM-powered response generation
+- **Vector Store**: Efficient storage and retrieval of embeddings for semantic search
+- **Analytics Engine**: Track and optimize search and RAG performance
+- **API Layer**: Simple integration with your existing stack
+</Accordion>
+
+## Trieve in Action
 
 <CardGroup>
-<Card title="Hackernews">
+<Card title="AI-Powered Hacker News Discovery">
 ![](https://trieve.b-cdn.net/docs/hackernews-search.png)
+
+Semantic search and smart content recommendations for Hacker News:
+- [Try it out](https://hn.trieve.ai)
+- [📝 Read about the implementation](https://trieve.ai/launching-trieve-hn-discovery/)
 </Card>
 
-<Card title="YCombinator Companies">
- ![](https://trieve.b-cdn.net/docs/yc-search.png)
-</Card>
+<Card title="Intelligent Company Search">
+![](https://trieve.b-cdn.net/docs/yc-search.png)
 
+Natural language search over YC companies with RAG-powered insights:
+- [Try it out](https://yc.trieve.ai)
+- [📝 Implementation details](https://trieve.ai/building-search-for-yc-company-directory/)
+</Card>
 </CardGroup>
 
-- [Trieve HN Discovery](https://hn.trieve.ai)
-    - [📝 Launching Trieve HN Discovery - A Discovery Focused Search Engine for Hacker News](https://trieve.ai/launching-trieve-hn-discovery/)
-- [YCombinator Companies Search](https://yc.trieve.ai)
-    - [📝 Building Search For the YC Company Directory With Trieve, Bun, and SolidJS
-](https://trieve.ai/building-search-for-yc-company-directory/)
-- [SteamDB Search](https://steamdb.trieve.ai)
-    - [📝 Introducing Yet Another Steam Recommendation Engine!](https://trieve.ai/steam-recommendations)
-- **This documentation site itself!** (and all Mintlify documentation sites)
+More examples:
+- [SteamDB Smart Game Discovery](https://steamdb.trieve.ai)
+    - [📝 Building a Next-Gen Game Recommendation Engine](https://trieve.ai/steam-recommendations)
+- **This documentation site** (and all Mintlify documentation sites)
     - [📝 Success Story: Mintlify](https://trieve.ai/success-story-mintlify/)
 
-If you are interested in a managed instance and/or SLA, reach out to us by emailing humans@trieve.ai.
-
-To engage with the Trieve community, join our our [Discord](https://discord.com/invite/E9sPRZqpDT).
+## Developer Tools
 
 ### Client Libraries
+- [TypeScript/JavaScript SDK](https://ts-sdk.trieve.ai) - Full-featured client for web applications
+- [Python Client](https://pypi.org/project/trieve-py-client/) - Perfect for data science and backend integrations
 
-- [Trieve TypeScript/JavaScript Client](https://ts-sdk.trieve.ai)
-- [Trieve Python Client](https://pypi.org/project/trieve-py-client/)
+### Community & Support
+- Join our [Discord community](https://discord.com/invite/E9sPRZqpDT) for support and discussions
+- Email us at humans@trieve.ai for enterprise support and managed instances
+- Check out our [documentation](/getting-started/quickstart) for detailed guides and tutorials
 
-### System Diagram
-
-Services in blue are horizontally scalable and can be run in a distributed manner.
-
-![trieve-system-diagram](https://cdn.trieve.ai/docs/Trieve-System-Diagram.webp)
+<Note>
+Looking for enterprise features or a managed solution? We offer dedicated support, custom integrations, and SLAs for enterprise customers. [Contact our team](mailto:humans@trieve.ai) to learn more.
+</Note>
