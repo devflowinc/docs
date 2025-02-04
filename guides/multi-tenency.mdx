@@ -7,35 +7,18 @@ iconType: "regular"
 
 ## Overview
 
-We provide the ability to create and independently manage organizations and datasets for multi-tenant use cases. With Trieve, you have full control of each organization's users, configurations, and datasets. However, we recommend that users only have 1 organization and create seperate datasets for each tenant, as this reduces complexity.
-
-## Creating an Organization
-
-The main route we use to expose this functionality is the [create organization route](/api-reference/organization/create-organization). Use the `name` parameter to pass a arbitrary, unique name which will be used to identify the organization. We recommend that you create seperate organizations for your main application as well as a staging environment for testing.
-
-Example of creating an organization on demand through the API:
-
-```json
-curl --request PUT \
-  --url https://api.trieve.ai/api/organization \
-  --header 'Authorization: <api-key>' \
-  --header 'Content-Type: application/json' \
-  --header 'TR-Organization: <tr-organization>' \
-  --data '{
-  "name": "My Organization" // Replace with a unique name for your organization
-}'
-```
+We provide the ability to create and independently manage organizations and datasets for multi-tenant use cases. With Trieve, your team should have 1 organization and create seperate datasets for each of your tenants tenants.
 
 ## Creating a Dataset
 
-To create a dataset, use the [create dataset route](/api-reference/dataset/create-dataset). These datasets are kept isolated from each other and can be configured independently, making them perfect to represent each tenant within your application. Each dataset can have its own configurations, tags, and crawl options. 
+You should have one dataset per tenant or unique knowledge base. To create a dataset, use the [create dataset route](/api-reference/dataset/create-dataset). These datasets are kept isolated from each other and can be configured independently, making them perfect to represent each tenant within your application. Each dataset can have its own configurations, tags, and crawl options. 
 
 ### Important parameters
 
+- `tracking_id`: A unique, optional tracking ID for the dataset that reflects the id of the tenant within your system. You can use this tracking id in the `TR-Dataset` header to specify the dataset for the request rather than the dataset id.
 - `crawl_options`: Provides the options to setup crawling to populate your dataset (e.g., include/exclude paths, tags, and more).
 - `dataset_name`: The name of the dataset. This must be a unique within the organization.
 - `server_configuration`: Provide the server configuration for the dataset such as RAG and system prompt, stop tokens, embedding models, and more.
-- `tracking_id`: A unique, optional tracking ID for the dataset that reflects the id of the tenant within your system. You can use this tracking id in the `TR-Dataset` header to specify the dataset for the request rather than the dataset id.
 
 Example of creating a dataset through the API:
 
@@ -86,3 +69,23 @@ curl --request POST \
   Only the specified keys in the `server_configuration` object will be updated
   for each dataset, keeping the unique values for other fields unchanged.
 </Note>
+
+
+## Creating an Organization
+
+It is very rare that you would need to create an organization through the API, but it is possible and explained below.
+
+The main route we use to expose this functionality is the [create organization route](/api-reference/organization/create-organization). Use the `name` parameter to pass a arbitrary, unique name which will be used to identify the organization. We recommend that you create seperate organizations for your main application as well as a staging environment for testing.
+
+Example of creating an organization on demand through the API:
+
+```json
+curl --request PUT \
+  --url https://api.trieve.ai/api/organization \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
+  --data '{
+  "name": "My Organization" // Replace with a unique name for your organization
+}'
+```
