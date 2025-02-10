@@ -10,7 +10,7 @@ We provide the ability for users to upload their files to Trieve and use our aut
 
 ## Uploading a File to Trieve
 
-Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded to a S3 bucket associated with your dataset. As a user, you can use Apache Tika to convert these files to HTML or use a vision LLM to convert the files to markdown. To understand the difference between the two, refer to the section on [Apache Tika vs GPT-4o chunking](#apache-tika-vs-gpt-4o-chunking).
+Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded to a S3 bucket associated with your dataset. As a user, you can use Apache Tika to convert these files to HTML or use a vision LLM to convert the files to markdown. To understand the difference between the two, refer to the section on [Apache Tika vs vision model chunking](#apache-tika-vs-gpt-4o-chunking).
 
 ### Important Parameters
 
@@ -20,8 +20,8 @@ Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded
 - **`link`, `tag_set`, and `time_stamp`**: These fields are indexed to enable fast filtering of groups based on these attributes.
 - **`target_splits_per_chunk`**: This is an optional field to specify number of splits you want per chunk. If not specified, the default 20 is used.
 - **`metadata`**: This field allows you to include any arbitrary metadata in the form of a JSON object with the group.
-- **`pdf2md_options`**: This allows you to use GPT-4o to convert the files to markdown.
-  - **`use_pdf2md_ocr`**: If true, the file will be converted to markdown using GPT-4o. You can test `pdf2md` performance at [pdf2md.trieve.ai)[https://pdf2md.trieve.ai].
+- **`pdf2md_options`**: This allows you to use vision LLM to convert the files to markdown.
+  - **`use_pdf2md_ocr`**: If true, the file will be converted to markdown using vision LLM. You can test `pdf2md` performance at [pdf2md.trieve.ai](https://pdf2md.trieve.ai).
 
 <Note>
   For the best filtering performance, we recommend using the `link`, `tag_set`,
@@ -60,7 +60,7 @@ curl --request POST \
     "key2": "value2"
   },
   "pdf2md_options": { 
-    "use_pdf2md_ocr": false // Set to true if you want to use GPT-4o to convert file to markdown
+    "use_pdf2md_ocr": false // Set to true if you want to use a vision LLM to convert file to markdown
   } 
 }'
 ```
@@ -95,7 +95,7 @@ with trieve_py_client.ApiClient(configuration) as api_client:
             "key2": "value2"
         },
         pdf2md_options={
-            "use_pdf2md_ocr": False # Set to True if you want GPT-4o to convert the file to Markdown
+            "use_pdf2md_ocr": False # Set to True if you want Vision LLM to convert the file to Markdown
         }
     )
 
@@ -130,7 +130,7 @@ payload = {
         "key2": "value2"
     },
     "pdf2md_options": {
-        "use_pdf2md_ocr": False  # Set to True if you want GPT-4o to convert the file to Markdown
+        "use_pdf2md_ocr": False  # Set to True if you want vision LLM to convert the file to Markdown
     }
 }
 
@@ -172,15 +172,15 @@ print(response.text)
 
 </CodeGroup>
 
-### File chunking with GPT-4o
+### File chunking with vision LLM
 
-When uploading a file to Trieve, you can use vision LLMs through our [pdf2md service](https://pdf2md.trieve.ai) for intelligent document parsing to easily convert PDF content to LLM-ready, structured Markdown. You can test `pdf2md` performance at [pdf2md.trieve.ai)[https://pdf2md.trieve.ai].
+When uploading a file to Trieve, you can use vision LLMs through our [pdf2md service](https://pdf2md.trieve.ai) for intelligent document parsing to easily convert PDF content to LLM-ready, structured Markdown. You can test `pdf2md` performance at [pdf2md.trieve.ai](https://pdf2md.trieve.ai).
 
 This allows for better preserving document context, readability, and structure and is especially useful when working with documents containing complex layouts (tables, lists, code blocks, etc).
 
 After the uploaded file is converted into structured Markdown, chunks are created based on the semantic structure of the document allowing for better semantic coherence.
 
-### Apache Tika vs GPT-4o chunking
+### Apache Tika vs Vision LLM chunking
 
 **Apache Tika** is a more traditional approach that extracts raw text from a document and converts it into HTML.
 The chunks are subsequently created by splitting at fixed lengths or pre-defined delimeters.
@@ -189,7 +189,7 @@ The chunks are subsequently created by splitting at fixed lengths or pre-defined
 
 - Simple, unstructured documents (e.g. plain text files)
 
-**GPT-4o chunking** creates chunks based on the semantic structure of the document, allowing for sections (e.g. headers, lists, tables, etc) to stay grouped.
+**Vision LLM chunking** creates chunks based on the semantic structure of the document, allowing for sections (e.g. headers, lists, tables, etc) to stay grouped.
 
 **_Recommended for:_**
 
