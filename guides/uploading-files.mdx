@@ -10,7 +10,7 @@ We provide the ability for users to upload their files to Trieve and use our aut
 
 ## Uploading a File to Trieve
 
-Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded to a S3 bucket associated with your dataset. As a user, you can use Apache Tika to convert these files to HTML to preserve formatting or use a vision LLM to convert the files to markdown.
+Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded to a S3 bucket associated with your dataset. As a user, you can use Apache Tika to convert these files to HTML or use a vision LLM to convert the files to markdown.
 
 ### Important Parameters
 
@@ -20,8 +20,8 @@ Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded
 - **`link`, `tag_set`, and `time_stamp`**: These fields are indexed to enable fast filtering of groups based on these attributes.
 - **`target_splits_per_chunk`**: This is an optional field to specify number of splits you want per chunk. If not specified, the default 20 is used.
 - **`metadata`**: This field allows you to include any arbitrary metadata in the form of a JSON object with the group.
-- **`pdf2md_options`**: This allows you to use gpt-4o to convert the files to markdown.
-  - **`use_pdf2md_ocr`**: If true, the file will be converted to markdown using gpt-4o
+- **`pdf2md_options`**: This allows you to use GPT-4o to convert the files to markdown.
+  - **`use_pdf2md_ocr`**: If true, the file will be converted to markdown using GPT-4o
 
 <Note>
   For the best filtering performance, we recommend using the `link`, `tag_set`,
@@ -39,12 +39,12 @@ Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded
 </Note>
 
 <CodeGroup>
-```json curl
+```json cURL
 curl --request POST \
   --url https://api.trieve.ai/api/file \
-  --header 'Authorization: <api-key>' \
+  --header 'Authorization: <api-key>' \ // Replace with your API key
   --header 'Content-Type: application/json' \
-  --header 'TR-Dataset: <tr-dataset>' \
+  --header 'TR-Dataset: <tr-dataset>' \ // Replace with your dataset ID
   --data '{
   "base64_file": "<base64_encoded_file>",
   "file_name": "example.pdf",
@@ -60,7 +60,7 @@ curl --request POST \
     "key2": "value2"
   },
   "pdf2md_options": { 
-    "use_pdf2md_ocr": false // Set to true if you want to use gpt-4o to convert file to markdown
+    "use_pdf2md_ocr": false // Set to true if you want to use GPT-4o to convert file to markdown
   } 
 }'
 ```
@@ -76,12 +76,12 @@ configuration = trieve_py_client.Configuration(
     host = "https://api.trieve.ai"
 )
 
-configuration.api_key['ApiKey'] = "<Your API Key>"
+configuration.api_key['ApiKey'] = "<Your API Key>" # Replace with your API key
 configuration.api_key_prefix['ApiKey'] = 'Bearer'
 
 with trieve_py_client.ApiClient(configuration) as api_client:
     api_instance = trieve_py_client.FileApi(api_client)
-    tr_dataset = <Your Dataset ID> # Update with your dataset ID
+    tr_dataset = <Your Dataset ID> # Replace with your dataset ID
 
     upload_file_req_payload = trieve_py_client.UploadFileReqPayload(
         base64_file=<base64_encoded_file>, # Upload base64 encoded file
@@ -95,7 +95,7 @@ with trieve_py_client.ApiClient(configuration) as api_client:
             "key2": "value2"
         },
         pdf2md_options={
-            "use_pdf2md_ocr": False # Set to True if you want gpt-4o to convert the file to Markdown
+            "use_pdf2md_ocr": False # Set to True if you want GPT-4o to convert the file to Markdown
         }
     )
 
@@ -130,7 +130,7 @@ payload = {
         "key2": "value2"
     },
     "pdf2md_options": {
-        "use_pdf2md_ocr": False  # Set to True if you want gpt-4o to convert the file to Markdown
+        "use_pdf2md_ocr": False  # Set to True if you want GPT-4o to convert the file to Markdown
     }
 }
 
@@ -141,7 +141,7 @@ print(response.text)
 
 </CodeGroup>
 
-### Response
+### Example Response
 
 <CodeGroup>
 ```json 200
@@ -172,17 +172,63 @@ print(response.text)
 
 </CodeGroup>
 
-### File chunking with gpt-4o
+### File chunking with GPT-4o
 
-When uploading a file to Trieve, you can use gpt-4o for intelligent document parsing to easily convert PDF content to LLM-ready structured Markdown.
+When uploading a file to Trieve, you can use GPT-4o for intelligent document parsing to easily convert PDF content to LLM-ready, structured Markdown.
 This allows for better preserving document context, readability, and structure and is especially useful when working with documents containing complex layouts (tables, lists, code blocks, etc).
 
-After the PDF file is converted to structured Markdown, you can create chunks for every page.
+After the uploaded file is converted into structured Markdown, chunks are created based on the semantic structure of the document allowing for better semantic coherence.
 
-### Tika vs gpt-4o chunking
+### Apache Tika vs GPT-4o chunking
 
-**Apache Tika** is a more traditional approach to document parsing, which is more suitable for simple documents. Tika extracts raw text from the document and converts it into HTML.
-The chunks are subsequently created by splitting at fixed lengths or pre-defined delimeters. Tika works best when the file uploaded is **_short_**, or **_structure-independent_** (e.g. simple text documents).
+**Apache Tika** is a more traditional approach that extracts raw text from a document and converts it into HTML.
+The chunks are subsequently created by splitting at fixed lengths or pre-defined delimeters.
 
-**gpt-4o chunking**, on the other hand, uses AI to parse the document and convert it into structured Markdown. The chunks are then created based on semantic structure and allows for sections (e.g. headers, lists, tables, etc) to stay grouped.
-This works best for **_complex_**, or **_structure-dependent_** files (e.g. research papers and reports).
+**_Recommended for:_**
+
+- Simple, unstructured documents (e.g. plain text files)
+
+**GPT-4o chunking** creates chunks based on the semantic structure of the document, allowing for sections (e.g. headers, lists, tables, etc) to stay grouped.
+
+**_Recommended for:_**
+
+- Complex document structures (e.g. technical documentation and reports)
+- Documents where context must be preserved
+
+### Heading Based Chunking
+
+Heading based chunking allows you to use split contents based on the headings and body content of the document.
+
+- Each chunk will contain a heading and its corresponding content.
+- All related content (paragraphs, lists, tables) under the same heading are grouped together.
+
+For example, if you upload the following HTML:
+
+```html
+<h1>Introduction</h1>
+<p>Hey, this is Trieve!</p>
+<h2>Background</h2>
+<p>Trieve brings AI search to the modern world.</p>
+```
+
+The response will be:
+
+```json
+{
+  "chunks": [
+    {
+      "headings": ["Introduction"],
+      "body": "<h1>Introduction</h1><p>Hey, this is Trieve!</p>"
+    },
+    {
+      "headings": ["Background"],
+      "body": "<h2>Background</h2><p>Trieve brings AI search to the modern world.</p>"
+    }
+  ]
+}
+```
+
+### Grouping with File Upload
+
+When uploading a file to Trieve, all chunks created from the file will be grouped together.
+The `file_name` field is used to specify the name of the resulting groups. Once uploaded, documents can be queried using the `file_name` field, allowing you to retrieve and perform operations on all chunks created from the file.
