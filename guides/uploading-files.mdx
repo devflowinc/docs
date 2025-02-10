@@ -10,7 +10,7 @@ We provide the ability for users to upload their files to Trieve and use our aut
 
 ## Uploading a File to Trieve
 
-Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded to a S3 bucket associated with your dataset. As a user, you can use Apache Tika to convert these files to HTML or use a vision LLM to convert the files to markdown.
+Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded to a S3 bucket associated with your dataset. As a user, you can use Apache Tika to convert these files to HTML or use a vision LLM to convert the files to markdown. To understand the difference between the two, refer to the section on [Apache Tika vs GPT-4o chunking](#apache-tika-vs-gpt-4o-chunking).
 
 ### Important Parameters
 
@@ -21,7 +21,7 @@ Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded
 - **`target_splits_per_chunk`**: This is an optional field to specify number of splits you want per chunk. If not specified, the default 20 is used.
 - **`metadata`**: This field allows you to include any arbitrary metadata in the form of a JSON object with the group.
 - **`pdf2md_options`**: This allows you to use GPT-4o to convert the files to markdown.
-  - **`use_pdf2md_ocr`**: If true, the file will be converted to markdown using GPT-4o
+  - **`use_pdf2md_ocr`**: If true, the file will be converted to markdown using GPT-4o.
 
 <Note>
   For the best filtering performance, we recommend using the `link`, `tag_set`,
