@@ -21,7 +21,7 @@ Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded
 - **`target_splits_per_chunk`**: This is an optional field to specify number of splits you want per chunk. If not specified, the default 20 is used.
 - **`metadata`**: This field allows you to include any arbitrary metadata in the form of a JSON object with the group.
 - **`pdf2md_options`**: This allows you to use GPT-4o to convert the files to markdown.
-  - **`use_pdf2md_ocr`**: If true, the file will be converted to markdown using GPT-4o.
+  - **`use_pdf2md_ocr`**: If true, the file will be converted to markdown using GPT-4o. You can test `pdf2md` performance at [pdf2md.trieve.ai)[https://pdf2md.trieve.ai].
 
 <Note>
   For the best filtering performance, we recommend using the `link`, `tag_set`,
@@ -174,7 +174,8 @@ print(response.text)
 
 ### File chunking with GPT-4o
 
-When uploading a file to Trieve, you can use GPT-4o for intelligent document parsing to easily convert PDF content to LLM-ready, structured Markdown.
+When uploading a file to Trieve, you can use vision LLMs through our [pdf2md service](https://pdf2md.trieve.ai) for intelligent document parsing to easily convert PDF content to LLM-ready, structured Markdown. You can test `pdf2md` performance at [pdf2md.trieve.ai)[https://pdf2md.trieve.ai].
+
 This allows for better preserving document context, readability, and structure and is especially useful when working with documents containing complex layouts (tables, lists, code blocks, etc).
 
 After the uploaded file is converted into structured Markdown, chunks are created based on the semantic structure of the document allowing for better semantic coherence.
