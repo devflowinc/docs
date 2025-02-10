@@ -20,7 +20,7 @@ Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded
 - **`link`, `tag_set`, and `time_stamp`**: These fields are indexed to enable fast filtering of groups based on these attributes.
 - **`target_splits_per_chunk`**: This is an optional field to specify number of splits you want per chunk. If not specified, the default 20 is used.
 - **`metadata`**: This field allows you to include any arbitrary metadata in the form of a JSON object with the group.
-- **`pdf2md_options`**: This allows you to use vision LLM to convert the files to markdown.
+- **`pdf2md_options`**: This allows you to use gpt-4o to convert the files to markdown.
   - **`use_pdf2md_ocr`**: If true, the file will be converted to markdown using gpt-4o
 
 <Note>
@@ -169,5 +169,20 @@ print(response.text)
   "message": "Bad Request"
 }
 ```
+
 </CodeGroup>
 
+### File chunking with gpt-4o
+
+When uploading a file to Trieve, you can use gpt-4o for intelligent document parsing to easily convert PDF content to LLM-ready structured Markdown.
+This allows for better preserving document context, readability, and structure and is especially useful when working with documents containing complex layouts (tables, lists, code blocks, etc).
+
+After the PDF file is converted to structured Markdown, you can create chunks for every page.
+
+### Tika vs gpt-4o chunking
+
+**Apache Tika** is a more traditional approach to document parsing, which is more suitable for simple documents. Tika extracts raw text from the document and converts it into HTML.
+The chunks are subsequently created by splitting at fixed lengths or pre-defined delimeters. Tika works best when the file uploaded is **_short_**, or **_structure-independent_** (e.g. simple text documents).
+
+**gpt-4o chunking**, on the other hand, uses AI to parse the document and convert it into structured Markdown. The chunks are then created based on semantic structure and allows for sections (e.g. headers, lists, tables, etc) to stay grouped.
+This works best for **_complex_**, or **_structure-dependent_** files (e.g. research papers and reports).
