@@ -1,15 +1,16 @@
 ---
-title: 'Uploading Files to Trieve'
-description: 'Learn how to upload your files to Trieve'
-icon: 'files'
+title: "Uploading Files to Trieve"
+description: "Learn how to upload your files to Trieve"
+icon: "files"
 ---
+
 ## Overview
 
-We provide the ability for users to upload their files to Trieve and use our automatic large language vision model chunking. When uploading a file to Trieve, we automatically group the chunks together to link them. This is done through our [upload file route](/api-reference/file/upload-file).
+We provide the ability for users to upload their files to Trieve and use our automatic large language vision model or Apache Tika chunking. When uploading a file to Trieve, we automatically group the chunks together to link them. This is done through our [upload file route](/api-reference/file/upload-file).
 
 ## Uploading a File to Trieve
 
-Our service supports various file types (e.g., HTML, DOCX, PDF). We use Apache Tika to convert these files to HTML to preserve formatting and then chunk them.
+Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded to a S3 bucket associated with your dataset. As a user, you can use Apache Tika to convert these files to HTML to preserve formatting or use a vision LLM to convert the files to markdown.
 
 ### Important Parameters
 
@@ -17,33 +18,156 @@ Our service supports various file types (e.g., HTML, DOCX, PDF). We use Apache T
 - **`file_name`**: The name of the file being uploaded, including the extension. This will become the name of the resulting group.
 - **`group_tracking_id`**: This field allows you to assign an arbitrary ID to the group, aiding in coordination with your database system. You can search for this group using this ID.
 - **`link`, `tag_set`, and `time_stamp`**: These fields are indexed to enable fast filtering of groups based on these attributes.
+- **`target_splits_per_chunk`**: This is an optional field to specify number of splits you want per chunk. If not specified, the default 20 is used.
 - **`metadata`**: This field allows you to include any arbitrary metadata in the form of a JSON object with the group.
+- **`pdf2md_options`**: This allows you to use vision LLM to convert the files to markdown.
+  - **`use_pdf2md_ocr`**: If true, the file will be converted to markdown using gpt-4o
 
 <Note>
- For the best filtering performance, we recommend using the `link`, `tag_set`, and `time_stamp` fields, as there are dedicated indexes for these. The metadata field has an index built for match queries but is not optimized for range queries.
+  For the best filtering performance, we recommend using the `link`, `tag_set`,
+  and `time_stamp` fields, as there are dedicated indexes for these. The
+  metadata field has an index built for match queries but is not optimized for
+  range queries.
 </Note>
 
 ### Example Upload File Request
 
 <Note>
-Whenever you make a request to the Trieve API, you need to include the `TR-Dataset` header with your dataset ID and the `Authorization` header with your API key.
+  Whenever you make a request to the Trieve API, you need to include the
+  `TR-Dataset` header with your dataset ID and the `Authorization` header with
+  your API key.
 </Note>
 
-```json
-POST /api/file
-Headers:
-{
-    "TR-Dataset": "<Your Dataset ID>",
-    "Authorization": "<Your API Key>"
+<CodeGroup>
+```json curl
+curl --request POST \
+  --url https://api.trieve.ai/api/file \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Dataset: <tr-dataset>' \
+  --data '{
+  "base64_file": "<base64_encoded_file>",
+  "file_name": "example.pdf",
+  "link": "https://example.com",
+  "tag_set": [
+    "tag1",
+    "tag2"
+  ],
+  "time_stamp": "2025-02-09T22:15:51",
+  "target_splits_per_chunk": 20,
+  "metadata": {
+    "key1": "value1",
+    "key2": "value2"
+  },
+  "pdf2md_options": { 
+    "use_pdf2md_ocr": false // Set to true if you want to use gpt-4o to convert file to markdown
+  } 
+}'
+```
+
+```python Python SDK
+import trieve_py_client
+from trieve_py_client.models.upload_file_req_payload import UploadFileReqPayload
+from trieve_py_client.models.upload_file_response_body import UploadFileResponseBody
+from trieve_py_client.rest import ApiException
+from pprint import pprint
+
+configuration = trieve_py_client.Configuration(
+    host = "https://api.trieve.ai"
+)
+
+configuration.api_key['ApiKey'] = "<Your API Key>"
+configuration.api_key_prefix['ApiKey'] = 'Bearer'
+
+with trieve_py_client.ApiClient(configuration) as api_client:
+    api_instance = trieve_py_client.FileApi(api_client)
+    tr_dataset = <Your Dataset ID> # Update with your dataset ID
+
+    upload_file_req_payload = trieve_py_client.UploadFileReqPayload(
+        base64_file=<base64_encoded_file>, # Upload base64 encoded file
+        file_name="example.pdf",
+        link="https://example.com",
+        tag_set=["tag1", "tag2"],
+        time_stamp="2025-02-09T22:15:51",
+        target_splits_per_chunk=20,
+        metadata={
+            "key1": "value1",
+            "key2": "value2"
+        },
+        pdf2md_options={
+            "use_pdf2md_ocr": False # Set to True if you want gpt-4o to convert the file to Markdown
+        }
+    )
+
+    try:
+        api_response = api_instance.upload_file_handler(tr_dataset, upload_file_req_payload)
+        print("Uploading file response: \n")
+        pprint(api_response)
+    except Exception as e:
+        print(f"Exception when uploading file: {e}\n")
+```
+
+```python Python Requests
+import requests
+
+url = "https://api.trieve.ai/api/file"
+
+headers = {
+    "TR-Dataset": "<tr-dataset>",  # Replace with your dataset ID
+    "Authorization": "<api-key>",  # Replace with your API key
+    "Content-Type": "application/json"
 }
-Body:
-{
-    "file_name": "text.docx",
-    "base64_file": "SGVsbG8sIFdvcmxkIQ...",
+
+payload = {
+    "base64_file": "<base64_encoded_file>", # Upload base64 encoded file
+    "file_name": "example.pdf",
+    "link": "https://example.com",
+    "tag_set": ["tag1", "tag2"],
+    "time_stamp": "2025-02-09T22:15:51",
+    "target_splits_per_chunk": 20,
     "metadata": {
-        "todo": "add what seems useful"
+        "key1": "value1",
+        "key2": "value2"
     },
-    "create_chunks": true,
-    "group_tracking_id": "test-group-tracking-id"
+    "pdf2md_options": {
+        "use_pdf2md_ocr": False  # Set to True if you want gpt-4o to convert the file to Markdown
+    }
+}
+
+response = requests.request("POST", url, json=payload, headers=headers)
+
+print(response.text)
+```
+
+</CodeGroup>
+
+### Response
+
+<CodeGroup>
+```json 200
+{
+  "file_metadata": {
+    "created_at": "2025-02-09 22:30:00.000",
+    "dataset_id": "********-****-****-****-************",
+    "file_name": "example.pdf",
+    "id": "********-****-****-****-************",
+    "link": "https://example.com",
+    "metadata": {
+      "key1": "value1",
+      "key2": "value2"
+    },
+    "size": 1000,
+    "tag_set": "tag1,tag2",
+    "time_stamp": "2025-02-09 22:30:00.000",
+    "updated_at": "2025-02-09 22:30:00.000"
+  }
 }
 ```
+
+```json 400
+{
+  "message": "Bad Request"
+}
+```
+</CodeGroup>
+
