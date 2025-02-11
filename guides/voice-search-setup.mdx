@@ -1,0 +1,135 @@
+---
+title: 'Setup Voice Search'
+description: 'Learn how to setup voice search with Trieve'
+icon: 'microphone'
+---
+
+## Overview
+
+Trieve provides a simple way to integrate voice search into your application. This guide will walk you through the steps to set up voice search with Trieve.
+
+<Note>
+For a full implementation example, take a look at the way we implement voice search in our [search component](https://github.com/devflowinc/trieve/blob/e716ab0b276ec056c1d2e554acf46301d27ba487/clients/search-component/src/TrieveModal/Search/UploadAudio.tsx).
+</Note>
+
+## Capturing Audio from the Microphone  
+
+To enable voice search, you’ll need to capture audio from the user’s microphone using the browser’s `MediaRecorder` API.  
+
+### 1. Create a Voice Search Button  
+
+The following React component lets users start and stop voice recording:  
+
+```tsx
+import React, { useState } from "react";
+
+export const VoiceSearchButton = () => {
+  const [recording, setRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = navigator.userAgent.includes('Firefox') ? 'audio/webm' : 'audio/mp4';
+      
+      const recorder = new MediaRecorder(stream, { mimeType });
+      let audioChunks: Blob[] = [];
+      
+      recorder.ondataavailable = (e) => audioChunks.push(e.data);
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks);
+        const base64Audio = await convertBlobToBase64(audioBlob);
+        handleSearch(base64Audio);
+      };
+
+      setMediaRecorder(recorder);
+      recorder.start();
+      setRecording(true);
+    } catch (error) {
+      console.error("Microphone access error:", error);
+    }
+  };
+
+  const stopRecording = () => {
+    mediaRecorder?.stop();
+    setRecording(false);
+  };
+
+  return (
+    <button
+      onClick={recording ? stopRecording : startRecording}
+      aria-label={recording ? "Stop recording" : "Start voice search"}
+    >
+      {recording ? <StopIcon /> : <MicIcon />}
+    </button>
+  );
+};
+```
+
+---
+
+## Converting Audio to Base64  
+
+To send the recorded audio to Trieve, convert the audio blob into a base64 string.  
+
+```typescript
+const convertBlobToBase64 = (blob: Blob): Promise<string> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = (reader.result as string).split(',')[1];
+      resolve(base64String);
+    };
+    reader.readAsDataURL(blob);
+  });
+};
+```
+
+---
+
+## Sending Audio to Trieve for Search  
+
+Once the audio is recorded and converted to base64, send it to Trieve. The platform will transcribe the speech using OpenAI Whisper and return the search results based on the transcription.  
+
+
+We return the transcribed text in the response header as `x-tr-query`, which can be used to update the UI with the search query.
+
+### 1. Handle Voice Search  
+
+```typescript
+const handleSearch = async (audioBase64?: string) => {
+  try {
+    const response = await trieveClient.search({
+      audio_base64: audioBase64,
+      search_type: "hybrid",
+      score_threshold: 0.5,
+      page_size: 10
+    });
+
+    // Retrieve transcribed text from the response header
+    const queryText = response.headers.get('x-tr-query');
+    
+    // Update UI with search results
+    setSearchResults(response.data.chunks);
+    setQuery(queryText || "");
+  } catch (error) {
+    console.error("Voice search error:", error);
+  }
+};
+```
+
+---
+
+## Best Practices  
+
+### Optimize Performance  
+- Keep recordings **under 30 seconds** to improve speed and accuracy.  
+- Use high-quality microphones for clearer transcription results.  
+
+### Ensure Browser Compatibility  
+Different browsers support different audio formats. Handle this by selecting the correct MIME type:  
+
+```typescript
+const isFirefox = navigator.userAgent.includes('Firefox');
+const mimeType = isFirefox ? 'audio/webm' : 'audio/mp4';
+```

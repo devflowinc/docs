@@ -1,0 +1,107 @@
+---
+title: 'Setup Image Search'
+description: 'Learn how to setup image search with Trieve'
+icon: 'image'
+---
+
+## Overview
+
+Trieve provides a simple way to integrate image search into your application. This guide will walk you through the steps to set up image search with Trieve.
+
+<Note>
+For a full implementation example, take a look at the way we implement image search in our [search component](https://github.com/devflowinc/trieve/blob/e716ab0b276ec056c1d2e554acf46301d27ba487/clients/search-component/src/TrieveModal/Search/UploadImage.tsx).
+</Note>
+
+## Uploading an Image  
+
+### 1. Allow Users to Select an Image  
+
+To let users upload an image, use an `<input>` element with a file picker. Here’s a simple React component for an image uploader:  
+
+```typescript
+import React, { useState, useRef } from 'react';
+import { uploadFile, getPresignedUrl } from 'trieve-sdk';
+
+export const ImageUploader = ({ trieveSDK }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      handleFileUpload(selectedFile);
+    }
+  };
+
+  return (
+    <div>
+      <input 
+        type="file" 
+        ref={fileInputRef}
+        accept="image/*"
+        onChange={handleFileSelect}
+        className="hidden"
+      />
+      <button onClick={() => fileInputRef.current?.click()}>
+        Upload Image
+      </button>
+    </div>
+  );
+};
+```
+
+### 2. Upload the Image to Trieve  
+
+After the user selects an image, you can either upload it to Trieve and get a URL for it or use your own CDN. Here’s how you can do it with Trieve:  
+
+```typescript
+const handleFileUpload = async (selectedFile: File) => {
+  try {
+    // Convert the file to a base64 string
+    const base64 = await convertToBase64(selectedFile);
+    
+    // Upload the file to Trieve and get a unique file ID
+    const fileId = await uploadFile(trieveSDK, selectedFile.name, base64, {
+      create_chunks: false // Set to false to ensure that your file isn't indexed
+    });
+
+    // Get a public URL for the uploaded image
+    const imageUrl = await getPresignedUrl(trieveSDK, fileId);
+    
+    return imageUrl;
+  } catch (error) {
+    console.error('Image upload failed:', error);
+    return null;
+  }
+};
+```
+
+---
+
+## Running an Image Search  
+
+Once you have the uploaded image’s URL, you can use it to search for visually similar images.  
+
+### 1. Perform an Image Search  
+
+Pass the image URL into a search query using Trieve’s SDK:  
+
+```typescript
+const performImageSearch = async (imageUrl: string) => {
+  try {
+    const searchResults = await trieveSDK.search({
+      query: { image_url: imageUrl },
+      search_type: 'semantic',
+      page_size: 10, // Adjust as needed
+    });
+
+    return searchResults.chunks;
+  } catch (error) {
+    console.error('Image search failed:', error);
+    return [];
+  }
+};
+```
+
+### 2. Display Search Results  
+
+Once you get the results, you can display them in your UI as thumbnails, links, or however you’d like.  
