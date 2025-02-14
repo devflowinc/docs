@@ -1,0 +1,47 @@
+---
+title: "Crawling Websites with Trieve"
+description: "Learn how to how use the crawl functionality within Trieve"
+icon: "browser"
+---
+
+## Overview
+
+We provide a simple way to crawl websites, Shopify stores, and Youtube channels and extract data from them. This guide will walk you through the steps to crawl websites with Trieve.
+
+### Crawling a Website
+
+To start a crawl job, you need to make a POST request to the [create crawl](/api-reference/crawl/crawl-a-new-crawl-request) route.
+
+### Important Parameters
+- `site_url`: The URL of the website you want to crawl.
+- `interval`: How often you want to crawl the website.
+- `webhook_url`: URL to call for each successful page scrape.
+
+By default, we will use a stripped down version of Firecrawl that we built called [firecrawl-simple](https://github.com/devflowinc/firecrawl-simple) in order to extract data from the url you provided,
+however you can also specify what kind of website you are crawling and we will tailor the crawling strategy for that.
+
+We support 2 other kinds of crawls:
+- `shopify`: This will crawl a Shopify store and extract product information.
+- `youtube`: This will crawl a Youtube channel and extract video information.
+
+To specify the kind of crawl you want to do, you can use the `crawl_type` parameter inside of the `scrape_options` field and specify the type of crawl you want to do.
+
+```json
+{
+    "site_url": "https://www.example.com",
+    "interval": "monthly",
+    "webhook_url": "https://www.example.com/webhook",
+    "scrape_options": {
+        "crawl_type": "shopify" | "youtube"
+    }
+}
+```
+
+There are some other parameters that will allow you customize the chunks that are created from your crawl job. You can find more information about these parameters in the [API reference](/api-reference/crawl/crawl-a-new-crawl-request).
+
+We allow for the site to be periodically rescraped as well to keep your data up to date by using the `interval` parameter and specifying how often to recrawl. We will by
+default crawl every month.
+
+### Viewing Crawl Data
+
+You can view all the crawls that you have created for your dataset and their realtime statuses by using the [get all crawls](/api-reference/crawl/get-all-crawl-requests-for-a-dataset) route.

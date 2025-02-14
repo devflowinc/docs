@@ -116,6 +116,7 @@
         "guides/using-exposed-api-keys",
         "guides/voice-search-setup",
         "guides/image-search-setup",
+        "guides/dataset-crawls",
         "vector-inference/rerank",
         "vector-inference/splade",
         "vector-inference/dense",
@@ -197,8 +198,18 @@
         "api-reference/message/create-message",
         "api-reference/message/edit-message",
         "api-reference/message/regenerate-message-1",
+        "api-reference/message/get-tool-function-parameters",
         "api-reference/message/get-a-message-by-its-id",
         "api-reference/message/get-all-messages-for-a-given-topic"
+      ]
+    },
+    {
+      "group": "Crawl",
+      "pages": [
+        "api-reference/crawl/get-all-crawl-requests-for-a-dataset",
+        "api-reference/crawl/update-a-crawl-request",
+        "api-reference/crawl/create-a-new-crawl-request",
+        "api-reference/crawl/delete-a-crawl-request"
       ]
     },
     {
@@ -208,7 +219,9 @@
         "api-reference/file/create-presigned-url-for-csv-jsonl",
         "api-reference/file/get-files-for-dataset",
         "api-reference/file/get-file",
-        "api-reference/file/delete-file"
+        "api-reference/file/delete-file",
+        "api-reference/file/get-file-signed-url",
+        "api-reference/file/upload-html-page"
       ]
     },
     {
@@ -240,6 +253,9 @@
         "api-reference/dataset/get-dataset-by-id",
         "api-reference/dataset/get-dataset-by-tracking-id",
         "api-reference/dataset/get-datasets-from-organization",
+        "api-reference/dataset/create-etl-job",
+        "api-reference/dataset/create-pagefind-index-for-dataset",
+        "api-reference/dataset/get-pagefind-index-url-for-dataset",
         "api-reference/dataset/get-usage-by-dataset-id",
         "api-reference/dataset/get-dataset-crawl-options",
         "api-reference/public/get-apipublic_page",
@@ -264,7 +280,11 @@
     },
     {
       "group": "User",
-      "pages": ["api-reference/user/update-user-org-role"]
+      "pages": [
+        "api-reference/user/update-user-org-role",
+        "api-reference/user/get-user-api-keys",
+        "api-reference/user/delete-user-api-key"
+      ]
     },
     {
       "group": "Auth",
