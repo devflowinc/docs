@@ -6,6 +6,11 @@ icon: "files"
 
 ## Overview
 
+<Note>
+  You must specifically use the `base64url` encoding for the `base64_file`
+  field.
+</Note>
+
 We provide the ability for users to upload their files to Trieve and use our automatic large language vision model or Apache Tika chunking. When uploading a file to Trieve, we automatically group the chunks together to link them. This is done through our [upload file route](/api-reference/file/upload-file).
 
 ## Uploading a File to Trieve
@@ -14,7 +19,7 @@ Trieve supports various file types (e.g., HTML, DOCX, PDF). The file is uploaded
 
 ### Important Parameters
 
-- **`base64_file`**: To allow users to pass metadata with their file uploads, we require files to be base64 URL encoded. Convert `+` to `-`, `/` to `_`, and remove the ending `=` if present.
+- **`base64_file`**: To allow users to pass metadata with their file uploads, we require you to specifically use the `base64url` encoding. Convert `+` to `-`, `/` to `_`, and remove the ending `=` if present.
 - **`file_name`**: The name of the file being uploaded, including the extension. This will become the name of the resulting group.
 - **`group_tracking_id`**: This field allows you to assign an arbitrary ID to the group, aiding in coordination with your database system. You can search for this group using this ID.
 - **`link`, `tag_set`, and `time_stamp`**: These fields are indexed to enable fast filtering of groups based on these attributes.
