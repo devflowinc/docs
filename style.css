@@ -1,0 +1,7 @@
+img {
+  border-radius: 0.25rem;
+}
+
+.prose :where(img):not(:where([class~=not-prose],[class~=not-prose] *)) {
+  margin-top: 0.25rem;
+}
