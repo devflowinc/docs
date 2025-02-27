@@ -1,0 +1,91 @@
+---
+title: SiteSearch Ecommerce Guide
+description: "Step by step guide on setting up a scrape of any shopify store, configuring the web component, and adding the script tag to your site."
+---
+
+## How to use Trieve SiteSearch for Ecommerce Storefronts
+
+<Note>
+  Conveniently, most Shopify stores have a `products.json` file available at
+  `https://foostoreurl.com/products.json` that contains all the product data for
+  Google and other search engines to index. You can see an example at
+  [https://ridge.com/products.json](https://ridge.com/products.json). Trieve
+  takes advantage of this to scrape your store.
+</Note>
+
+If you are interested in the business context of us developing this product, you can read more about it in the [introduction section here](/site-search/introduction#background).
+
+## Steps to set up Trieve SiteSearch for your Shopify Store
+
+### 1. Navigate to the Crawl Settings for your dataset
+
+Create a new dataset on the first screen of the Trieve dashboard. Once you have created the dataset, click on the dataset name to navigate to the crawl settings using the sidebar.
+
+<img
+  src="https://trieve.b-cdn.net/docs/site-search/trieve-crawling-options-navigate.png"
+  alt="Navigation for Crawl Settings"
+/>
+
+### 2. Add the Shopify Store URL, select the Shopify option, and click Start Scraping
+
+Fill out the form as shown below, and click the "Start Scraping" button to begin scraping your store.
+
+<img
+  src="https://trieve.b-cdn.net/docs/site-search/trieve-crawling-options-save.png"
+  alt="Save Crawl Settings"
+/>
+
+### 3. Navigate to the Demo Page for your dataset
+
+Once the scrape is complete, navigate to the demo page for your dataset using the sidebar and click "Publish Dataset" to make the data available for search.
+
+<img
+  src="https://trieve.b-cdn.net/docs/site-search/trieve-demo-page-navigate-publish.png"
+  alt="Navigate to Demo Page and Publish"
+/>
+
+### 4. Configure the Web Component for your site
+
+Fill out the form to customize the appearance of the search component to match your site's branding. Use the tooltips to help you understand the various fields.
+
+<img
+  src="https://trieve.b-cdn.net/docs/site-search/trieve-demo-page-form.png"
+  alt="Demo Page Form"
+/>
+
+### 5. Add a tab message with code
+
+Once you have configured the search component, scroll to the bottom and go to the "Tab Message" section and add a tag with a code snippet to get the code you will put into the script tag to add the component to your site.
+
+<img
+  src="https://trieve.b-cdn.net/docs/site-search/tab-message-component-code.png"
+  alt="Tab Message with Component Code"
+/>
+
+### 6. View your demo page
+
+Scroll back to the top of the page and click the "View Demo Page" button to see the search component in action.
+
+<img
+  src="https://trieve.b-cdn.net/docs/site-search/click-to-view-demo-page.png"
+  alt="Click to View Demo Page"
+/>
+
+### 7. Find the code block on the demo page
+
+Scroll down to the bottom of the demo page to find the code block and copy its contents.
+
+<img
+  src="https://trieve.b-cdn.net/docs/site-search/demo-page-code-block.png"
+  alt="Code Block"
+/>
+
+### 8. Test and add the script tag to your site
+
+We like to use the [tampermonkey browswer extension](https://www.tampermonkey.net/) to test the script tag before adding it to our site. Once you have tested the script tag, add it to your site's head tag in your HTML.
+
+Here are some common guides for adding a script tag to common platforms:
+
+- [Adding a script tag to a Shopify site](https://www.biscuitsbundles.com/blog/how-to-add-code-to-your-head-section-in-shopify)
+- [Adding a script tag to an Elementor site](https://elementor.com/help/custom-code-pro/)
+- [Adding a script tag to a WordPress site](https://www.wpbeginner.com/beginners-guide/how-to-easily-add-javascript-in-wordpress-pages-or-posts/)

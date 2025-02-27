@@ -41,7 +41,7 @@
       "url": "vector-inference"
     },
     {
-      "name": "Site Search",
+      "name": "SiteSearch AI",
       "url": "site-search"
     }
   ],
@@ -79,9 +79,7 @@
         "vector-inference/pricing",
         "vector-inference/architecture",
         "site-search/introduction",
-        "site-search/usage",
-        "site-search/parameters",
-        "site-search/screenshots"
+        "site-search/ecommerce"
       ]
     },
     {
