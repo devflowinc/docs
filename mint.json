@@ -79,7 +79,9 @@
         "vector-inference/pricing",
         "vector-inference/architecture",
         "site-search/introduction",
-        "site-search/ecommerce"
+        "site-search/ecommerce",
+        "site-search/content-sites",
+        "site-search/youtube-channels"
       ]
     },
     {

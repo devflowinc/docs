@@ -1,21 +1,17 @@
 ---
-title: SiteSearch Ecommerce Guide
-description: "Step by step guide on setting up a scrape of any shopify store, configuring the web component, and adding the script tag to your site."
+title: SiteSearch Content Sites Guide
+description: "Step by step guide on setting up a scrape of any help center, blog, or content site, configuring the web component, and adding the script tag to your site."
 ---
 
-## How to use Trieve SiteSearch for Ecommerce Storefronts
+## How to use Trieve SiteSearch for Content Sites
+
+This guide will walk you through setting up Trieve SiteSearch for a blog, help center, or any other content site.
 
 <Note>
-  Conveniently, most Shopify stores have a `products.json` file available at
-  `https://foostoreurl.com/products.json` that contains all the product data for
-  Google and other search engines to index. You can see an example at
-  [https://ridge.com/products.json](https://ridge.com/products.json). Trieve
-  takes advantage of this to scrape your store.
+  If you are interested in the business context of us developing this product, you can read more about it in the [introduction section here](/site-search/introduction#background).
 </Note>
 
-If you are interested in the business context of us developing this product, you can read more about it in the [introduction section here](/site-search/introduction#background).
-
-## Steps to set up Trieve SiteSearch for your Shopify Store
+## Steps to set up Trieve SiteSearch for your Content Site
 
 ### 1. Navigate to the Crawl Settings for your dataset
 
@@ -26,12 +22,12 @@ Create a new dataset on the first screen of the Trieve dashboard. Once you have 
   alt="Navigation for Crawl Settings"
 />
 
-### 2. Add the Shopify Store URL, select the Shopify option, and click Start Scraping
+### 2. Add the Site URL, select "ignore sitemap", and click Start Scraping
 
-Fill out the form as shown below, and click the "Start Scraping" button to begin scraping your store.
+Fill out the form as shown below, and click the "Start Scraping" button to begin scraping your site.
 
 <img
-  src="https://trieve.b-cdn.net/docs/site-search/trieve-crawling-options-save.png"
+  src="https://trieve.b-cdn.net/docs/site-search/content-site-search-guide.png"
   alt="Save Crawl Settings"
 />
 
@@ -75,10 +71,12 @@ Scroll back to the top of the page and click the "View Demo Page" button to see 
 
 Scroll down to the bottom of the demo page to find the code block and copy its contents.
 
-<img
-  src="https://trieve.b-cdn.net/docs/site-search/demo-page-code-block.png"
-  alt="Code Block"
-/>
+<Frame>
+  <img
+    src="https://trieve.b-cdn.net/docs/site-search/demo-page-code-block.png"
+    alt="Code Block"
+  />
+</Frame>
 
 ### 8. Test and add the script tag to your site
 
