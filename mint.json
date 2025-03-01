@@ -98,10 +98,6 @@
       ]
     },
     {
-      "group": "Plugins",
-      "pages": ["site-search/plugin-docusarus"]
-    },
-    {
       "group": "Guides",
       "pages": [
         "guides/create-chunk",
