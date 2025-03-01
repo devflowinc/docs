@@ -126,14 +126,14 @@ Once you have copied the code block, navigate to the site you intend to add the 
 
 Replace the contents of the new tampermonkey script with the following code block starting below the commented lines at the top.
 
-```javascript tampermonkey script {16}
+```javascript tampermonkey script {17}
 (function() {
     'use strict';
 
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.href = "https://search-component.trieve.ai/dist/index.css";
-
+    document.head.appendChild(link);
 
     import('https://search-component.trieve.ai/dist/vanilla/index.js')
         .then((module) => {
@@ -157,7 +157,7 @@ Navigate back to the demo page and copy the props from the code block. Replace t
 
 Your final result should look something like this for the [fireship.io site in example](https://fireship.io/).
 
-```javascript final tampermonkey script {26-39}
+```javascript final tampermonkey script {28-39}
 // ==UserScript==
 // @name         Fireship Script
 // @namespace    http://tampermonkey.net/
@@ -175,7 +175,7 @@ Your final result should look something like this for the [fireship.io site in e
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.href = "https://search-component.trieve.ai/dist/index.css";
-
+    document.head.appendChild(link);
 
     import('https://search-component.trieve.ai/dist/vanilla/index.js')
         .then((module) => {
