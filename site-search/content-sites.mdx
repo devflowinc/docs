@@ -3,14 +3,29 @@ title: SiteSearch Content Sites Guide
 description: "Step by step guide on setting up a scrape of any help center, blog, or content site, configuring the web component, and adding the script tag to your site."
 ---
 
-<div id="vimeo-content-guide"></div>
+## Video Guide
+
+<Frame>
+  <iframe
+    width="560"
+    height="315"
+    src="https://www.youtube.com/embed/_FUHj3XF8O0?si=KR9Ke8gCBer4crGO"
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+  ></iframe>
+</Frame>
 
 ## How to use Trieve SiteSearch for Content Sites
 
 This guide will walk you through setting up Trieve SiteSearch for a blog, help center, or any other content site.
 
 <Note>
-  If you are interested in the business context of us developing this product, you can read more about it in the [introduction section here](/site-search/introduction#background).
+  If you are interested in the business context of us developing this product,
+  you can read more about it in the [introduction section
+  here](/site-search/introduction#background).
 </Note>
 
 ## Steps to set up Trieve SiteSearch for your Content Site
@@ -88,7 +103,7 @@ Here are some common guides for adding a script tag to common platforms. You may
 - [Adding a script tag to an Elementor site](https://elementor.com/help/custom-code-pro/)
 - [Adding a script tag to a WordPress site](https://www.wpbeginner.com/beginners-guide/how-to-easily-add-javascript-in-wordpress-pages-or-posts/)
 
--------
+---
 
 ## Optional Testing with tampermonkey
 
@@ -129,27 +144,27 @@ Once you have copied the code block, navigate to the site you intend to add the 
 Replace the contents of the new tampermonkey script with the following code block starting below the commented lines at the top.
 
 ```javascript tampermonkey script {17}
-(function() {
-    'use strict';
+(function () {
+  "use strict";
 
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "https://search-component.trieve.ai/dist/index.css";
-    document.head.appendChild(link);
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "https://search-component.trieve.ai/dist/index.css";
+  document.head.appendChild(link);
 
-    import('https://search-component.trieve.ai/dist/vanilla/index.js')
-        .then((module) => {
-            const root = document.createElement('div');
-            root.classList.add('trigger');
-            document.body.appendChild(root);
+  import("https://search-component.trieve.ai/dist/vanilla/index.js")
+    .then((module) => {
+      const root = document.createElement("div");
+      root.classList.add("trigger");
+      document.body.appendChild(root);
 
-            module.renderToDiv(root, {
-                // <to be replaced with the props from the demo page>
-            });
-        })
-        .catch(error => {
-            console.error("Failed to load search comonent:", error);
-        });
+      module.renderToDiv(root, {
+        // <to be replaced with the props from the demo page>
+      });
+    })
+    .catch((error) => {
+      console.error("Failed to load search comonent:", error);
+    });
 })();
 ```
 
@@ -171,38 +186,38 @@ Your final result should look something like this for the [fireship.io site in e
 // @grant        none
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+  "use strict";
 
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "https://search-component.trieve.ai/dist/index.css";
-    document.head.appendChild(link);
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "https://search-component.trieve.ai/dist/index.css";
+  document.head.appendChild(link);
 
-    import('https://search-component.trieve.ai/dist/vanilla/index.js')
-        .then((module) => {
-            const root = document.createElement('div');
-            root.classList.add('trigger');
-            document.body.appendChild(root);
+  import("https://search-component.trieve.ai/dist/vanilla/index.js")
+    .then((module) => {
+      const root = document.createElement("div");
+      root.classList.add("trigger");
+      document.body.appendChild(root);
 
-            module.renderToDiv(root, {
-                apiKey: "tr-ry8EUHNioE2pVKcS37l5u31EGbU5wMk9",
-                datasetId: "930bee1b-9ce9-4e27-8939-3245937f9d41",
-                baseUrl: "https://api.trieve.ai",
-                type: "docs",
-                analytics: true,
-                brandLogoImgSrcUrl: "https://avatars.githubusercontent.com/u/46283609?s=200&v=4",
-                brandName: "Fireship",
-                brandColor: "#ff3e00",
-                placeholder: "Search...",
-                defaultSearchMode: "chat",
-                showFloatingButton: "true",
-                theme: "dark",
-            });
-        })
-        .catch(error => {
-            console.error("Failed to load search comonent:", error);
-        });
+      module.renderToDiv(root, {
+        apiKey: "tr-ry8EUHNioE2pVKcS37l5u31EGbU5wMk9",
+        datasetId: "930bee1b-9ce9-4e27-8939-3245937f9d41",
+        baseUrl: "https://api.trieve.ai",
+        type: "docs",
+        analytics: true,
+        brandLogoImgSrcUrl:
+          "https://avatars.githubusercontent.com/u/46283609?s=200&v=4",
+        brandName: "Fireship",
+        brandColor: "#ff3e00",
+        placeholder: "Search...",
+        defaultSearchMode: "chat",
+        showFloatingButton: "true",
+        theme: "dark",
+      });
+    })
+    .catch((error) => {
+      console.error("Failed to load search comonent:", error);
+    });
 })();
 ```
-
