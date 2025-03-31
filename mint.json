@@ -213,11 +213,12 @@
       "pages": [
         "api-reference/file/upload-file",
         "api-reference/file/create-presigned-url-for-csv-jsonl",
+        "api-reference/file/upload-html-page",
         "api-reference/file/get-files-for-dataset",
+        "api-reference/file/scroll-files",
         "api-reference/file/get-file",
-        "api-reference/file/delete-file",
         "api-reference/file/get-file-signed-url",
-        "api-reference/file/upload-html-page"
+        "api-reference/file/delete-file"
       ]
     },
     {
