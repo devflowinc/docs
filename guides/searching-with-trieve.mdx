@@ -301,15 +301,15 @@ After creating a dataset, you cannot change the embedding model. If you need to 
 
 Trieve supports multiple reranker models that can be used to rerank the search results.
  
-Currently, Trieve supports `bge-reranker-large` and cohere's `rerank-v3.5` model.
+Currently, Trieve supports the BAAI `bge-reranker-large` model, AIMon's `aimon-rerank` model, and Cohere's `rerank-v3.5` model.
 
 ![](https://cdn.trieve.ai/docs/reranker-model-edit.png)
 
 #### BAAI/bge-reranker-large
 
-`bge-reranker-large` is a model by the Beijing Academy of Artificial Intelligence (BAAI) and is hosted by Trieve. This model does not require any additional configuration. and will be used by default on all `hybrid` searches.
+`bge-reranker-large` is a model by the Beijing Academy of Artificial Intelligence (BAAI) and is hosted by Trieve. This model does not require any additional configuration and will be used by default on all `hybrid` searches.
 
-To switch your reranker model to cohere's `bge-reranker-large`, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id). With the following Parameters
+To manually select the `bge-reranker-large` as your reranker model, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id) with the following parameters:
 
 ```json
 curl --request POST \
@@ -328,11 +328,39 @@ curl --request POST \
 }'
 ```
 
-#### Cohere rerank-v3.5
+#### AIMon's aimon-rerank
 
-`rerank-v3.5` is a model hosted by docs.cohere.com. To use this model, you must provide the `cohere_api_key` in the `server_configuration` field when creating a dataset.
+`aimon-rerank` is a model hosted by [AIMon](https://docs.aimon.ai/). To use this model, you must provide the `aimon_api_key` in the `server_configuration` field when creating a dataset.
 
-To switch your reranker model to cohere's `rerank-v3.5`, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id). With the following Parameters
+To switch your reranker model to AIMon's `aimon-rerank`, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id) with the following parameters:
+
+```json
+curl --request POST \
+  --url https://api.trieve.ai/api/dataset \
+  --header 'Authorization: <api-key>' \
+  --header 'Content-Type: application/json' \
+  --header 'TR-Organization: <tr-organization>' \
+  --data '{
+    "dataset_name": "New Dataset", // Replace with a name for your dataset
+    "organization_id": "********-****-****-****-************",
+
+    // Update with the desired configurations for your dataset
+    "server_configuration": {
+      "RERANKER_BASE_URL":"https://pbe-api.aimon.ai/v1/rerank-icl",
+      "RERANKER_MODEL_NAME":"aimon-rerank",
+      "RERANKER_API_KEY":"<aimon_api_key>",
+      "AIMON_RERANKER_TASK_DEFINITION": "<a_task_definition>" 
+      // A task definition can be used to specify the domain of the context documents for AIMon reranker.
+      // example of a task definition: "Your task is to grade the relevance of context document(s) in the domain of music and arts."
+    }
+}'
+```
+
+#### Cohere's rerank-v3.5
+
+`rerank-v3.5` is a model hosted by [Cohere](https://docs.cohere.com/cohere-documentation). To use this model, you must provide the `cohere_api_key` in the `server_configuration` field when creating a dataset.
+
+To switch your reranker model to Cohere's `rerank-v3.5`, make a request to the [update dataset route](/api-reference/dataset/update-dataset-by-id-or-tracking-id) with the following parameters:
 
 ```json
 curl --request POST \
