@@ -217,7 +217,6 @@
         "api-reference/file/get-files-for-dataset",
         "api-reference/file/scroll-files",
         "api-reference/file/get-file",
-        "api-reference/file/get-file-signed-url",
         "api-reference/file/delete-file"
       ]
     },
