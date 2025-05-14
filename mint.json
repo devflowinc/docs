@@ -88,7 +88,6 @@
       "group": "Self Hosting",
       "pages": [
         "self-hosting/docker-compose",
-        "self-hosting/local-kube",
         "self-hosting/aws",
         "self-hosting/gcp",
         "self-hosting/azure",
@@ -162,6 +161,7 @@
       "pages": [
         "api-reference/chunk-group/create-or-upsert-group-or-groups",
         "api-reference/chunk-group/search-over-groups",
+        "api-reference/chunk-group/autocomplete-search-over-groups",
         "api-reference/chunk-group/search-within-group",
         "api-reference/chunk-group/get-recommended-groups",
         "api-reference/chunk-group/add-chunk-to-group",
