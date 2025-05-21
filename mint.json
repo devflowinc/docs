@@ -43,6 +43,10 @@
     {
       "name": "SiteSearch AI",
       "url": "site-search"
+    },
+    {
+      "name": "System Status",
+      "url": "system-status"
     }
   ],
   "anchors": [
@@ -317,6 +321,12 @@
     {
       "group": "Metrics",
       "pages": ["api-reference/metrics/get-prometheus-metrics"]
+    },
+    {
+      "group": "System Status",
+      "pages": [
+        "system-status/application-status"
+      ]
     }
   ],
   "footerSocials": {
