@@ -1,10 +1,15 @@
-
+---
+title: 'Azure Self Hosting'
+description: 'Learn how to self-host Trieve on Azure'
+icon: cloud
+---
 
 # Installing Trieve on Azure (AKS)
 
-Things you need:
+Things you need
 
 - Domain name
+- An allowance for at least 8vCPU for G and VT instances
 - helm cli
 - azure cli
 - kubectl
@@ -17,15 +22,15 @@ git clone https://github.com/devflowinc/trieve.git
 cd trieve
 ```
 
-##  Login to Azure
+## Login to Azure
 
 ```sh
-az login --use-device-code
+az login
 ```
 
 ## Provision Terraform
 
-Azure should be configured with your IAM credentails chosen. Run the following commands to create the AKS cluster
+Azure should be configured with your IAM credentials chosen. Run the following commands to create the AKS cluster
 
 ```sh
 cd terraform/azure
@@ -35,20 +40,13 @@ terraform apply
 
 ### Login to the cluster
 
-```
+Set up your kubeconfig to point to the new cluster
+
+```sh
 az aks get-credentials --resource-group trieve --name trieve
 ```
 
-## Install Trieve Depenedencies
-
-Trieve depends on the following:
-- [Keycloak](https://www.keycloak.org/) (or some other oidc compliant Auth Provider)
-- [Postgres](https://www.postgresql.org/) We are using the CloudNativePG operator.
-- [Redis](https://redis.io/) We are using the bitnami redis helm chart.
-- [Clickhouse](https://clickhouse.tech/) We are using clickhouse-operator.
-- [Qdrant](https://qdrant.tech/) We are using qdrant-helm chart.
-
-### Ingress nginx + Cert Manager (optional)
+### Install Ingress nginx + Cert Manager
 
 Ingress-nginx + Cert manager is how we will expose the trieve services to the internet. 
 Feel free to use whatever ingress controller you are comfortable with.
@@ -59,216 +57,113 @@ Feel free to use whatever ingress controller you are comfortable with.
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/cloud/deploy.yaml
 # To install cert-manager
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.2/cert-manager.yaml
-# To install ClusterIssuer for keycloak
-kubectl apply -f helm/test-production/keycloak-extras/cluster-issuer.yaml
+# To install ClusterIssuer
+kubectl apply -f https://raw.githubusercontent.com/devflowinc/trieve-helm/refs/heads/main/charts/trieve/test-production/cluster-issuer.yaml
 ```
 
-### Clickhouse
+## Install Trieve
 
-First install the clickhouse operator and clickhouse installation.
-
-Note that this has a preconfigured password and user. We will use these in the helm chart.
-They will need to be changed in a production environment according to your password policy.
+### Download values.yaml file
 
 ```sh
-
-kubectl apply -f helm/test-production/clickhouse/
-# Apply twice to ensure crds are installed
-kubectl apply -f helm/test-production/clickhouse/
-
+wget https://raw.githubusercontent.com/devflowinc/trieve-helm/refs/heads/main/charts/trieve/values.yaml
 ```
 
-Check the status of the clickhouse installation.
+For full configuration options, the values.yaml contains comments and examples. More information can be found in the [Trieve Helm Chart](https://github.com/devflowinc/trieve-helm/tree/main/charts/trieve) repository.
 
-```sh
-kubectl get ClickhouseInstallations
-```
+### Modify domain names for ingresses
 
-When the above command returns the following, clickhosue is installed.
-
-```
-NAME                CLUSTERS   HOSTS   STATUS      HOSTS-COMPLETED   AGE
-trieve-clickhouse   1          1       Completed                     3m3s
-```
-### OIDC Compliant server (Keycloak)
-
-This is an example of installing keycloak on Azure. You can use any other OIDC compliant provider.
-
-<Warning>
-This is using postgresql as a statefulset with a prefilled username/password, you can use a managed service like RDS or CloudNativePG.
-For higher security.
-</Warning>
-
-<Warning>
-This also includes a KeycloakRealm that contains the recommended default settings for a keycloak realm. This also has a prefilled clientSecret which
-should be rotated post installation.
-</Warning>
-
-```sh
-kubectl apply -f helm/test-production/keycloak/
-# Apply twice to ensure crds are installed
-kubectl apply -f helm/test-production/keycloak/
-```
-
-To verify Keycloak has started run
-
-```sh
-kubectl get sts trieve-keycloak
-```
-
-#### Install the Keycloak Ingress and set your A record
-
-1) Edit `helm/test-production/keycloak-extras/keycloak-ingress.yaml` and replace `yourdomain.com` with your domain name.
-
-2) Apply the ingress
-
-```sh
-
-kubectl apply -f helm/test-production/keycloak-extras/keycloak-ingress.yaml
-
-```
-
-```sh
-
-kubectl get ingress ingress-keycloak
-
-```
-
-You will get an output like this:
-
-```
-NAME               CLASS   HOSTS                 ADDRESS        PORTS     AGE
-ingress-keycloak   nginx   auth.yourdomain.com   4.157.193.10   80, 443   2m10s
-```
-
-Add an A record to your domain registrar with the IP address of the ingress.
-```
-auth.yourdomain.com -> 4.157.193.10 # Example IP
-```
-
-#### Configure Keycloak authorized redirect URIs
-
-1) Access the Keycloak admin console at https://auth.YOUR-DOMAIN.COM/admin/master/console/#/trieve/clients/list
-2) Login with the default credentials:
-  Username: admin
-  Password: password
-3) Select the “trieve” client and add the following configurations:
-
-Valid redirect and Valid post logout redirect URIs:
-
-```
-https://api.YOUR-DOMAIN.COM/*
-https://dashboard.YOUR-DOMAIN.COM/*
-https://chat.YOUR-DOMAIN.COM/*
-https://search.YOUR-DOMAIN.COM/*
-```
-
-4) Save the changes
-
-### Qdrant helm chart
-
-<Note>
-For Qdrant we recommend you install it via helm chart, with these values.yaml.
-Note that this is for a qdrant cluster with 3 nodes and 10 GB ram per node.
-</Note>
-
-Each node also has qdrant-node taint on it, so that the trieve pods can be scheduled on the same nodes types
-
-Note that `apiKey` is also preset to `qdrant-api-key`, this may need to be changed if you plan on enabling 
-qdrant ingress.
-
-```yaml
-helm repo add qdrant https://qdrant.github.io/qdrant-helm
-helm repo update
-helm upgrade -i qdrant qdrant/qdrant -f helm/test-production/qdrant-values.yaml
-```
-
-Verify Qdrant is installed
-
-```sh
-kubectl get sts qdrant
-```
-
-```
-NAME     READY   AGE
-qdrant   3/3     54s
-```
-
-### Postgresql (via CloudNativePG)
-
-Insstall the postgresql operator and postgresql installation.
-
-```sh
-kubectl apply --server-side -f helm/test-production/cnpg/operator.yaml
-# Apply twice to ensure crds are installed
-kubectl apply -f helm/test-production/cnpg/postgresql-instance.yaml
-```
-
-Verify the postgresql installation via.
-
-```sh
-# To verify the operator is installed
-kubectl get deployment -n cnpg-system cnpg-controller-manager
-# To verify the postgresql cluster is installed
-kubectl get pods -l cnpg.io/cluster=postgresql-cluster
-```
-
-### Redis helm chart
-
-For simplicity, we are using the bitnami redis helm chart. You can use the azure redis cache service if you prefer.
-
-```sh
-helm upgrade -i redis oci://registry-1.docker.io/bitnamicharts/redis -f helm/test-production/redis-values.yaml
-```
-
-
-# Install Trieve
-
-### Modify domain names
-
-If you followed the steps above, `values.az.yaml` should be mostly preconfigured for you.
-The only thing needed to modify are the domain names. Replace every instance of `yourdomain.com` with your domain name.
-
-We highlight the locations where you need to replace `yourdomain.com` with your domain name below.
-
-```yaml values.az.yaml
+```yaml values.yaml {4} {15} {20} {29} {34} {48} {57} {66-69} {73-74}
 domains:
   dashboard:
+    disabled: false
     host: dashboard.yourdomain.com
     class: nginx
+    # Annotations for the ingress
+    # Annotations for the service that the ingress points to
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      acme.cert-manager.io/http01-edit-in-place: "true"
+      cert-manager.io/cluster-issuer: "letsencrypt"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    tls:
+      - hosts:
+          - dashboard.yourdomain.com
+        secretName: dashboard-domain
+    serviceAnnotations: {}
   server:
+    disabled: false
     host: api.yourdomain.com
     class: nginx
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      acme.cert-manager.io/http01-edit-in-place: "true"
+      cert-manager.io/cluster-issuer: "letsencrypt"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    tls:
+      - hosts:
+          - api.yourdomain.com
+        secretName: api-domain
+    serviceAnnotations: {}
   search:
+    disabled: false
     host: search.yourdomain.com
     class: nginx
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      acme.cert-manager.io/http01-edit-in-place: "true"
+      cert-manager.io/cluster-issuer: "letsencrypt"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    tls:
+      - hosts:
+          - search.yourdomain.com
+        secretName: search-domain
+    serviceAnnotations: {}
   chat:
+    disabled: false
     host: chat.yourdomain.com
     class: nginx
-...
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      acme.cert-manager.io/http01-edit-in-place: "true"
+      cert-manager.io/cluster-issuer: "letsencrypt"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    tls:
+      - hosts:
+          - chat.yourdomain.com
+        secretName: chat-domain
+    serviceAnnotations: {}
+
+## ...
+
 config:
-...
+## For the frontend to communicate
   vite:
     apiHost: https://api.yourdomain.com/api
     searchUiUrl: https://search.yourdomain.com
     chatUiUrl: https://chat.yourdomain.com
     dashboardUrl: https://dashboard.yourdomain.com
-...
-  trieve:
-	baseServerUrl: "https://api.yourdomain.com"
+
+## For the backend oidc server
   oidc:
     issuerUrl: "https://auth.yourdomain.com/realms/trieve"
     authRedirectUrl: "https://auth.yourdomain.com/realms/trieve/protocol/openid-connect/auth"
 ```
 
 
-Install the helm chart
+Install the helm chart. Ensure it is installed twice
 
 ```sh
-helm upgrade -i trieve-az \
-  helm/ \
-  -f helm/values.az.yaml 
+helm repo add trieve https://devflowinc.github.io/trieve-helm/
+helm repo update
+helm upgrade -i -f values.yaml trieve-local trieve/trieve
+helm upgrade -i -f values.yaml trieve-local trieve/trieve
+
 ```
+
+<Note>
+You will need to install the helm chart twice to ensure the crds are installed and ConfigMap's are updated properly.
+</Note>
 
 ### Verify the installation
 
@@ -296,9 +191,7 @@ word-worker         1/1     1            1           14m
 #### Get Ingress ip address
 
 ```sh
-
 kubectl get ingress
-
 ```
 
 You will get an output like this:
@@ -322,6 +215,68 @@ search.yourdomain.com    -> 4.157.193.10 # Example IP
 api.yourdomain.com       -> 4.157.193.10 # Example IP
 ```
 
-You will also need to update any other references to that domain name in the `helm/values.az.yaml` file.
+Ensure you run `helm upgrade -i -f values.yaml trieve-local trieve/trieve` after making changes. to apply them.
 
-Ensure you run `helm upgrade -i -f helm/values.az.yaml trieve-az helm/` after making changes. to apply them.
+<Warn>
+  The Trieve server will not start if the keycloak domain is not set correctly. Redirect urls will need to be set for login to work.
+  To configure the redirect urls, see [Setup Keycloak redirect urls](#setup-keycloak-redirect-urls)
+</Warn>
+
+
+## Post Installation
+
+### Setup Keycloak redirect urls
+
+* Navigate to auth.yourdomain.com
+* Log in using the default credentials:
+  * Username: admin
+  * Password: password
+* Switch the Realm from "master" to "trieve"
+* Navigate to Clients → trieve → Settings
+* Configure the Valid Redirect URIs and Valid Post Logout Redirect URIs (ensure it is https)
+
+![Keycloak Config](https://cdn.trieve.ai/blog/self-hosting-guide/keycloak-config-preview.webp)
+
+### Verify Your Installation
+
+Follow these steps to confirm your Trieve instance is working correctly:
+
+<Steps>
+  <Step title="Register Your First User">
+    Navigate to `dashboard.yourdomain.com` in your browser. You'll be prompted to register a new user account since this is a fresh installation.
+
+    ![Empty Dashboard](https://cdn.trieve.ai/docs/empty-dashboard.png)
+  </Step>
+
+  <Step title="Create a Dataset and Add Sample Data">
+    Once logged in, create your first dataset and populate it with some example data. This will help you test the core functionality of your Trieve instance.
+  </Step>
+
+  <Step title="Verify Data Processing">
+    Check the admin event log to ensure that chunks are being created successfully from your uploaded data. This confirms that the ingestion pipeline is working properly.
+
+    ![Admin Event Log](https://cdn.trieve.ai/docs/admin-event-log.png)
+  </Step>
+
+  <Step title="Test Search Functionality">
+    Navigate to `search.yourdomain.com` and perform a test search query using the data you just uploaded. This verifies that the search engine is functioning correctly.
+
+    ![Search Page](https://cdn.trieve.ai/docs/search-page.png)
+  </Step>
+
+  <Step title="Review Search Analytics">
+    Return to `dashboard.yourdomain.com` and examine your search analytics to confirm that queries are being tracked and analyzed properly.
+
+    ![Search Analytics](https://cdn.trieve.ai/docs/search-analytics.png)
+  </Step>
+</Steps>
+
+
+## 🚀 Congratulations! You're all set! Whats Next?
+
+You now have a fully functional Trieve instance running on Azure. Your self-hosted search infrastructure is ready to handle production workloads. Want to find out what's next?
+
+- [Upload Files](https://trieve.ai/guides/uploading-files) (ensure s3 is configured)
+- [Follow Quickstart Guide](https://trieve.ai/guides/quickstart)
+- [API Reference](https://trieve.ai/api-reference)
+- [Multi-tenency guide](https://trieve.ai/guides/multi-tenency)

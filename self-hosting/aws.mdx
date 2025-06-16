@@ -61,11 +61,35 @@ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/
 kubectl apply -f https://raw.githubusercontent.com/devflowinc/trieve-helm/refs/heads/main/charts/trieve/test-production/cluster-issuer.yaml
 ```
 
+## Setup StorageClass
+
+```sh
+kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
+
 ## Install Trieve
+
+### Download values.yaml file
+
+```sh
+wget https://raw.githubusercontent.com/devflowinc/trieve-helm/refs/heads/main/charts/trieve/values.yaml
+```
+
+For full configuration options, the values.yaml contains comments and examples. More information can be found in the [Trieve Helm Chart](https://github.com/devflowinc/trieve-helm/tree/main/charts/trieve) repository.
 
 ### Modify domain names for ingresses
 
-```yaml {4} {15} {20} {29} {34} {48} {57} {66-69} {73-74}
+### Download values.yaml file
+
+```sh
+wget https://raw.githubusercontent.com/devflowinc/trieve-helm/refs/heads/main/charts/trieve/values.yaml
+```
+
+For full configuration options, the values.yaml contains comments and examples. More information can be found in the [Trieve Helm Chart](https://github.com/devflowinc/trieve-helm/tree/main/charts/trieve) repository.
+
+### Modify domain names for ingresses
+
+```yaml values.yaml {4} {15} {20} {29} {34} {48} {57} {66-69} {73-74}
 domains:
   dashboard:
     disabled: false
@@ -148,8 +172,8 @@ Install the helm chart. Ensure it is installed twice
 ```sh
 helm repo add trieve https://devflowinc.github.io/trieve-helm/
 helm repo update
-helm upgrade -i -f helm/values.aws.yaml trieve-local trieve/trieve
-helm upgrade -i -f helm/values.aws.yaml trieve-local trieve/trieve
+helm upgrade -i -f helm/values.yaml trieve-local trieve/trieve
+helm upgrade -i -f helm/values.yaml trieve-local trieve/trieve
 
 ```
 
@@ -207,9 +231,7 @@ search.yourdomain.com    -> 4.157.193.10 # Example IP
 api.yourdomain.com       -> 4.157.193.10 # Example IP
 ```
 
-You will also need to update any other references to that domain name in the `helm/values.aws.yaml` file.
-
-Ensure you run `helm upgrade -i -f helm/values.aws.yaml trieve-aws helm/` after making changes. to apply them.
+Ensure you run `helm upgrade -i -f values.yaml trieve-local trieve/trieve` after making changes. to apply them.
 
 <Warn>
   The Trieve server will not start if the keycloak domain is not set correctly. Redirect urls will need to be set for login to work.
