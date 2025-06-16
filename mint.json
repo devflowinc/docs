@@ -43,10 +43,6 @@
     {
       "name": "SiteSearch AI",
       "url": "site-search"
-    },
-    {
-      "name": "System Status",
-      "url": "system-status"
     }
   ],
   "anchors": [
@@ -62,13 +58,18 @@
     },
     {
       "name": "Community",
-      "icon": "satellite-dish",
+      "icon": "users",
       "url": "https://discord.com/invite/E9sPRZqpDT"
     },
     {
       "name": "Blog",
       "icon": "newspaper",
       "url": "https://trieve.ai/blog"
+    },
+    {
+      "name": "System Status",
+      "icon": "satellite-dish",
+      "url": "https://status.trieve.ai"
     }
   ],
   "navigation": [
@@ -321,12 +322,6 @@
     {
       "group": "Metrics",
       "pages": ["api-reference/metrics/get-prometheus-metrics"]
-    },
-    {
-      "group": "System Status",
-      "pages": [
-        "system-status/application-status"
-      ]
     }
   ],
   "footerSocials": {
