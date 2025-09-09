@@ -51,6 +51,19 @@ Hybrid search, does both a full text search, and semantic search. From those res
 
 This search_type is `hybrid`.
 
+### Neural Hashing
+
+Trieve now supports neural hashing, a breakthrough technique that compresses vector embeddings without losing information. Neural hashing allows us to:
+
+- Compress vectors to 1/10th their normal size while retaining up to 99% of the information
+- Process hashed vectors up to 500x faster than standard vector similarity
+- Run on standard hardware and databases instead of specialized GPU infrastructure
+- Deliver results as fast as keyword search while maintaining semantic understanding
+
+Neural hashing combines the precision of keyword search with the conceptual understanding of semantic search, providing both higher precision and higher recall. This technique eliminates the computational expense traditionally associated with vector search, making AI-powered retrieval practical for production environments.
+
+When using hybrid search, Trieve automatically leverages neural hashing techniques to optimize performance while maintaining search quality.
+
 ## Search Paradigms
 
 We offer three different search strategies for you to choose from:
