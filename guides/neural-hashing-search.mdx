@@ -1,0 +1,223 @@
+---
+title: Neural hashing search
+description: Learn about neural hashing search techniques and how they relate to Trieve's neural search capabilities
+---
+
+# Neural hashing search
+
+Neural hashing search combines the efficiency of traditional hashing with the semantic understanding of neural networks to enable fast, accurate similarity search over large datasets.
+
+## Overview
+
+Neural hashing transforms high-dimensional data into compact binary codes (hashes) using neural networks, enabling efficient similarity search while preserving semantic relationships. This approach bridges the gap between exact matching and semantic search.
+
+## How neural hashing works
+
+Neural hashing involves several key components:
+
+### 1. Neural encoding
+- **Deep hash functions**: Neural networks learn to map input data to binary hash codes
+- **Semantic preservation**: Hash codes maintain semantic similarity relationships
+- **Dimensionality reduction**: High-dimensional vectors compressed to compact binary representations
+
+### 2. Hash code generation
+- **Binary quantization**: Continuous neural outputs converted to binary codes
+- **Locality-sensitive hashing**: Similar inputs produce similar hash codes
+- **Fixed-length codes**: Consistent hash length for efficient storage and comparison
+
+### 3. Similarity search
+- **Hamming distance**: Fast binary comparison using XOR operations
+- **Hash table lookup**: Efficient retrieval using hash-based indexing
+- **Approximate matching**: Trade-off between speed and accuracy
+
+## Neural hashing vs. traditional approaches
+
+| Approach | Speed | Accuracy | Storage | Use Case |
+|----------|-------|----------|---------|----------|
+| **Exact matching** | Fast | Perfect | Low | Keyword search |
+| **Neural hashing** | Very fast | High | Very low | Large-scale similarity |
+| **Dense embeddings** | Moderate | Very high | High | Semantic search |
+| **Sparse embeddings** | Fast | High | Moderate | Hybrid search |
+
+## Trieve's neural search capabilities
+
+While Trieve doesn't implement traditional neural hashing, it provides several neural search approaches that achieve similar benefits:
+
+### SPLADE neural sparse retrieval
+
+Trieve's fulltext search uses SPLADE, which provides neural-enhanced sparse representations:
+
+```json
+{
+  "query": "machine learning algorithms",
+  "search_type": "fulltext"
+}
+```
+
+SPLADE benefits:
+- **Neural term expansion**: Matches synonyms and related concepts
+- **Sparse efficiency**: Fast retrieval like traditional sparse methods
+- **Semantic understanding**: Better than BM25 for conceptual queries
+
+### Semantic embeddings
+
+Trieve's semantic search uses dense neural embeddings:
+
+```json
+{
+  "query": "artificial intelligence applications",
+  "search_type": "semantic"
+}
+```
+
+Semantic search features:
+- **Dense representations**: Rich semantic understanding
+- **Cosine similarity**: Measures semantic relatedness
+- **Multiple models**: Support for various embedding models
+
+### Hybrid neural search
+
+Combines multiple neural approaches for optimal results:
+
+```json
+{
+  "query": "deep learning frameworks",
+  "search_type": "hybrid"
+}
+```
+
+Hybrid search combines:
+- **Semantic vectors**: For conceptual understanding
+- **Sparse representations**: For exact term matching
+- **Neural reranking**: Cross-encoder models for final ranking
+
+## Implementation considerations
+
+### When to use neural hashing approaches
+
+**Ideal for:**
+- Large-scale datasets (millions+ documents)
+- Real-time search requirements
+- Memory-constrained environments
+- Approximate similarity search
+
+**Consider alternatives for:**
+- Small datasets (< 100K documents)
+- Exact match requirements
+- Maximum accuracy needs
+- Rich semantic understanding
+
+### Performance characteristics
+
+Neural hashing provides:
+- **Sub-linear search time**: O(1) to O(log n) lookup
+- **Constant memory per item**: Fixed hash size regardless of content
+- **High throughput**: Thousands of queries per second
+- **Scalable indexing**: Efficient for large datasets
+
+## Best practices
+
+### 1. Hash code design
+```javascript
+// Example hash configuration
+const hashConfig = {
+  codeLength: 64,        // 64-bit hash codes
+  hashTables: 4,         // Multiple hash tables for recall
+  threshold: 2           // Hamming distance threshold
+};
+```
+
+### 2. Training considerations
+- **Balanced datasets**: Ensure diverse training examples
+- **Similarity labels**: Provide positive/negative pairs
+- **Regularization**: Prevent overfitting to training data
+- **Evaluation metrics**: Use recall@k and precision@k
+
+### 3. Query optimization
+```javascript
+// Multi-probe hashing for better recall
+const searchParams = {
+  probeRadius: 2,        // Check nearby hash buckets
+  maxCandidates: 1000,   // Limit candidate set size
+  rerankTop: 100         // Rerank top candidates
+};
+```
+
+## Integration with Trieve
+
+To achieve neural hashing-like performance with Trieve:
+
+### 1. Use hybrid search
+Combines speed and accuracy:
+```bash
+curl -X POST "https://api.trieve.ai/api/chunk/search" \
+  -H "TR-Dataset: your-dataset-id" \
+  -H "Authorization: tr-your-api-key" \
+  -d '{
+    "query": "your search query",
+    "search_type": "hybrid",
+    "page_size": 20
+  }'
+```
+
+### 2. Optimize for speed
+Configure for fast retrieval:
+```json
+{
+  "query": "search query",
+  "search_type": "fulltext",
+  "slim_chunks": true,
+  "page_size": 10
+}
+```
+
+### 3. Custom embedding models
+Use specialized models for your domain:
+```json
+{
+  "server_configuration": {
+    "EMBEDDING_MODEL_NAME": "your-custom-model"
+  }
+}
+```
+
+## Advanced techniques
+
+### Multi-modal hashing
+For datasets with different content types:
+- **Text hashing**: For document content
+- **Image hashing**: For visual similarity
+- **Cross-modal**: Unified search across modalities
+
+### Learned hashing
+Neural networks that learn optimal hash functions:
+- **Supervised learning**: Using labeled similarity data
+- **Unsupervised learning**: Preserving data distribution
+- **Deep hashing**: End-to-end neural hash learning
+
+### Quantization methods
+Efficient binary code generation:
+- **Sign activation**: Simple threshold-based quantization
+- **Gumbel softmax**: Differentiable discrete sampling
+- **Straight-through estimator**: Gradient flow through quantization
+
+## Monitoring and optimization
+
+### Performance metrics
+Track key indicators:
+- **Query latency**: Average response time
+- **Recall rate**: Percentage of relevant results found
+- **Index size**: Memory usage for hash tables
+- **Throughput**: Queries processed per second
+
+### Optimization strategies
+- **Hash length tuning**: Balance between speed and accuracy
+- **Multi-table hashing**: Improve recall with multiple hash functions
+- **Dynamic thresholds**: Adjust similarity thresholds based on query type
+- **Caching**: Store frequent query results
+
+## Conclusion
+
+Neural hashing provides an efficient approach to large-scale similarity search by combining neural understanding with hash-based retrieval. While Trieve doesn't implement traditional neural hashing, its SPLADE fulltext search and hybrid approaches provide similar benefits of fast, semantically-aware search.
+
+For applications requiring the specific characteristics of neural hashing—such as constant-time lookup and minimal memory usage—consider implementing custom hash functions alongside Trieve's existing neural search capabilities.
