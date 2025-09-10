@@ -1,0 +1,193 @@
+---
+title: 'Neural Hashing Search'
+description: 'Understanding neural hashing and how it enhances AI-powered search retrieval'
+icon: 'brain-circuit'
+---
+
+## Overview
+
+Neural hashing represents a breakthrough in AI-powered search retrieval, combining the precision of traditional keyword search with the conceptual understanding of vector search. This technique allows Trieve to deliver fast, accurate, and cost-effective search results by compressing vector embeddings without losing critical information.
+
+## The Search Pipeline
+
+Modern search systems operate through three distinct processes:
+
+1. **Query understanding**: Natural language processing techniques prepare and structure the query
+2. **Retrieval**: The search engine retrieves the most relevant results 
+3. **Ranking**: Results are re-ranked based on relevance, user behavior, and business rules
+
+Neural hashing specifically enhances the retrieval phase, which is crucial for overall search quality.
+
+## Understanding Precision vs Recall
+
+Search quality is measured using two key metrics:
+
+- **Precision**: The percentage of retrieved documents that are relevant
+- **Recall**: The percentage of all relevant documents that are retrieved
+
+Traditional search systems often face a trade-off between these metrics. Neural hashing helps improve both simultaneously.
+
+### Example: Searching for "fry pan"
+
+A basic keyword search for "fry pan" might return:
+- ✅ Relevant: Actual frying pans
+- ❌ Less relevant: Cookware sets with sauce pans
+- ❌ Missing: Non-stick skillets, cast iron pans (recall issue)
+
+With neural hashing, the search understands concepts and relationships, returning more comprehensive and accurate results.
+
+## How Neural Hashing Works
+
+### Traditional Vector Search Challenges
+
+Vector search uses mathematical representations (embeddings) to understand semantic meaning. However, standard vector search faces several limitations:
+
+- **High computational cost**: Vectors are complex floating-point numbers requiring specialized hardware
+- **Storage requirements**: Large vector dimensions consume significant memory
+- **Performance bottlenecks**: Similarity calculations are computationally expensive
+
+### The Neural Hashing Solution
+
+Neural hashing addresses these challenges by:
+
+1. **Compression**: Reduces vector size by up to 90% while retaining 99% of the information
+2. **Speed**: Processes hashed vectors up to 500x faster than standard vectors
+3. **Hardware efficiency**: Runs on standard CPUs instead of requiring specialized GPUs
+4. **Cost reduction**: Dramatically lowers computational and storage costs
+
+## Neural Hashing in Trieve
+
+Trieve implements neural hashing as part of its hybrid search approach, combining:
+
+- **Keyword matching**: For exact term matches and brand names
+- **Neural hashing**: For conceptual understanding and semantic similarity
+- **Unified scoring**: Single relevance score across both approaches
+
+### Performance Benefits
+
+When you use Trieve's hybrid search with neural hashing:
+
+- Results are delivered as fast as keyword-only search
+- Both precision and recall are improved
+- Long-tail queries perform significantly better
+- Manual synonym management is reduced
+
+## Practical Examples
+
+### Long-tail Query Handling
+
+**Query**: "non-teflon non-stick frypan"
+
+**Keyword-only results**: Limited matches for exact terms
+**Neural hashing + keyword results**: 
+- Non-stick frying pans
+- Ceramic cookware
+- Cast iron skillets
+- Stainless steel pans with non-stick properties
+
+### Concept Understanding
+
+**Query**: "espresso with milk thingy"
+
+Neural hashing understands this refers to espresso machines with steam wands, even without exact keyword matches.
+
+## Implementation with Trieve
+
+Neural hashing is automatically enabled when you use Trieve's `hybrid` search type:
+
+```json
+POST /api/chunk/search
+Headers:
+{
+  "TR-Dataset": "<your-dataset-id>",
+  "Authorization": "tr-*******************"
+}
+Body:
+{
+  "query": "non-stick frying pan",
+  "search_type": "hybrid",
+  "page": 1,
+  "page_size": 10
+}
+```
+
+### Search Type Options
+
+- `semantic`: Pure vector search using embeddings
+- `fulltext`: SPLADE-based text matching
+- `bm25`: Classical keyword search
+- `hybrid`: **Neural hashing + keyword search** (recommended)
+
+## Benefits for Different Use Cases
+
+### E-commerce
+- Better product discovery for varied terminology
+- Improved handling of brand names and model numbers
+- Enhanced long-tail query performance
+
+### Content Search
+- Conceptual matching across different writing styles
+- Better handling of synonyms and related terms
+- Improved search for technical documentation
+
+### Enterprise Search
+- Cross-domain knowledge retrieval
+- Better handling of jargon and specialized terminology
+- Improved search across diverse content types
+
+## Technical Advantages
+
+### Locality-Sensitive Hashing (LSH) Enhancement
+
+Traditional LSH requires trade-offs between similarity thresholds and bucket assignments. Neural hashing eliminates these trade-offs by:
+
+- Using neural networks to optimize hash functions
+- Maintaining high similarity precision
+- Reducing false positives and negatives
+
+### Scalability
+
+Neural hashing enables production-scale AI search by:
+
+- Running on commodity hardware
+- Maintaining sub-second response times
+- Supporting real-time index updates
+- Scaling horizontally without specialized infrastructure
+
+## Best Practices
+
+### When to Use Neural Hashing
+
+Neural hashing (hybrid search) is ideal for:
+
+- **Diverse vocabularies**: When users might describe the same concept differently
+- **Long-tail queries**: Complex, specific search terms
+- **Conceptual search**: When exact keyword matches aren't sufficient
+- **Multilingual content**: Cross-language conceptual matching
+
+### Optimization Tips
+
+1. **Use hybrid search as default**: Provides best balance of precision and recall
+2. **Combine with filters**: Narrow results while maintaining semantic understanding
+3. **Leverage reranking**: Use cross-encoder reranking for optimal result ordering
+4. **Monitor performance**: Track both precision and recall metrics
+
+## Future of AI Search
+
+Neural hashing represents a significant advancement in making AI-powered search practical for production use. By solving the cost and performance challenges of vector search, it enables:
+
+- Real-time AI search at scale
+- Reduced infrastructure requirements
+- Better user experiences across diverse query types
+- More accessible AI search implementation
+
+<Tip>
+Try neural hashing with Trieve's hybrid search to experience the benefits of AI-powered retrieval without the traditional performance penalties.
+</Tip>
+
+## Next Steps
+
+- Explore [Trieve's search capabilities](/guides/searching-with-trieve)
+- Learn about [customizing embedding models](/guides/searching-with-trieve#embedding-models)
+- Understand [reranking options](/guides/searching-with-trieve#reranker-models)
+- Try the [search UI](https://search.trieve.ai) to test different approaches

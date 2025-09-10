@@ -108,6 +108,7 @@
         "guides/uploading-files",
         "guides/uploading-csv-and-jsonl-files",
         "guides/searching-with-trieve",
+        "guides/neural-hashing-search",
         "guides/recommending-with-trieve",
         "guides/RAG-with-trieve",
         "guides/analytics-quickstart",
