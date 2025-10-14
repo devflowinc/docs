@@ -1,24 +1,23 @@
 ---
-title: 'Analytics with Trieve'
-description: 'Learn how to get started with Trieve Analytics'
-icon: 'chart-mixed'
+title: "Analytics with Trieve"
+description: "Learn how to get started with Trieve Analytics"
+icon: "chart-mixed"
 ---
-
-
-Here's something cool dude. What's up
 
 ## Overview
 
-Trieve Analytics is a powerful tool that allows you to analyze your queries and gain insights from them. 
+Trieve Analytics is a powerful tool that allows you to analyze your queries and gain insights from them.
+
 ## Setting Up Trieve Analytics
 
 Trieve automatically collects all of the searches and RAG chats that are made in your dataset. You don't have to worry about manually tracking them.
 
 ## Automatically Tracked Analytics
+
 ## Search Analytics
 
-We provide extensive analytics on your searches all of which can be found in the [search analytics route](api-reference/analytics/get-search-analytics).
-These analytics include:
+We provide extensive analytics on your searches all of which can be found in the [search analytics route](api-reference/analytics/get-search-analytics). These analytics include:
+
 - **Head Queries**: Head queries is a collection of the most common queries.
 - **Low Confidence Queries**: The queries where all your results have scores, which can be useful for improving your search results.
 - **No Results Queries**: This table shows the queries that returned no results, which can be useful for improving your search results.
@@ -26,31 +25,30 @@ These analytics include:
 - **Latency / time**: This graph shows the average latency of searches over time.
 - **Searches / time**: This graph shows the number of searches made over time.
 
-You can see all of this data on the dashboard in the analytics section, as well as be able to export them to a CSV so that you can analyze them in your own tools.
-![](https://trieve.b-cdn.net/Screenshot%202024-10-01%20at%201.46.51%E2%80%AFPM.png)
+You can see all of this data on the dashboard in the analytics section, as well as be able to export them to a CSV so that you can analyze them in your own tools. <img src="https://trieve.b-cdn.net/Screenshot%202024-10-01%20at%201.46.51%E2%80%AFPM.png" alt="" />
 
 ## RAG Chat Analytics
 
-We provide extensive analytics on your RAG chats all of which can be found in the [RAG analytics route](api-reference/analytics/get-rag-analytics).
-These analytics include:
+We provide extensive analytics on your RAG chats all of which can be found in the [RAG analytics route](api-reference/analytics/get-rag-analytics). These analytics include:
+
 - **Usage over time**: This graph shows the number of RAG chats made over time.
 - **All RAG Chats**: This table shows all of the RAG chats made in your dataset.
 
-You can see all of this data on the dashboard in the analytics section, as well as be able to export them to a CSV so that you can analyze them in your own tools.
-![](https://trieve.b-cdn.net/Screenshot%202024-10-01%20at%202.06.27%E2%80%AFPM.png)
+You can see all of this data on the dashboard in the analytics section, as well as be able to export them to a CSV so that you can analyze them in your own tools. <img src="https://trieve.b-cdn.net/Screenshot%202024-10-01%20at%202.06.27%E2%80%AFPM.png" alt="" />
 
 ## Custom Metrics
 
 ### 1. Getting the Request ID
 
 All searches, recommendations, and chats return a `requestID`. With this you can track:
+
 - Clicks
 - user ratings (on any scale you want)
 - Add to Cart's
 - User Views
 - Purchase's
 
-forwarding this `query_id` to any custom 
+forwarding this `query_id` to any custom
 
 #### Request ID from Searches
 
@@ -81,7 +79,7 @@ Calls to `/api/chunk/recommend` return an `id`
 
 #### Request ID from LLM Messages
 
-Calls to `/api/message` return a streaming response so the id is not located in the payload, the id is instead placed on the header `TR-QueryID`. 
+Calls to `/api/message` return a streaming response so the id is not located in the payload, the id is instead placed on the header `TR-QueryID`.
 
 ### 2. Enriching Events
 
@@ -92,6 +90,7 @@ Send Click-Through Rate data to Trieve using the [send CTR data route](/api-refe
 `chunk_id` in this case is the chunk the user clicked on from the search
 
 <CodeGroup>
+
 ```json curl
 curl -X POST https://api.trieve.ai/api/analytics/ctr \
   -H "TR-Dataset: YOUR_DATASET_ID" \
@@ -103,6 +102,7 @@ curl -X POST https://api.trieve.ai/api/analytics/ctr \
         "request_id": "<your-request-id>"
     }'
 ```
+
 
 ```ts TS SDK
 import { TrieveSDK } from "trieve-ts-sdk";
@@ -123,13 +123,17 @@ const data = await trieve.sendCTRData({
     request_id: search_id,
 });
 ```
+
 </CodeGroup>
 
 #### Allow the user to rate the search
+
 You can also send user feedback to the Trieve API using the [rate search query route](/api-reference/analytics/rate-search) or [rate RAG query route](/api-reference/analytics/rate-rag).
 
 The `rating` parameter can be any number of your choosing. Feel free to make your own rating scales
+
 <CodeGroup>
+
 ```json curl
 curl -X POST https://api.trieve.ai/api/analytics/rate-search \
   -H "TR-Dataset: YOUR_DATASET_ID" \
@@ -140,6 +144,7 @@ curl -X POST https://api.trieve.ai/api/analytics/rate-search \
         "note": "Great results!"
     }'
 ```
+
 
 ```ts TS SDK
 import { TrieveSDK } from "trieve-ts-sdk";
@@ -158,11 +163,15 @@ const data = await trieve.rateSearchQuery({
     note: "Great results!",
 });
 ```
+
 </CodeGroup>
 
 #### Custom event types
+
 You can send custom events to the Trieve API using the [send event route](/api-reference/analytics/send-user-event-data). Referencing your search `id` from the previous step
+
 <CodeGroup>
+
 ```json curl
 curl -X POST https://api.trieve.ai/api/analytics/event \
     -H "TR-Dataset: YOUR_DATASET_ID" \
@@ -177,6 +186,7 @@ curl -X POST https://api.trieve.ai/api/analytics/event \
             "request_id": "<your-request-id>"
     }'
 ```
+
 
 ```ts TS SDK
 import { TrieveSDK } from "trieve-ts-sdk";
@@ -196,6 +206,7 @@ const data = await trieve.sendEventData({
         request_id: search_id,
 });
 ```
+
 </CodeGroup>
 
 ### Querying Custom Metrics
